@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
-import { questions } from "@/data/questions";
+import { questions, getScoreTier } from "@/data/questions";
 import ProgressBar from "./ProgressBar";
 
 export default function AssessmentEngine() {
@@ -27,7 +27,7 @@ export default function AssessmentEngine() {
     setSelected(optionId);
   }
 
-  function handleNext() {
+  async function handleNext() {
     if (!selected) return;
     const updated = { ...answers, [currentQuestion.id]: selected };
     setAnswers(updated);
@@ -41,7 +41,6 @@ export default function AssessmentEngine() {
       }, 0);
 
       // Determine category label for the sheet
-      const { getScoreTier } = await import("@/data/questions");
       const tier = getScoreTier(finalScore);
       const categoryLabel = tier.category[language];
 
