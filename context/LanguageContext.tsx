@@ -22,14 +22,12 @@ export function useLanguage() {
 const translations: Record<Language, Record<string, string>> = {
   en: {
     // Nav
-    "nav.research": "Research",
-    "nav.training": "Training",
-    "nav.find": "Find",
-    "nav.masterclass": "Masterclass",
-    "nav.marketplace": "Marketplace",
-    "nav.joinNow": "Join Now",
-    "nav.assessment": "Self-Assessment",
+    "nav.assessment": "Assessment",
     "nav.resources": "Resources",
+    "nav.financing": "Financing",
+    "nav.events": "Events",
+    "nav.about": "About Us",
+    "nav.joinNow": "Join Now",
 
     // Hero
     "hero.headline": "Elevating Malaysian Women Entrepreneurs",
@@ -109,19 +107,17 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.tagline": "Empowering Malaysian women to build thriving businesses.",
     "footer.links": "Quick Links",
     "footer.contact": "Contact Us",
-    "footer.rights": "© 2024 Strivers' Hub. All rights reserved.",
+    "footer.rights": "© 2026 Strivers' Hub. All rights reserved.",
   },
 
   bm: {
     // Nav
-    "nav.research": "Penyelidikan",
-    "nav.training": "Latihan",
-    "nav.find": "Cari",
-    "nav.masterclass": "Masterclass",
-    "nav.marketplace": "Pasaran",
-    "nav.joinNow": "Daftar Sekarang",
-    "nav.assessment": "Penilaian Diri",
+    "nav.assessment": "Penilaian",
     "nav.resources": "Sumber",
+    "nav.financing": "Pembiayaan",
+    "nav.events": "Acara",
+    "nav.about": "Tentang Kami",
+    "nav.joinNow": "Daftar Sekarang",
 
     // Hero
     "hero.headline": "Meningkatkan Usahawanita Malaysia",
@@ -201,7 +197,7 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.tagline": "Memperkasakan wanita Malaysia membina perniagaan yang berjaya.",
     "footer.links": "Pautan Pantas",
     "footer.contact": "Hubungi Kami",
-    "footer.rights": "© 2024 Strivers' Hub. Hak cipta terpelihara.",
+    "footer.rights": "© 2026 Strivers' Hub. Hak cipta terpelihara.",
   },
 };
 

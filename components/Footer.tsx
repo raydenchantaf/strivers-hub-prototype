@@ -41,8 +41,9 @@ export default function Footer() {
               {[
                 { label: t("nav.assessment"), href: "/assessment" },
                 { label: t("nav.resources"), href: "/resources" },
-                { label: t("nav.training"), href: "#" },
-                { label: t("nav.marketplace"), href: "#" },
+                { label: t("nav.financing"), href: "#" },
+                { label: t("nav.events"), href: "#" },
+                { label: t("nav.about"), href: "#" },
               ].map((link) => (
                 <li key={link.label}>
                   <Link

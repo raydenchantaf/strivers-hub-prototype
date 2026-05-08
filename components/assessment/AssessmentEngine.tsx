@@ -7,7 +7,7 @@ import { questions, getScoreTier } from "@/data/questions";
 import ProgressBar from "./ProgressBar";
 
 export default function AssessmentEngine() {
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({}); // questionId -> optionId
@@ -86,29 +86,6 @@ export default function AssessmentEngine() {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="max-w-lg w-full text-center">
-          {/* Language toggle */}
-          <div className="flex justify-center mb-8">
-            <div className="flex bg-gray-100 rounded-full p-1">
-              <button
-                onClick={() => setLanguage("en")}
-                className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                  language === "en" ? "bg-primary text-white shadow" : "text-gray-500"
-                }`}
-              >
-                English
-              </button>
-              <button
-                onClick={() => setLanguage("bm")}
-                className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                  language === "bm" ? "bg-primary text-white shadow" : "text-gray-500"
-                }`}
-              >
-                Bahasa Malaysia
-              </button>
-            </div>
-          </div>
-
-          <div className="text-5xl mb-5">📊</div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">
             {t("assess.title")}
           </h1>
@@ -137,28 +114,6 @@ export default function AssessmentEngine() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
       <div className="max-w-2xl w-full">
-        {/* Language toggle (compact) */}
-        <div className="flex justify-end mb-6">
-          <div className="flex bg-gray-100 rounded-full p-1">
-            <button
-              onClick={() => setLanguage("en")}
-              className={`px-4 py-1 rounded-full text-xs font-semibold transition-all ${
-                language === "en" ? "bg-primary text-white shadow" : "text-gray-500"
-              }`}
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setLanguage("bm")}
-              className={`px-4 py-1 rounded-full text-xs font-semibold transition-all ${
-                language === "bm" ? "bg-primary text-white shadow" : "text-gray-500"
-              }`}
-            >
-              BM
-            </button>
-          </div>
-        </div>
-
         {/* Progress */}
         <ProgressBar current={currentIndex + 1} total={questions.length} />
 

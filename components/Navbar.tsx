@@ -9,11 +9,11 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
-    { key: "nav.research", href: "#" },
-    { key: "nav.training", href: "#" },
     { key: "nav.assessment", href: "/assessment" },
     { key: "nav.resources", href: "/resources" },
-    { key: "nav.marketplace", href: "#" },
+    { key: "nav.financing", href: "#" },
+    { key: "nav.events", href: "#" },
+    { key: "nav.about", href: "#" },
   ];
 
   return (
