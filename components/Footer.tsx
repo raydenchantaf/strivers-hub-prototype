@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -13,12 +14,12 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SH</span>
-              </div>
-              <span className="font-bold text-white text-lg">Strivers&apos; Hub</span>
+              {/* Logo */}
+              <Link href="/" className="flex items-center gap-2">
+              <Image src="/logo.webp" alt="Strivers' Hub" width={185} height={55} />
+              </Link>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">{t("footer.tagline")}</p>
+            <p className="text-white text-sm leading-relaxed">{t("footer.tagline")}</p>
             <div className="flex gap-4 mt-5">
               {/* Social Icons */}
               {["facebook", "instagram", "linkedin"].map((s) => (
@@ -77,7 +78,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-6 text-center text-gray-500 text-xs">
+        <div className="border-t border-white/10 mt-10 pt-6 text-center text-white text-xs">
           {t("footer.rights")}
         </div>
       </div>

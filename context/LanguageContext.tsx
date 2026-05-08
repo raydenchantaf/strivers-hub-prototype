@@ -73,6 +73,13 @@ const translations: Record<Language, Record<string, string>> = {
     "insights.viewAll": "View All",
     "insights.readMore": "Read More",
 
+    // Consent
+    "consent.title": "Welcome to the Strivers' Hub Assessment",
+    "consent.body": "In this questionnaire, we will ask you for some personal and background information to enhance our understanding of this project and personalizing your user experience. Your responses will be treated in accordance with our privacy policy. Your information is strictly confidential and will not be disclosed to any external parties except authorized staff within The Asia Foundation Malaysia. Access to your data is secured through a password-protected online repository. Only anonymized data, excluding personal information, may be shared with external parties, such as local governments, to contribute insights for informed policymaking.",
+    "consent.checkbox": "I have read and consent to the information stated above.",
+    "consent.proceed": "Continue to Assessment",
+    "consent.required": "Please accept the consent statement before continuing.",
+
     // Assessment page
     "assess.title": "Business Readiness Assessment",
     "assess.subtitle":
@@ -103,8 +110,14 @@ const translations: Record<Language, Record<string, string>> = {
     "resources.marketing": "Marketing",
     "resources.legal": "Legal",
 
+    // 404
+    "notfound.title": "Page Not Found",
+    "notfound.body": "The page you're looking for doesn't exist or has been moved. Let's get you back on track.",
+    "notfound.home": "Back to Home",
+    "notfound.assess": "Take the Assessment",
+
     // Footer
-    "footer.tagline": "Empowering Malaysian women to build thriving businesses.",
+    "footer.tagline": "Strivers' Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
     "footer.links": "Quick Links",
     "footer.contact": "Contact Us",
     "footer.rights": "© 2026 Strivers' Hub. All rights reserved.",
@@ -163,6 +176,13 @@ const translations: Record<Language, Record<string, string>> = {
     "insights.viewAll": "Lihat Semua",
     "insights.readMore": "Baca Lagi",
 
+    // Consent
+    "consent.title": "Selamat datang ke Penilaian Kendiri Strivers' Hub",
+    "consent.body": "Dalam soalan berikut, kami akan meminta maklumat peribadi dan latar belakang anda untuk meningkatkan pemahaman kami tentang projek ini dan memperibadikan pengalaman pengguna anda. Respons anda akan diuruskan mengikut polisi privasi kami. Maklumat anda adalah sulit dan tidak akan didedahkan kepada mana-mana pihak luar melainkan staf yang diberi kuasa dalam The Asia Foundation Malaysia. Akses kepada data anda dijamin melalui repositori dalam talian yang dilindungi kata laluan. Hanya data tanpa maklumat peribadi yang dianonimkan, mungkin dikongsi dengan pihak luar, seperti kerajaan, untuk menyumbang pandangan bagi penggubalan dasar yang berinformasi.",
+    "consent.checkbox": "Saya telah membaca dan bersetuju dengan maklumat yang dinyatakan di atas.",
+    "consent.proceed": "Teruskan ke Penilaian",
+    "consent.required": "Sila terima pernyataan persetujuan sebelum meneruskan.",
+
     // Assessment
     "assess.title": "Penilaian Kesediaan Perniagaan",
     "assess.subtitle":
@@ -193,8 +213,14 @@ const translations: Record<Language, Record<string, string>> = {
     "resources.marketing": "Pemasaran",
     "resources.legal": "Undang-undang",
 
+    // 404
+    "notfound.title": "Halaman Tidak Dijumpai",
+    "notfound.body": "Halaman yang anda cari tidak wujud atau telah dialihkan. Jom kembali ke landasan yang betul.",
+    "notfound.home": "Kembali ke Laman Utama",
+    "notfound.assess": "Mulakan Penilaian",
+
     // Footer
-    "footer.tagline": "Memperkasakan wanita Malaysia membina perniagaan yang berjaya.",
+    "footer.tagline": "Strivers' Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
     "footer.links": "Pautan Pantas",
     "footer.contact": "Hubungi Kami",
     "footer.rights": "© 2026 Strivers' Hub. Hak cipta terpelihara.",

@@ -1,14 +1,14 @@
-import AssessmentEngine from "@/components/assessment/AssessmentEngine";
+"use client";
 
-export const metadata = {
-  title: "Business Readiness Assessment — Strivers' Hub",
-  description: "Take our self-assessment to discover your entrepreneurial stage and get personalised recommendations.",
-};
+import AssessmentEngine from "@/components/assessment/AssessmentEngine";
+import { useAssessmentReset } from "@/context/AssessmentResetContext";
 
 export default function AssessmentPage() {
+  const { resetCount } = useAssessmentReset();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-brand-rose/30 to-white">
-      <AssessmentEngine />
+      <AssessmentEngine key={resetCount} />
     </div>
   );
 }

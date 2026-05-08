@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAssessmentReset } from "@/context/AssessmentResetContext";
 
 export default function Navbar() {
   const { t, language, setLanguage } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { bumpReset } = useAssessmentReset();
+
 
   const navLinks = [
-    { key: "nav.assessment", href: "/assessment" },
+    { key: "nav.assessment", href: "/assessment", onClickExtra: bumpReset },
     { key: "nav.resources", href: "/resources" },
     { key: "nav.financing", href: "#" },
     { key: "nav.events", href: "#" },
@@ -18,16 +22,11 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
-      <div className="container-max section-padding py-0 px-4 md:px-8">
+      <div className="container-max section-padding py-2 px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">SH</span>
-            </div>
-            <span className="font-bold text-gray-900 text-lg hidden sm:block">
-              Strivers&apos; Hub
-            </span>
+          <Image src="/logo.webp" alt="Strivers' Hub" width={185} height={55} />
           </Link>
 
           {/* Desktop Nav */}
@@ -36,6 +35,7 @@ export default function Navbar() {
               <Link
                 key={link.key}
                 href={link.href}
+                onClick={link.onClickExtra}
                 className="text-sm font-medium text-gray-600 hover:text-primary transition-colors"
               >
                 {t(link.key)}
@@ -56,7 +56,11 @@ export default function Navbar() {
             </button>
 
             {/* CTA */}
-            <Link href="/assessment" className="btn-primary text-sm py-2 px-4 hidden sm:inline-flex">
+            <Link
+              href="/assessment"
+              onClick={bumpReset}
+              className="btn-primary text-sm py-2 px-4 hidden sm:inline-flex"
+            >
               {t("nav.joinNow")}
             </Link>
 
@@ -87,7 +91,7 @@ export default function Navbar() {
                 key={link.key}
                 href={link.href}
                 className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-primary hover:bg-brand-rose rounded-lg transition-colors"
-                onClick={() => setMenuOpen(false)}
+                onClick={() => { link.onClickExtra?.(); setMenuOpen(false); }}
               >
                 {t(link.key)}
               </Link>
@@ -95,8 +99,8 @@ export default function Navbar() {
             <div className="pt-3 border-t border-gray-100 mt-2">
               <Link
                 href="/assessment"
+                onClick={() => { bumpReset(); setMenuOpen(false); }}
                 className="btn-primary w-full text-center text-sm py-2.5"
-                onClick={() => setMenuOpen(false)}
               >
                 {t("nav.joinNow")}
               </Link>

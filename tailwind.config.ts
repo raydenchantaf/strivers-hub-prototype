@@ -11,14 +11,14 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#D81B60",
-          light: "#FF6090",
-          dark: "#8C0032",
+          DEFAULT: "var(--color-primary)",
+          light:   "var(--color-primary-light)",
+          dark:    "var(--color-primary-dark)",
         },
         brand: {
-          pink: "#D81B60",
-          rose: "#FCE4EC",
-          dark: "#1A1A2E",
+          pink: "var(--color-brand-pink)",
+          rose: "var(--color-brand-rose)",
+          dark: "var(--color-brand-dark)",
         },
       },
       fontFamily: {
