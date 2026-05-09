@@ -7,7 +7,7 @@ export default function Hero() {
   const { t } = useLanguage();
 
   return (
-    <section className="relative bg-gradient-to-br from-brand-rose via-white to-white overflow-hidden">
+    <section className="relative bg-gradient-to-br from-brand-rose overflow-hidden">
       <div className="container-max section-padding">
         <div className="flex flex-col md:flex-row items-center gap-10">
           {/* Left: Text */}

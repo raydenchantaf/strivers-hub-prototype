@@ -16,7 +16,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 mb-4">
               {/* Logo */}
               <Link href="/" className="flex items-center gap-2">
-              <Image src="/logo.webp" alt="Strivers' Hub" width={185} height={55} />
+              <Image src="/logo.white.svg" alt="Strivers' Hub" width={185} height={55} />
               </Link>
             </div>
             <p className="text-white text-sm leading-relaxed">{t("footer.tagline")}</p>

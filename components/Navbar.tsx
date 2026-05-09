@@ -24,35 +24,35 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
       <div className="container-max section-padding py-2 px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.webp" alt="Strivers' Hub" width={185} height={55} />
+          {/* Logo — left */}
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            <Image src="/logo.svg" alt="Strivers' Hub" width={185} height={55} />
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.key}
-                href={link.href}
-                onClick={link.onClickExtra}
-                className="text-sm font-medium text-gray-600 hover:text-primary transition-colors"
-              >
-                {t(link.key)}
-              </Link>
-            ))}
-          </div>
+          {/* Right side: Nav links + Language toggle + CTA + Hamburger */}
+          <div className="flex items-center gap-6">
+            {/* Desktop Nav links */}
+            <div className="hidden md:flex items-center gap-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.key}
+                  href={link.href}
+                  onClick={link.onClickExtra}
+                  className="text-sm font-medium text-[#222222] hover:text-primary transition-colors"
+                >
+                  {t(link.key)}
+                </Link>
+              ))}
+            </div>
 
-          {/* Right side: Language toggle + CTA */}
-          <div className="flex items-center gap-3">
             {/* Language Toggle */}
             <button
               onClick={() => setLanguage(language === "en" ? "bm" : "en")}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-primary hover:text-primary transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-400 text-xs font-semibold text-[#222222] hover:border-primary hover:text-primary transition-colors"
             >
-              <span className={language === "en" ? "text-primary" : "text-gray-400"}>EN</span>
+              <span className={language === "en" ? "text-primary" : "text-[#222222]"}>EN</span>
               <span className="text-gray-300">|</span>
-              <span className={language === "bm" ? "text-primary" : "text-gray-400"}>BM</span>
+              <span className={language === "bm" ? "text-primary" : "text-[#222222]"}>BM</span>
             </button>
 
             {/* CTA */}
@@ -90,7 +90,7 @@ export default function Navbar() {
               <Link
                 key={link.key}
                 href={link.href}
-                className="px-3 py-2.5 text-sm font-medium text-gray-700 hover:text-primary hover:bg-brand-rose rounded-lg transition-colors"
+                className="px-3 py-2.5 text-sm font-medium text-[#222222] hover:text-primary hover:bg-brand-rose rounded-lg transition-colors"
                 onClick={() => { link.onClickExtra?.(); setMenuOpen(false); }}
               >
                 {t(link.key)}

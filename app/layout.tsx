@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
   description:
     "A platform designed to help Malaysian women MSMEs start, grow, and scale their businesses through tools, training, and community.",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

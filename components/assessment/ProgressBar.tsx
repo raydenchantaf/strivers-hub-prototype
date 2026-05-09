@@ -21,7 +21,7 @@ export default function ProgressBar({ current, total }: ProgressBarProps) {
           {t("assess.question")} {current} {t("assess.of")} {total}
         </span>
       </div>
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-white rounded-full overflow-hidden">
         <div
           className="h-full bg-gradient-to-r from-primary to-primary-light rounded-full transition-all duration-500 ease-out"
           style={{ width: `${percent}%` }}

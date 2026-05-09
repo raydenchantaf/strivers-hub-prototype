@@ -1,3 +1,4 @@
+import Hero2 from "@/components/landing/Hero2";
 import Hero from "@/components/landing/Hero";
 import HowItWorks from "@/components/landing/HowItWorks";
 import PartnerStrip from "@/components/landing/PartnerStrip";
@@ -9,6 +10,7 @@ import InsightsGrid from "@/components/landing/InsightsGrid";
 export default function HomePage() {
   return (
     <>
+      <Hero2 />
       <Hero />
       <HowItWorks />
       <PartnerStrip />

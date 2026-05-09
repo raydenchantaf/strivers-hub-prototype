@@ -18,7 +18,10 @@ export function useAssessmentReset() {
 
 export function AssessmentResetProvider({ children }: { children: ReactNode }) {
   const [resetCount, setResetCount] = useState(0);
-  const bumpReset = () => setResetCount((c) => c + 1);
+  const bumpReset = () => {
+    sessionStorage.removeItem("sh_progress");
+    setResetCount((c) => c + 1);
+  };
 
   return (
     <AssessmentResetContext.Provider value={{ resetCount, bumpReset }}>

@@ -6,7 +6,17 @@ export interface Option {
 
 export interface Question {
   id: number;
+  /** Defaults to "single" if omitted */
+  type?: "single" | "multi" | "likert";
+  /** For "multi" questions — max number of options the user may select */
+  maxSelections?: number;
+  /** For "likert" questions — anchor labels for the low and high ends of the scale */
+  likertLabels?: {
+    low: { en: string; bm: string };
+    high: { en: string; bm: string };
+  };
   text: { en: string; bm: string };
+  /** For "likert" questions this array is empty — the 1–5 value is used directly as points */
   options: Option[];
 }
 
@@ -140,9 +150,60 @@ export const questions: Question[] = [
       { id: "10d", label: { en: "Scaling to new markets or products", bm: "Menskalakan ke pasaran atau produk baharu" }, points: 4 },
     ],
   },
+
+  // ── Multi-choice question (select up to 3) ────────────────────────────────
+  {
+    id: 11,
+    type: "multi",
+    maxSelections: 3,
+    text: {
+      en: "Which support areas would benefit your business the most? (Choose up to 3)",
+      bm: "Bidang sokongan manakah yang paling bermanfaat untuk perniagaan anda? (Pilih sehingga 3)",
+    },
+    options: [
+      { id: "11a", label: { en: "Financial literacy & funding access", bm: "Literasi kewangan & akses pembiayaan" }, points: 2 },
+      { id: "11b", label: { en: "Digital marketing & branding", bm: "Pemasaran digital & penjenamaan" }, points: 2 },
+      { id: "11c", label: { en: "Business networking & community", bm: "Rangkaian perniagaan & komuniti" }, points: 2 },
+      { id: "11d", label: { en: "Digital tools & technology adoption", bm: "Alat digital & penggunaan teknologi" }, points: 2 },
+      { id: "11e", label: { en: "Leadership & personal development", bm: "Kepimpinan & pembangunan diri" }, points: 2 },
+      { id: "11f", label: { en: "Export & international market access", bm: "Eksport & akses pasaran antarabangsa" }, points: 2 },
+    ],
+  },
+
+  // ── Likert scale question (1–5) ───────────────────────────────────────────
+  {
+    id: 12,
+    type: "likert",
+    likertLabels: {
+      low: { en: "Not confident at all", bm: "Langsung tidak yakin" },
+      high: { en: "Extremely confident", bm: "Sangat yakin" },
+    },
+    text: {
+      en: "How confident are you in your business's ability to grow over the next 12 months?",
+      bm: "Sejauh mana keyakinan anda terhadap keupayaan perniagaan anda untuk berkembang dalam 12 bulan akan datang?",
+    },
+    options: [], // Likert uses 1–5 value directly as points
+  },
 ];
 
+// ─── Max score ────────────────────────────────────────────────────────────────
+
+/** Computes the theoretical maximum score across all questions */
+export function getMaxScore(): number {
+  return questions.reduce((total, q) => {
+    const type = q.type ?? "single";
+    if (type === "likert") return total + 5;
+    if (type === "multi") {
+      const sorted = q.options.map((o) => o.points).sort((a, b) => b - a);
+      const top = sorted.slice(0, q.maxSelections ?? q.options.length);
+      return total + top.reduce((s, p) => s + p, 0);
+    }
+    return total + Math.max(...q.options.map((o) => o.points));
+  }, 0);
+}
+
 // ─── Scoring Tiers ────────────────────────────────────────────────────────────
+// Max score = 40 (Q1–Q10) + 6 (Q11 multi, 3×2pts) + 5 (Q12 likert) = 51
 
 export interface ScoreTier {
   min: number;
@@ -157,7 +218,7 @@ export interface ScoreTier {
 export const scoreTiers: ScoreTier[] = [
   {
     min: 0,
-    max: 17,
+    max: 21,
     category: { en: "Starter", bm: "Pemula" },
     label: { en: "Beginning Your Journey", bm: "Memulakan Perjalanan Anda" },
     description: {
@@ -181,8 +242,8 @@ export const scoreTiers: ScoreTier[] = [
     },
   },
   {
-    min: 18,
-    max: 27,
+    min: 22,
+    max: 33,
     category: { en: "Growth", bm: "Pertumbuhan" },
     label: { en: "Building Momentum", bm: "Membina Momentum" },
     description: {
@@ -206,8 +267,8 @@ export const scoreTiers: ScoreTier[] = [
     },
   },
   {
-    min: 28,
-    max: 35,
+    min: 34,
+    max: 44,
     category: { en: "Established", bm: "Mapan" },
     label: { en: "Scaling with Confidence", bm: "Menskalakan dengan Yakin" },
     description: {
@@ -231,8 +292,8 @@ export const scoreTiers: ScoreTier[] = [
     },
   },
   {
-    min: 36,
-    max: 40,
+    min: 45,
+    max: 51,
     category: { en: "Advanced", bm: "Maju" },
     label: { en: "Leading the Way", bm: "Memimpin Ke Hadapan" },
     description: {

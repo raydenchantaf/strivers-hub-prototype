@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { getScoreTier, ScoreTier } from "@/data/questions";
+import { getScoreTier, getMaxScore, ScoreTier } from "@/data/questions";
+import { useAssessmentReset } from "@/context/AssessmentResetContext";
 
 export default function ResultsPage() {
   const { t, language, setLanguage } = useLanguage();
+  const { bumpReset } = useAssessmentReset();
   const [tier, setTier] = useState<ScoreTier | null>(null);
   const [score, setScore] = useState<number>(0);
-  const maxScore = 40;
+  const maxScore = getMaxScore();
 
   useEffect(() => {
     const savedScore = Number(sessionStorage.getItem("sh_score") ?? 0);
@@ -110,7 +112,7 @@ export default function ResultsPage() {
           <Link href="/resources" className="btn-primary text-center py-3.5 px-6">
             {t("results.explore")} →
           </Link>
-          <Link href="/assessment" className="btn-outline text-center py-3.5 px-6">
+          <Link href="/assessment" onClick={bumpReset} className="btn-outline text-center py-3.5 px-6">
             {t("results.retake")}
           </Link>
           <Link href="/" className="text-center py-3.5 px-6 text-gray-500 font-medium text-sm hover:text-primary transition-colors">

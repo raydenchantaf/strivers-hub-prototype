@@ -7,7 +7,7 @@ export default function AssessmentPage() {
   const { resetCount } = useAssessmentReset();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-brand-rose/30 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-brand-rose">
       <AssessmentEngine key={resetCount} />
     </div>
   );
