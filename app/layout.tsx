@@ -4,6 +4,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { AssessmentResetProvider } from "@/context/AssessmentResetContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Footer2 from "@/components/Footer2";
 
 export const metadata: Metadata = {
   title: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
@@ -26,7 +27,7 @@ export default function RootLayout({
           <AssessmentResetProvider>
             <Navbar />
             <main>{children}</main>
-            <Footer />
+            <Footer2 />
           </AssessmentResetProvider>
         </LanguageProvider>
       </body>

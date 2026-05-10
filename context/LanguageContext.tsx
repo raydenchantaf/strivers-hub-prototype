@@ -116,6 +116,30 @@ const translations: Record<Language, Record<string, string>> = {
     "notfound.home": "Back to Home",
     "notfound.assess": "Take the Assessment",
 
+
+    // Hero2
+    "hero2.headline": "Elevating Malaysian\nWomen Entrepreneurs",
+    "hero2.subtext": "We are dedicated to bridging the digitalization gap for Malaysian women entrepreneurs by providing tailored solutions that meet their unique needs.",
+
+    // HowItWorks2
+    "how2.card.headline": "Discover Your\nBusiness Potential",
+    "how2.card.body": "Join now to access the tools, networks, and resources you need to succeed in your entrepreneurial journey. Together, we can empower women to thrive in the digital economy and transform their business dreams into reality!",
+    "how2.card.cta": "Take the Assessment Today",
+    "how2.step1.title": "Complete the Assessment",
+    "how2.step1.pre": "Take our",
+    "how2.step1.bold": "3-minute self-assessment",
+    "how2.step1.post": "and get a set of tailored recommendations",
+    "how2.step2.title": "View Recommendations",
+    "how2.step2.desc": "Explore tailored recommendation for your business journey",
+    "how2.step3.title": "Unlock your Business Potential!",
+    "how2.step3.desc": "Get exclusive access to our Mentorship Program",
+
+    // Footer2
+    "footer2.strategic_partner": "Strategic partner",
+    "footer2.supported_by": "Supported by",
+    "footer2.tagline": "Strivers\u2019 Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
+    "footer2.rights": "\u00a9 2026 Mastercard Strive Malaysia",
+
     // Footer
     "footer.tagline": "Strivers' Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
     "footer.links": "Quick Links",
@@ -218,6 +242,30 @@ const translations: Record<Language, Record<string, string>> = {
     "notfound.body": "Halaman yang anda cari tidak wujud atau telah dialihkan. Jom kembali ke landasan yang betul.",
     "notfound.home": "Kembali ke Laman Utama",
     "notfound.assess": "Mulakan Penilaian",
+
+
+    // Hero2
+    "hero2.headline": "Meningkatkan\nUsahawanita Malaysia",
+    "hero2.subtext": "Kami berdedikasi untuk merapatkan jurang digitalisasi bagi usahawanita Malaysia dengan menyediakan penyelesaian yang disesuaikan untuk memenuhi keperluan unik mereka.",
+
+    // HowItWorks2
+    "how2.card.headline": "Temui\nPotensi Perniagaan Anda",
+    "how2.card.body": "Sertai sekarang untuk mengakses alat, rangkaian, dan sumber yang anda perlukan untuk berjaya dalam perjalanan keusahawanan anda. Bersama-sama, kita boleh memperkasakan wanita untuk berkembang dalam ekonomi digital dan mengubah impian perniagaan mereka menjadi kenyataan!",
+    "how2.card.cta": "Ambil Penilaian Hari Ini",
+    "how2.step1.title": "Lengkapkan Penilaian",
+    "how2.step1.pre": "Ambil",
+    "how2.step1.bold": "penilaian kendiri 3 minit",
+    "how2.step1.post": "kami dan dapatkan set cadangan yang disesuaikan",
+    "how2.step2.title": "Lihat Cadangan",
+    "how2.step2.desc": "Terokai cadangan yang disesuaikan untuk perjalanan perniagaan anda",
+    "how2.step3.title": "Buka Potensi Perniagaan Anda!",
+    "how2.step3.desc": "Dapatkan akses eksklusif kepada Program Mentorship kami",
+
+    // Footer2
+    "footer2.strategic_partner": "Rakan Strategik",
+    "footer2.supported_by": "Disokong oleh",
+    "footer2.tagline": "Strivers\u2019 Hub memperkasakan usahawanita Malaysia dengan merapatkan jurang digitalisasi. Kami menyediakan penyelesaian, alat, dan rangkaian yang disesuaikan untuk membantu perniagaan kecil yang dipimpin wanita berkembang dalam ekonomi digital dan mencapai potensi penuh mereka.",
+    "footer2.rights": "\u00a9 2026 Mastercard Strive Malaysia",
 
     // Footer
     "footer.tagline": "Strivers' Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
