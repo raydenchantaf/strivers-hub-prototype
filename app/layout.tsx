@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AssessmentResetProvider } from "@/context/AssessmentResetContext";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Footer2 from "@/components/Footer2";
+import Footer from "@/components/Footer";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
@@ -22,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <LanguageProvider>
           <AssessmentResetProvider>
             <Navbar />
