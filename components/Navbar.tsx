@@ -18,7 +18,7 @@ export default function Navbar() {
     { key: "nav.resources",  href: "/resources" },
     { key: "nav.financing",  href: "/financing" },
     { key: "nav.events",     href: "/events" },
-    { key: "nav.about",      href: "#" },
+    { key: "nav.about",      href: "/about" },
   ];
 
   const isActive = (href: string) => {
