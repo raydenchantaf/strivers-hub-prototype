@@ -13,11 +13,7 @@ export default function HomePage() {
     <>
       <Hero2 />
       <HowItWorks2 />
-      <PartnerStrip />
-      <Stats />
-      <CommunitySection />
-      <CTABanner />
-      <InsightsGrid />
+
     </>
   );
 }
