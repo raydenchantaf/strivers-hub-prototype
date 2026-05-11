@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAssessmentReset } from "@/context/AssessmentResetContext";
 
@@ -10,39 +11,54 @@ export default function Navbar() {
   const { t, language, setLanguage } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const { bumpReset } = useAssessmentReset();
-
+  const pathname = usePathname();
 
   const navLinks = [
     { key: "nav.assessment", href: "/assessment", onClickExtra: bumpReset },
-    { key: "nav.resources", href: "/resources" },
-    { key: "nav.financing", href: "#" },
-    { key: "nav.events", href: "#" },
-    { key: "nav.about", href: "#" },
+    { key: "nav.resources",  href: "/resources" },
+    { key: "nav.financing",  href: "/financing" },
+    { key: "nav.events",     href: "/events" },
+    { key: "nav.about",      href: "#" },
   ];
+
+  const isActive = (href: string) => {
+    if (href === "#") return false;
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
       <div className="container-max section-padding py-2 px-4 md:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo — left */}
+
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <Image src="/logo.svg" alt="Strivers' Hub" width={185} height={55} />
+            <Image src="/logo.svg" alt="Strivers Hub" width={185} height={55} />
           </Link>
 
-          {/* Right side: Nav links + Language toggle + CTA + Hamburger */}
+          {/* Right side */}
           <div className="flex items-center gap-6">
-            {/* Desktop Nav links */}
+
+            {/* Desktop nav links */}
             <div className="hidden md:flex items-center gap-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.key}
-                  href={link.href}
-                  onClick={link.onClickExtra}
-                  className="text-sm font-medium text-[#222222] hover:text-primary transition-colors"
-                >
-                  {t(link.key)}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <Link
+                    key={link.key}
+                    href={link.href}
+                    onClick={link.onClickExtra}
+                    className={[
+                      "text-sm font-medium transition-colors",
+                      active
+                        ? "text-primary"
+                        : "text-[#222222] hover:text-primary",
+                    ].join(" ")}
+                  >
+                    {t(link.key)}
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Language Toggle */}
@@ -86,16 +102,24 @@ export default function Navbar() {
         {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100 flex flex-col gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.key}
-                href={link.href}
-                className="px-3 py-2.5 text-sm font-medium text-[#222222] hover:text-primary hover:bg-brand-rose rounded-lg transition-colors"
-                onClick={() => { link.onClickExtra?.(); setMenuOpen(false); }}
-              >
-                {t(link.key)}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.key}
+                  href={link.href}
+                  onClick={() => { link.onClickExtra?.(); setMenuOpen(false); }}
+                  className={[
+                    "px-3 py-2.5 text-sm font-medium rounded-lg transition-colors",
+                    active
+                      ? "text-primary bg-pink-50 border-l-2 border-primary pl-[10px]"
+                      : "text-[#222222] hover:text-primary hover:bg-pink-50",
+                  ].join(" ")}
+                >
+                  {t(link.key)}
+                </Link>
+              );
+            })}
             <div className="pt-3 border-t border-gray-100 mt-2">
               <Link
                 href="/assessment"

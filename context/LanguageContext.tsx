@@ -18,7 +18,6 @@ export function useLanguage() {
   return ctx;
 }
 
-// ─── UI Translations ────────────────────────────────────────────────────────
 const translations: Record<Language, Record<string, string>> = {
   en: {
     // Nav
@@ -31,22 +30,18 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Hero
     "hero.headline": "Elevating Malaysian Women Entrepreneurs",
-    "hero.subtext":
-      "Join a thriving community designed to help you start, grow, and scale your business with the right tools, training, and support.",
+    "hero.subtext": "Join a thriving community designed to help you start, grow, and scale your business with the right tools, training, and support.",
     "hero.cta": "Start Your Journey",
     "hero.assessCta": "Discover Your Business Potential",
 
     // HowItWorks
     "how.title": "Your Journey Starts Here",
     "how.step1.title": "Assess Your Business",
-    "how.step1.desc":
-      "Take a quick self-assessment to understand where your business stands today.",
+    "how.step1.desc": "Take a quick self-assessment to understand where your business stands today.",
     "how.step2.title": "Get Matched to Resources",
-    "how.step2.desc":
-      "Receive personalised recommendations for training, mentors, and tools.",
+    "how.step2.desc": "Receive personalised recommendations for training, mentors, and tools.",
     "how.step3.title": "Grow & Connect",
-    "how.step3.desc":
-      "Join a network of like-minded women entrepreneurs and unlock new opportunities.",
+    "how.step3.desc": "Join a network of like-minded women entrepreneurs and unlock new opportunities.",
 
     // Stats
     "stats.title": "Creating Opportunities, Inspiring Change",
@@ -57,8 +52,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Partners
     "partners.title": "Expand Your Digital Journey Beyond Strivers' Hub",
-    "partners.subtitle":
-      "We've partnered with leading organisations to bring you more opportunities.",
+    "partners.subtitle": "We've partnered with leading organisations to bring you more opportunities.",
 
     // Community
     "community.title": "What's Happening in Our Community",
@@ -82,8 +76,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Assessment page
     "assess.title": "Business Readiness Assessment",
-    "assess.subtitle":
-      "Answer 10 questions to discover your entrepreneurial stage and get personalised recommendations.",
+    "assess.subtitle": "Answer 10 questions to discover your entrepreneurial stage and get personalised recommendations.",
     "assess.start": "Start Assessment",
     "assess.next": "Next",
     "assess.prev": "Previous",
@@ -102,8 +95,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Resources
     "resources.title": "Insights & Resources",
-    "resources.subtitle":
-      "Curated articles, guides, and tools to help your business grow.",
+    "resources.subtitle": "Curated articles, guides, and tools to help your business grow.",
     "resources.all": "All",
     "resources.finance": "Finance",
     "resources.digital": "Digital",
@@ -115,7 +107,6 @@ const translations: Record<Language, Record<string, string>> = {
     "notfound.body": "The page you're looking for doesn't exist or has been moved. Let's get you back on track.",
     "notfound.home": "Back to Home",
     "notfound.assess": "Take the Assessment",
-
 
     // Hero2
     "hero2.headline": "Elevating Malaysian\nWomen Entrepreneurs",
@@ -137,14 +128,25 @@ const translations: Record<Language, Record<string, string>> = {
     // Footer2
     "footer2.strategic_partner": "Strategic partner",
     "footer2.supported_by": "Supported by",
-    "footer2.tagline": "Strivers\u2019 Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
-    "footer2.rights": "\u00a9 2026 Mastercard Strive Malaysia",
+    "footer2.tagline": "Strivers’ Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
+    "footer2.rights": "© 2026 Mastercard Strive Malaysia",
 
     // Footer
     "footer.tagline": "Strivers' Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
     "footer.links": "Quick Links",
     "footer.contact": "Contact Us",
     "footer.rights": "© 2026 Strivers' Hub. All rights reserved.",
+
+    // Financing page
+    "financing.title": "Financing & Funding",
+    "financing.subtitle": "Explore grants, loans, and funding opportunities tailored for Malaysian women entrepreneurs.",
+    "financing.empty": "No financing resources available yet. Check back soon!",
+
+    // Events page
+    "events.title": "Events & Community",
+    "events.subtitle": "Stay up to date with workshops, forums, and community gatherings for women entrepreneurs.",
+    "events.empty": "No upcoming events at the moment. Check back soon!",
+    "events.readMore": "Learn More",
   },
 
   bm: {
@@ -152,28 +154,24 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.assessment": "Penilaian",
     "nav.resources": "Sumber",
     "nav.financing": "Pembiayaan",
-    "nav.events": "Acara",
+    "nav.events": "Aktiviti",
     "nav.about": "Tentang Kami",
     "nav.joinNow": "Daftar Sekarang",
 
     // Hero
     "hero.headline": "Meningkatkan Usahawanita Malaysia",
-    "hero.subtext":
-      "Sertai komuniti yang direka untuk membantu anda memulakan, mengembangkan, dan menskalakan perniagaan anda dengan alat, latihan, dan sokongan yang tepat.",
+    "hero.subtext": "Sertai komuniti yang direka untuk membantu anda memulakan, mengembangkan, dan menskalakan perniagaan anda dengan alat, latihan, dan sokongan yang tepat.",
     "hero.cta": "Mulakan Perjalanan Anda",
     "hero.assessCta": "Temui Potensi Perniagaan Anda",
 
     // HowItWorks
     "how.title": "Perjalanan Anda Bermula Di Sini",
     "how.step1.title": "Nilai Perniagaan Anda",
-    "how.step1.desc":
-      "Lakukan penilaian diri ringkas untuk memahami kedudukan perniagaan anda hari ini.",
+    "how.step1.desc": "Lakukan penilaian diri ringkas untuk memahami kedudukan perniagaan anda hari ini.",
     "how.step2.title": "Dapatkan Sumber Yang Sesuai",
-    "how.step2.desc":
-      "Terima cadangan peribadi untuk latihan, mentor, dan alat yang sesuai.",
+    "how.step2.desc": "Terima cadangan peribadi untuk latihan, mentor, dan alat yang sesuai.",
     "how.step3.title": "Berkembang & Berhubung",
-    "how.step3.desc":
-      "Sertai rangkaian usahawanita yang berfikiran sama dan buka peluang baharu.",
+    "how.step3.desc": "Sertai rangkaian usahawanita yang berfikiran sama dan buka peluang baharu.",
 
     // Stats
     "stats.title": "Mencipta Peluang, Mengilhamkan Perubahan",
@@ -184,8 +182,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Partners
     "partners.title": "Luaskan Perjalanan Digital Anda Melampaui Strivers' Hub",
-    "partners.subtitle":
-      "Kami telah bekerjasama dengan organisasi terkemuka untuk membawa lebih banyak peluang kepada anda.",
+    "partners.subtitle": "Kami telah bekerjasama dengan organisasi terkemuka untuk membawa lebih banyak peluang kepada anda.",
 
     // Community
     "community.title": "Apa Yang Berlaku Dalam Komuniti Kami",
@@ -209,8 +206,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Assessment
     "assess.title": "Penilaian Kesediaan Perniagaan",
-    "assess.subtitle":
-      "Jawab 10 soalan untuk mengetahui peringkat keusahawanan anda dan dapatkan cadangan peribadi.",
+    "assess.subtitle": "Jawab 10 soalan untuk mengetahui peringkat keusahawanan anda dan dapatkan cadangan peribadi.",
     "assess.start": "Mulakan Penilaian",
     "assess.next": "Seterusnya",
     "assess.prev": "Sebelumnya",
@@ -229,8 +225,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Resources
     "resources.title": "Pandangan & Sumber",
-    "resources.subtitle":
-      "Artikel, panduan, dan alat yang dipilih khas untuk membantu perniagaan anda berkembang.",
+    "resources.subtitle": "Artikel, panduan, dan alat yang dipilih khas untuk membantu perniagaan anda berkembang.",
     "resources.all": "Semua",
     "resources.finance": "Kewangan",
     "resources.digital": "Digital",
@@ -242,7 +237,6 @@ const translations: Record<Language, Record<string, string>> = {
     "notfound.body": "Halaman yang anda cari tidak wujud atau telah dialihkan. Jom kembali ke landasan yang betul.",
     "notfound.home": "Kembali ke Laman Utama",
     "notfound.assess": "Mulakan Penilaian",
-
 
     // Hero2
     "hero2.headline": "Meningkatkan\nUsahawanita Malaysia",
@@ -264,14 +258,25 @@ const translations: Record<Language, Record<string, string>> = {
     // Footer2
     "footer2.strategic_partner": "Rakan Strategik",
     "footer2.supported_by": "Disokong oleh",
-    "footer2.tagline": "Strivers\u2019 Hub memperkasakan usahawanita Malaysia dengan merapatkan jurang digitalisasi. Kami menyediakan penyelesaian, alat, dan rangkaian yang disesuaikan untuk membantu perniagaan kecil yang dipimpin wanita berkembang dalam ekonomi digital dan mencapai potensi penuh mereka.",
-    "footer2.rights": "\u00a9 2026 Mastercard Strive Malaysia",
+    "footer2.tagline": "Strivers’ Hub memperkasakan usahawanita Malaysia dengan merapatkan jurang digitalisasi. Kami menyediakan penyelesaian, alat, dan rangkaian yang disesuaikan untuk membantu perniagaan kecil yang dipimpin wanita berkembang dalam ekonomi digital dan mencapai potensi penuh mereka.",
+    "footer2.rights": "© 2026 Mastercard Strive Malaysia",
 
     // Footer
     "footer.tagline": "Strivers' Hub empowers Malaysian women entrepreneurs by closing the digitalization gap. We provide tailored solutions, tools, and networks that help women-led small businesses thrive in the digital economy and unlock their full potential.",
     "footer.links": "Pautan Pantas",
     "footer.contact": "Hubungi Kami",
     "footer.rights": "© 2026 Strivers' Hub. Hak cipta terpelihara.",
+
+    // Financing page
+    "financing.title": "Pembiayaan & Pendanaan",
+    "financing.subtitle": "Terokai geran, pinjaman, dan peluang pendanaan yang disesuaikan untuk usahawanita Malaysia.",
+    "financing.empty": "Tiada sumber pembiayaan buat masa ini. Semak semula kemudian!",
+
+    // Events page
+    "events.title": "Aktiviti & Komuniti",
+    "events.subtitle": "Ikuti perkembangan bengkel, forum, dan perhimpunan komuniti untuk usahawanita.",
+    "events.empty": "Tiada aktiviti akan datang buat masa ini. Semak semula kemudian!",
+    "events.readMore": "Ketahui Lebih Lanjut",
   },
 };
 
