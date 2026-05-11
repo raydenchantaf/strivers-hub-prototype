@@ -43,7 +43,7 @@ export default function HowItWorks2() {
           {/* Left: photo */}
           <div className="relative flex-1 min-h-[260px] md:min-h-0">
             <Image
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
+              src="/hero.image.png"
               alt="Women entrepreneurs collaborating"
               fill
               className="object-cover"
