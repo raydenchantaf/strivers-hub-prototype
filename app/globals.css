@@ -6,10 +6,10 @@
 
 /* ─── Brand colour tokens ─────────────────────────────────────────────────── */
 :root {
-  --color-primary:       #D81B60;
+  --color-primary:       #B12069;
   --color-primary-light: #FF6090;
   --color-primary-dark:  #8C0032;
-  --color-brand-pink:    #D81B60;
+  --color-brand-pink:    #B12069;
   --color-brand-rose:    #FCE4EC;
   --color-brand-dark:    #8F0841;
 }
