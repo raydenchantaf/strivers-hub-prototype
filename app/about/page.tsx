@@ -84,7 +84,7 @@ export default function AboutPage() {
             <div className="flex items-center gap-4">
               <Image src="/logo.svg" alt="Strivers Hub" width={140} height={42} className="object-contain" />
               <div className="h-8 w-px bg-gray-200" />
-              <Image src="/CFIG.white.png" alt="Mastercard Center for Inclusive Growth" width={80} height={40} className="object-contain grayscale" />
+              <Image src="/CFIG.png" alt="Mastercard Center for Inclusive Growth" width={140} height={40} className="object-contain" />
             </div>
 
             <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 leading-snug">
@@ -143,7 +143,7 @@ export default function AboutPage() {
                 <div className="w-12 h-12 rounded-xl bg-pink-50 text-[#B12069] flex items-center justify-center flex-shrink-0">
                   {p.icon}
                 </div>
-                <span className="text-3xl font-extrabold text-gray-100 leading-none">{p.number}</span>
+                <span className="text-3xl font-extrabold text-gray-300 leading-none">{p.number}</span>
               </div>
               <h3 className="text-lg font-extrabold text-gray-900">{p.title}</h3>
               <p className="text-gray-500 text-sm leading-relaxed">{p.desc}</p>
