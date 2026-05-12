@@ -5,7 +5,6 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { AssessmentResetProvider } from "@/context/AssessmentResetContext";
 import Navbar from "@/components/Navbar";
 import Footer2 from "@/components/Footer2";
-import Footer from "@/components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,6 +18,10 @@ export const metadata: Metadata = {
     "A platform designed to help Malaysian women MSMEs start, grow, and scale their businesses through tools, training, and community.",
   icons: {
     icon: "/favicon.png",
+  },
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 
