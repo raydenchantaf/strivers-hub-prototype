@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export type Language = "en" | "bm";
 
@@ -25,7 +25,9 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.resources": "Resources",
     "nav.financing": "Financing",
     "nav.events": "Events",
+    "nav.mentorship": "Mentorship",
     "nav.about": "About Us",
+    "nav.login": "Login",
     "nav.joinNow": "Join Now",
 
     // Hero
@@ -147,6 +149,30 @@ const translations: Record<Language, Record<string, string>> = {
     "events.subtitle": "Stay up to date with workshops, forums, and community gatherings for women entrepreneurs.",
     "events.empty": "No upcoming events at the moment. Check back soon!",
     "events.readMore": "Learn More",
+
+    // Mentorship page
+    "mentorship.title": "Mentorship Program",
+    "mentorship.tagline": "Elevate your business with like-minded \nfemale entrepreneurs",
+    "mentorship.body": "Strivers\u2019 Hub aims to connect women entrepreneurs with industry professionals in order to promote growth, information sharing, and empowerment in Malaysia\u2019s entrepreneurial community.",
+    "mentorship.benefit1.title": "Insights and Expertise Exchange",
+    "mentorship.benefit1.desc": "Share knowledge and experiences with women in similar industries to offer practical advice and insights based on your own successes and failures.",
+    "mentorship.benefit2.title": "Collaboration Opportunities",
+    "mentorship.benefit2.desc": "Building strong connections within a community to identify complementary skills, resources or business goals that can lead to successful partnerships.",
+    "mentorship.benefit3.title": "Motivation and Empowerment",
+    "mentorship.benefit3.desc": "Celebrating successes and overcoming challenges together can inspire confidence and resilience, fostering a positive mindset for long-term entrepreneurial success.",
+    "mentorship.form.title": "Sign Up Your Interest",
+    "mentorship.form.name": "Full Name",
+    "mentorship.form.email": "Email Address",
+    "mentorship.form.phone": "Contact Number",
+    "mentorship.form.submit": "Submit Interest",
+    "mentorship.form.submitting": "Submitting\u2026",
+    "mentorship.form.success": "Thank you! We\u2019ll be in touch soon.",
+    "mentorship.form.error": "Something went wrong. Please try again.",
+    "mentorship.form.subtitle": "Join our waiting list and be the first to know when the next Mentorship Program begins. We\u2019ll reach out to you directly with details on how to get involved.",
+    "mentorship.form.name.placeholder": "e.g. Siti Aminah",
+    "mentorship.form.email.placeholder": "e.g. siti@example.com",
+    "mentorship.form.phone.placeholder": "e.g. 012-345 6789",
+
     // About page
     "about.title": "About Us",
     "about.org": "Mastercard Strive Malaysia",
@@ -172,7 +198,9 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.resources": "Sumber",
     "nav.financing": "Pembiayaan",
     "nav.events": "Aktiviti",
+    "nav.mentorship": "Mentorship",
     "nav.about": "Tentang Kami",
+    "nav.login": "Log Masuk",
     "nav.joinNow": "Daftar Sekarang",
 
     // Hero
@@ -294,6 +322,30 @@ const translations: Record<Language, Record<string, string>> = {
     "events.subtitle": "Ikuti perkembangan bengkel, forum, dan perhimpunan komuniti untuk usahawanita.",
     "events.empty": "Tiada aktiviti akan datang buat masa ini. Semak semula kemudian!",
     "events.readMore": "Ketahui Lebih Lanjut",
+
+    // Mentorship page
+    "mentorship.title": "Program Mentorship",
+    "mentorship.tagline": "Tingkatkan perniagaan anda bersama \nusahawanita yang berfikiran sama",
+    "mentorship.body": "Strivers\u2019 Hub bertujuan untuk menghubungkan usahawanita dengan profesional industri bagi menggalakkan pertumbuhan, perkongsian maklumat, dan pemberdayaan dalam komuniti keusahawanan Malaysia.",
+    "mentorship.benefit1.title": "Perkongsian Ilmu dan Kepakaran",
+    "mentorship.benefit1.desc": "Kongsi pengetahuan dan pengalaman dengan wanita dalam industri yang sama untuk menawarkan nasihat praktikal berdasarkan kejayaan dan kegagalan anda sendiri.",
+    "mentorship.benefit2.title": "Peluang Kerjasama",
+    "mentorship.benefit2.desc": "Membina hubungan yang kukuh dalam komuniti untuk mengenal pasti kemahiran, sumber atau matlamat perniagaan yang saling melengkapi dan boleh membawa kepada perkongsian yang berjaya.",
+    "mentorship.benefit3.title": "Motivasi dan Pemberdayaan",
+    "mentorship.benefit3.desc": "Meraikan kejayaan dan mengatasi cabaran bersama-sama boleh membangkitkan keyakinan dan daya tahan, memupuk minda positif untuk kejayaan keusahawanan jangka panjang.",
+    "mentorship.form.title": "Daftar Minat Anda",
+    "mentorship.form.name": "Nama Penuh",
+    "mentorship.form.email": "Alamat E-mel",
+    "mentorship.form.phone": "Nombor Telefon",
+    "mentorship.form.submit": "Hantar Minat",
+    "mentorship.form.submitting": "Menghantar\u2026",
+    "mentorship.form.success": "Terima kasih! Kami akan menghubungi anda tidak lama lagi.",
+    "mentorship.form.error": "Sesuatu telah berlaku. Sila cuba lagi.",
+    "mentorship.form.subtitle": "Sertai senarai menunggu kami dan jadilah yang pertama mengetahui apabila Program Mentorship seterusnya bermula. Kami akan menghubungi anda secara terus dengan butiran tentang cara untuk terlibat.",
+    "mentorship.form.name.placeholder": "cth. Siti Aminah",
+    "mentorship.form.email.placeholder": "cth. siti@contoh.com",
+    "mentorship.form.phone.placeholder": "cth. 012-345 6789",
+
     // About page
     "about.title": "Tentang Kami",
     "about.org": "Mastercard Strive Malaysia",
@@ -315,7 +367,11 @@ const translations: Record<Language, Record<string, string>> = {
 };
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>("bm");
+
+  useEffect(() => {
+    document.documentElement.lang = language === "bm" ? "ms" : "en";
+  }, [language]);
 
   const t = (key: string): string => {
     return translations[language][key] ?? key;

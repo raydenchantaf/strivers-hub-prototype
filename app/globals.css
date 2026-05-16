@@ -6,12 +6,12 @@
 
 /* ─── Brand colour tokens ─────────────────────────────────────────────────── */
 :root {
-  --color-primary:       #B12069;
+  --color-primary:       #822B62;
   --color-primary-light: #FF6090;
   --color-primary-dark:  #8C0032;
-  --color-brand-pink:    #B12069;
+  --color-brand-pink:    #822B62;
   --color-brand-rose:    #FCE4EC;
-  --color-brand-dark:    #8F0841;
+  --color-brand-dark:    #822B62;
 }
 
 @layer base {
@@ -38,7 +38,7 @@
   }
 
   .hero-padding {
-    @apply px-4 pt-12 pb-12 md:px-8 md:pt-14  md:pb-4;
+    @apply px-4 pt-8 pb-4 md:px-8 md:pt-14  md:pb-4;
   }
 
   .how-it-works-padding {
