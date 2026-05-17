@@ -1,10 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-/* ─── Brand colour tokens ─────────────────────────────────────────────────── */
+/* ─── Brand colour tokens ───────────────────────────────────────────────────────── */
 :root {
   --color-primary:       #822B62;
   --color-primary-light: #FF6090;
@@ -42,7 +42,7 @@
   }
 
   .how-it-works-padding {
-    @apply px-4 pt-12 pb-12 md:px-8 md:pt-4  md:pb-20; 
+    @apply px-4 pt-12 pb-12 md:px-8 md:pt-4  md:pb-20;
   }
 
   .container-max {

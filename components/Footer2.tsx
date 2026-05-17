@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FaFacebook, FaYoutube, FaXTwitter } from "react-icons/fa6";
+import { FaFacebook, FaYoutube, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import { useLanguage } from "@/context/LanguageContext";
 
 const socialLinks = [
   { icon: FaFacebook, href: "#", label: "Facebook" },
-  { icon: FaXTwitter, href: "#", label: "X (Twitter)" },
+  { icon: FaInstagram, href: "#", label: "Instagram" },
+  { icon: FaLinkedin, href: "#", label: "LinkedIn" },
   { icon: FaYoutube,  href: "#", label: "YouTube" },
 ];
 
@@ -72,9 +73,17 @@ export default function Footer2() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 
-          <p className="text-xs text-white/60 uppercase tracking-widest">
-            {t("footer2.rights")}
-          </p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+            <p className="text-xs text-white/60 uppercase tracking-widest">
+              {t("footer2.rights")}
+            </p>
+            <Link
+              href="/privacy-policy"
+              className="text-xs text-white/50 hover:text-white/80 transition-colors underline underline-offset-2"
+            >
+              {t("footer2.privacyPolicy")}
+            </Link>
+          </div>
 
           <div className="flex items-center gap-3">
             {socialLinks.map(({ icon: Icon, href, label }) => (
