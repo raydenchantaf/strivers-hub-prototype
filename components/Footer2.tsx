@@ -6,10 +6,10 @@ import { FaFacebook, FaYoutube, FaInstagram, FaLinkedin } from "react-icons/fa6"
 import { useLanguage } from "@/context/LanguageContext";
 
 const socialLinks = [
-  { icon: FaFacebook, href: "#", label: "Facebook" },
-  { icon: FaInstagram, href: "#", label: "Instagram" },
-  { icon: FaLinkedin, href: "#", label: "LinkedIn" },
-  { icon: FaYoutube,  href: "#", label: "YouTube" },
+  { icon: FaFacebook, href: "https://www.facebook.com/strivershub/", label: "Facebook" },
+  { icon: FaInstagram, href: "https://www.instagram.com/strivers.hub/", label: "Instagram" },
+  { icon: FaLinkedin, href: "https://www.linkedin.com/company/the-asia-foundation", label: "LinkedIn" },
+  { icon: FaYoutube,  href: "https://www.youtube.com/@StriversHUB", label: "YouTube" },
 ];
 
 export default function Footer2() {
@@ -77,12 +77,14 @@ export default function Footer2() {
             <p className="text-xs text-white/60 uppercase tracking-widest">
               {t("footer2.rights")}
             </p>
-            <Link
+            <a
               href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-xs text-white/50 hover:text-white/80 transition-colors underline underline-offset-2"
             >
               {t("footer2.privacyPolicy")}
-            </Link>
+            </a>
           </div>
 
           <div className="flex items-center gap-3">
@@ -90,6 +92,8 @@ export default function Footer2() {
               <a
                 key={label}
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={label}
                 className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/25 transition-colors duration-200"
               >
