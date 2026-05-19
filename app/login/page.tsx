@@ -50,7 +50,7 @@ export default function LoginPage() {
   const labelClass = "block text-sm font-semibold text-gray-700 mb-1.5";
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center section-padding py-16">
+    <div className="min-h-screen bg-gray-50 flex items-start justify-center section-padding py-16">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-10">
 

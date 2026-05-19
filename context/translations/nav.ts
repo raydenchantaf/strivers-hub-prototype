@@ -8,6 +8,9 @@ export const nav = {
     "nav.about":      "About Us",
     "nav.login":      "Login",
     "nav.joinNow":    "Join Now",
+    "nav.dashboard":  "Dashboard",
+    "nav.profile":    "Profile",
+    "nav.logout":     "Log Out",
   },
   bm: {
     "nav.assessment": "Penilaian",
@@ -18,5 +21,8 @@ export const nav = {
     "nav.about":      "Tentang Kami",
     "nav.login":      "Log Masuk",
     "nav.joinNow":    "Daftar Sekarang",
+    "nav.dashboard":  "Papan Pemuka",
+    "nav.profile":    "Profil",
+    "nav.logout":     "Log Keluar",
   },
 };

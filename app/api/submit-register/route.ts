@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
+import bcrypt from "bcryptjs";
 
 export interface RegisterPayload {
   firstName: string;
@@ -13,16 +13,13 @@ export async function POST(req: NextRequest) {
   try {
     const body: RegisterPayload = await req.json();
 
-    // Hash password before storing — never save plain text
-    const passwordHash = crypto
-      .createHash("sha256")
-      .update(body.password)
-      .digest("hex");
+    // bcrypt: cost factor 12 = ~250ms on modern hardware (good balance of security vs speed)
+    const passwordHash = await bcrypt.hash(body.password, 12);
 
     const scriptUrl = process.env.REGISTER_SCRIPT_URL;
     if (!scriptUrl) {
       console.warn("REGISTER_SCRIPT_URL not set — skipping Sheets submission");
-      return NextResponse.json({ success: true, skipped: true });
+      return NextResponse.json({ success: false, error: "Service unavailable" });
     }
 
     const response = await fetch(scriptUrl, {
@@ -31,9 +28,9 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         action: "register",
         firstName: body.firstName,
-        lastName: body.lastName,
-        email: body.email,
-        phone: body.phone,
+        lastName:  body.lastName,
+        email:     body.email,
+        phone:     body.phone,
         passwordHash,
       }),
       redirect: "follow",
@@ -45,7 +42,7 @@ export async function POST(req: NextRequest) {
       if (result.error === "EMAIL_EXISTS") {
         return NextResponse.json({ success: false, error: "EMAIL_EXISTS" });
       }
-      throw new Error(`Apps Script returned ${response.status}`);
+      throw new Error(`Apps Script error: ${result.error ?? response.status}`);
     }
 
     console.log("[submit-register] registered:", body.email);

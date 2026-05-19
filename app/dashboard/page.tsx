@@ -7,6 +7,79 @@ import { useLanguage } from "@/context/LanguageContext";
 import { resources } from "@/data/resources";
 import { getScoreTier, getMaxScore } from "@/data/questions";
 
+// ── Animated score ring ──────────────────────────────────────────────────────
+const SIZE        = 150;   // px — overall SVG canvas
+const STROKE      = 10;    // px — ring thickness
+const RADIUS      = (SIZE - STROKE) / 2;           // 70
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;        // ~439.8
+
+function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
+  const [displayed, setDisplayed] = useState(0);       // counting number
+  const [offset, setOffset]       = useState(CIRCUMFERENCE); // starts "empty"
+
+  useEffect(() => {
+    const target   = score;
+    const duration = 1500; // ms
+    const start    = performance.now();
+
+    function tick(now: number) {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // ease-out cubic: decelerates near end
+      const eased    = 1 - Math.pow(1 - progress, 3);
+
+      setDisplayed(Math.round(eased * target));
+      setOffset(CIRCUMFERENCE - eased * (score / maxScore) * CIRCUMFERENCE);
+
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  }, [score, maxScore]);
+
+  return (
+    <div className="relative w-[150px] h-[150px] flex items-center justify-center">
+      <svg
+        width={SIZE}
+        height={SIZE}
+        className="absolute inset-0 -rotate-90"   // start from 12 o'clock
+        style={{ transform: "rotate(-90deg)" }}
+      >
+        {/* Track — faint background ring */}
+        <circle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={RADIUS}
+          fill="none"
+          stroke="#FFE0CC"
+          strokeWidth={STROKE}
+        />
+        {/* Progress ring — animates clockwise */}
+        <circle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={RADIUS}
+          fill="none"
+          stroke="#FF7000"
+          strokeWidth={STROKE}
+          strokeLinecap="round"
+          strokeDasharray={CIRCUMFERENCE}
+          strokeDashoffset={offset}
+          style={{ transition: "none" }}
+        />
+      </svg>
+      {/* Score text sits on top of SVG */}
+      <div className="relative flex flex-col items-center leading-none">
+        <span className="text-3xl font-extrabold text-gray-900">{displayed}</span>
+        <span className="text-xs text-gray-400 mt-1">/ {maxScore}</span>
+      </div>
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+
 interface Session {
   firstName: string;
   lastName: string;
@@ -87,8 +160,8 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
 
       {/* Dashboard header */}
-      <div className="bg-gradient-to-r from-primary to-primary-dark section-padding py-10">
-        <div className="container-max flex items-center justify-between gap-4 flex-wrap">
+      <div className="bg-gradient-to-r from-primary to-primary-dark">
+        <div className="container-max flex items-center justify-between gap-4 flex-wrap  section-padding py-10">
           <div>
             <p className="text-white/70 text-sm font-semibold uppercase tracking-widest mb-1">
               {t("dashboard.title")}
@@ -120,21 +193,12 @@ export default function DashboardPage() {
 
           {result && tier ? (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <div className="flex flex-col md:flex-row gap-8 items-start">
+              <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
 
                 {/* Score circle */}
                 <div className="flex-shrink-0 flex flex-col items-center gap-2">
-                  <div
-                    className="w-28 h-28 rounded-full flex flex-col items-center justify-center border-4"
-                    style={{ borderColor: result.color }}
-                  >
-                    <span className="text-3xl font-extrabold text-gray-900">{result.score}</span>
-                    <span className="text-xs text-gray-400">/ {maxScore}</span>
-                  </div>
-                  <span
-                    className="text-sm font-bold px-3 py-1 rounded-full text-white"
-                    style={{ backgroundColor: result.color }}
-                  >
+                  <ScoreRing score={result.score} maxScore={maxScore} />
+                  <span className="text-sm font-bold px-3 py-1 rounded-full text-white bg-brand-orange">
                     {tier.category[language]}
                   </span>
                 </div>
@@ -150,7 +214,7 @@ export default function DashboardPage() {
                   <ul className="flex flex-col gap-2">
                     {tier.nextSteps[language].map((step, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                        <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold" style={{ backgroundColor: result.color }}>
+                        <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold bg-primary">
                           {i + 1}
                         </span>
                         {step}
