@@ -6,79 +6,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { resources } from "@/data/resources";
 import { getScoreTier, getMaxScore } from "@/data/questions";
-
-// ── Animated score ring ──────────────────────────────────────────────────────
-const SIZE        = 150;   // px — overall SVG canvas
-const STROKE      = 10;    // px — ring thickness
-const RADIUS      = (SIZE - STROKE) / 2;           // 70
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;        // ~439.8
-
-function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
-  const [displayed, setDisplayed] = useState(0);       // counting number
-  const [offset, setOffset]       = useState(CIRCUMFERENCE); // starts "empty"
-
-  useEffect(() => {
-    const target   = score;
-    const duration = 1500; // ms
-    const start    = performance.now();
-
-    function tick(now: number) {
-      const elapsed  = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic: decelerates near end
-      const eased    = 1 - Math.pow(1 - progress, 3);
-
-      setDisplayed(Math.round(eased * target));
-      setOffset(CIRCUMFERENCE - eased * (score / maxScore) * CIRCUMFERENCE);
-
-      if (progress < 1) requestAnimationFrame(tick);
-    }
-
-    requestAnimationFrame(tick);
-  }, [score, maxScore]);
-
-  return (
-    <div className="relative w-[150px] h-[150px] flex items-center justify-center">
-      <svg
-        width={SIZE}
-        height={SIZE}
-        className="absolute inset-0 -rotate-90"   // start from 12 o'clock
-        style={{ transform: "rotate(-90deg)" }}
-      >
-        {/* Track — faint background ring */}
-        <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={RADIUS}
-          fill="none"
-          stroke="#FFE0CC"
-          strokeWidth={STROKE}
-        />
-        {/* Progress ring — animates clockwise */}
-        <circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={RADIUS}
-          fill="none"
-          stroke="#FF7000"
-          strokeWidth={STROKE}
-          strokeLinecap="round"
-          strokeDasharray={CIRCUMFERENCE}
-          strokeDashoffset={offset}
-          style={{ transition: "none" }}
-        />
-      </svg>
-      {/* Score text sits on top of SVG */}
-      <div className="relative flex flex-col items-center leading-none">
-        <span className="text-3xl font-extrabold text-gray-900">{displayed}</span>
-        <span className="text-xs text-gray-400 mt-1">/ {maxScore}</span>
-      </div>
-    </div>
-  );
-}
-// ─────────────────────────────────────────────────────────────────────────────
-
-
+import AssessmentResultCard from "@/components/assessment/AssessmentResultCard";
 
 interface Session {
   firstName: string;
@@ -103,11 +31,10 @@ export default function DashboardPage() {
   const { t, language } = useLanguage();
   const router = useRouter();
   const [session, setSession] = useState<Session | null>(null);
-  const [result, setResult] = useState<AssessmentResult | null>(null);
+  const [result, setResult]   = useState<AssessmentResult | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
-    // sh_user is a plain readable cookie (not httpOnly) — safe to read via JS
     const raw = getCookie("sh_user");
     if (!raw) { router.push("/login"); return; }
     try {
@@ -118,22 +45,15 @@ export default function DashboardPage() {
       return;
     }
 
-    // Read assessment result cookie
     const resultRaw = getCookie("sh_result");
     if (resultRaw) {
       try { setResult(JSON.parse(resultRaw)); } catch {}
     } else {
-      // Fall back to sessionStorage
       const score = sessionStorage.getItem("sh_score");
-      const lang = (sessionStorage.getItem("sh_language") as "en" | "bm") ?? language;
+      const lang  = (sessionStorage.getItem("sh_language") as "en" | "bm") ?? language;
       if (score) {
         const tier = getScoreTier(Number(score));
-        setResult({
-          score: Number(score),
-          category: tier.category[lang],
-          label: tier.label[lang],
-          color: tier.color,
-        });
+        setResult({ score: Number(score), category: tier.category[lang], label: tier.label[lang], color: tier.color });
       }
     }
   }, [router, language]);
@@ -144,7 +64,7 @@ export default function DashboardPage() {
     router.push("/login");
   }
 
-  const tier = result ? getScoreTier(result.score) : null;
+  const tier     = result ? getScoreTier(result.score) : null;
   const maxScore = getMaxScore();
   const recommended = resources.slice(0, 3);
 
@@ -159,9 +79,9 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* Dashboard header */}
+      {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary-dark">
-        <div className="container-max flex items-center justify-between gap-4 flex-wrap  section-padding py-10">
+        <div className="container-max section-padding py-10 flex items-center justify-between gap-4 flex-wrap">
           <div>
             <p className="text-white/70 text-sm font-semibold uppercase tracking-widest mb-1">
               {t("dashboard.title")}
@@ -185,46 +105,16 @@ export default function DashboardPage() {
 
       <div className="container-max section-padding py-10 flex flex-col gap-10">
 
-        {/* Assessment result card */}
+        {/* Assessment result */}
         <section>
           <h2 className="text-lg font-extrabold text-gray-900 mb-4">
             {t("dashboard.assessment.title")}
           </h2>
 
           {result && tier ? (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-              <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-
-                {/* Score circle */}
-                <div className="flex-shrink-0 flex flex-col items-center gap-2">
-                  <ScoreRing score={result.score} maxScore={maxScore} />
-                  <span className="text-sm font-bold px-3 py-1 rounded-full text-white bg-brand-orange">
-                    {tier.category[language]}
-                  </span>
-                </div>
-
-                {/* Description + next steps */}
-                <div className="flex-1">
-                  <h3 className="text-xl font-extrabold text-gray-900 mb-2">
-                    {tier.label[language]}
-                  </h3>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-5">
-                    {tier.description[language]}
-                  </p>
-                  <ul className="flex flex-col gap-2">
-                    {tier.nextSteps[language].map((step, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                        <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold bg-primary">
-                          {i + 1}
-                        </span>
-                        {step}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-gray-100 flex gap-3">
+            <>
+              <AssessmentResultCard score={result.score} maxScore={maxScore} tier={tier} language={language} />
+              <div className="mt-4">
                 <Link
                   href="/assessment"
                   className="text-sm font-semibold px-5 py-2.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-colors"
@@ -232,7 +122,7 @@ export default function DashboardPage() {
                   {t("dashboard.assessment.retake")}
                 </Link>
               </div>
-            </div>
+            </>
           ) : (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center text-center gap-5">
               <div className="w-16 h-16 rounded-full bg-pink-50 flex items-center justify-center">
@@ -258,29 +148,15 @@ export default function DashboardPage() {
               {t("dashboard.resources.viewAll")}
             </Link>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {recommended.map((r) => (
               <div key={r.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                <img
-                  src={r.imageUrl}
-                  alt={r.title[language]}
-                  className="w-full h-40 object-cover"
-                />
+                <img src={r.imageUrl} alt={r.title[language]} className="w-full h-40 object-cover" />
                 <div className="p-5 flex flex-col gap-3">
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">
-                    {r.category}
-                  </span>
-                  <h3 className="text-sm font-extrabold text-gray-900 leading-snug">
-                    {r.title[language]}
-                  </h3>
-                  <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                    {r.excerpt[language]}
-                  </p>
-                  <Link
-                    href="/resources"
-                    className="text-xs font-semibold text-primary hover:underline mt-auto"
-                  >
+                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">{r.category}</span>
+                  <h3 className="text-sm font-extrabold text-gray-900 leading-snug">{r.title[language]}</h3>
+                  <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{r.excerpt[language]}</p>
+                  <Link href="/resources" className="text-xs font-semibold text-primary hover:underline mt-auto">
                     {t("dashboard.resources.readMore")} →
                   </Link>
                 </div>

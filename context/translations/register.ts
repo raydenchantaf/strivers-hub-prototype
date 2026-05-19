@@ -24,6 +24,15 @@ export const register = {
     "register.hasAccount":              "Already have an account?",
     "register.loginLink":               "Log in now",
     "register.error.emailExists":       "An account with this email already exists.",
+
+    // Registration gate overlay
+    "gate.heading":     "Create New Account",
+    "gate.headline":    "Don't miss your personalised recommendations!",
+    "gate.description": "Register now to get exclusive access to our Mentorship Program and curated resources tailored to your entrepreneurial needs.",
+    "gate.benefit1":    "Progress Tracking",
+    "gate.benefit2":    "Networking Opportunities",
+    "gate.benefit3":    "Curated Resources",
+    "gate.skip":        "Skip, show me my results",
   },
   bm: {
     "register.title":                   "Cipta Akaun",
@@ -50,5 +59,14 @@ export const register = {
     "register.hasAccount":              "Sudah ada akaun?",
     "register.loginLink":               "Log masuk sekarang",
     "register.error.emailExists":       "Akaun dengan e-mel ini sudah wujud.",
+
+    // Registration gate overlay
+    "gate.heading":     "Daftar Akaun Baru",
+    "gate.headline":    "Jangan terlepas cadangan yang diperibadikan untuk anda!",
+    "gate.description": "Daftar sekarang untuk mendapatkan akses eksklusif kepada Program Mentorship kami dan sumber yang disyorkan bagi memenuhi keperluan keusahawanan anda.",
+    "gate.benefit1":    "Pemantauan Kemajuan",
+    "gate.benefit2":    "Peluang Rangkaian",
+    "gate.benefit3":    "Sumber Yang Diperibadikan",
+    "gate.skip":        "Teruskan tanpa mendaftar",
   },
 };

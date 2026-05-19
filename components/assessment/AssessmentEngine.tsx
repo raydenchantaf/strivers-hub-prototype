@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { questions, getScoreTier, Question } from "@/data/questions";
 import ProgressBar from "./ProgressBar";
+import RegistrationGate from "./RegistrationGate";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -48,6 +49,7 @@ export default function AssessmentEngine() {
   const [selected, setSelected] = useState<string | null>(null);       // single / likert
   const [selectedMulti, setSelectedMulti] = useState<string[]>([]);   // multi
   const [submitting, setSubmitting] = useState(false);
+  const [showGate, setShowGate]     = useState(false);
 
   const currentQuestion = questions[currentIndex];
   const qType = getQuestionType(currentQuestion);
@@ -73,6 +75,15 @@ export default function AssessmentEngine() {
       // Ignore corrupted progress data
     }
     setHydrated(true);
+  }, []);
+
+  // Check login status once on mount — logged-in users skip the gate
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const raw = typeof document !== "undefined"
+      ? document.cookie.match(/(^| )sh_user=([^;]+)/)
+      : null;
+    setIsLoggedIn(!!raw);
   }, []);
 
   // ── Persist progress to sessionStorage whenever key state changes ──────────
@@ -139,7 +150,12 @@ export default function AssessmentEngine() {
         setSubmitting(false);
       }
 
-      router.push("/results");
+      // If already logged in skip the gate and go straight to results
+      if (isLoggedIn) {
+        router.push("/results");
+      } else {
+        setShowGate(true);
+      }
     } else {
       const nextIndex = currentIndex + 1;
       setCurrentIndex(nextIndex);
@@ -375,6 +391,7 @@ export default function AssessmentEngine() {
 
   // ── Question screen ───────────────────────────────────────────────────────
   return (
+    <>
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
       <div className="max-w-2xl w-full">
         <ProgressBar current={currentIndex + 1} total={questions.length} />
@@ -542,5 +559,16 @@ export default function AssessmentEngine() {
         </div>
       </div>
     </div>
+
+      {/* Registration gate overlay — shown after final submission */}
+      {showGate && (
+        <RegistrationGate
+          onSkip={() => {
+            setShowGate(false);
+            router.push("/results");
+          }}
+        />
+      )}
+    </>
   );
 }
