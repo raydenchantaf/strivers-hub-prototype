@@ -8,8 +8,9 @@ export const assessment = {
     "consent.required":  "Please accept the consent statement before continuing.",
 
     // Assessment
-    "assess.title":    "Business Readiness Assessment",
-    "assess.subtitle": "Answer 12 questions to discover your entrepreneurial stage and get personalised recommendations.",
+    "assess.label":    "Assessment",
+    "assess.title":    "Your path to success starts here",
+    "assess.subtitle": "Take this quick, free assessment to discover where you stand on your entrepreneurial journey.",
     "assess.start":    "Start Assessment",
     "assess.next":     "Next",
     "assess.prev":     "Previous",
@@ -41,8 +42,9 @@ export const assessment = {
     "consent.required":  "Sila terima pernyataan persetujuan sebelum meneruskan.",
 
     // Assessment
-    "assess.title":    "Penilaian Kesediaan Perniagaan",
-    "assess.subtitle": "Jawab 12 soalan untuk mengetahui peringkat keusahawanan anda dan dapatkan cadangan peribadi.",
+    "assess.label":    "Penilaian",
+    "assess.title":    "Perjalanan keusahawanan anda bermula disini",
+    "assess.subtitle": "Ambil ujian ringkas dan percuma ini untuk mengetahui di mana anda berada dalam perjalanan keusahawanan anda.",
     "assess.start":    "Mulakan Penilaian",
     "assess.next":     "Seterusnya",
     "assess.prev":     "Sebelumnya",

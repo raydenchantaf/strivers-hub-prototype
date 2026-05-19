@@ -6,10 +6,10 @@ import { FaFacebook, FaYoutube, FaInstagram, FaLinkedin } from "react-icons/fa6"
 import { useLanguage } from "@/context/LanguageContext";
 
 const socialLinks = [
-  { icon: FaFacebook, href: "https://www.facebook.com/strivershub/", label: "Facebook" },
-  { icon: FaInstagram, href: "https://www.instagram.com/strivers.hub/", label: "Instagram" },
-  { icon: FaLinkedin, href: "https://www.linkedin.com/company/the-asia-foundation", label: "LinkedIn" },
-  { icon: FaYoutube,  href: "https://www.youtube.com/@StriversHUB", label: "YouTube" },
+  { icon: FaFacebook,  href: "https://www.facebook.com/strivershub/",                  label: "Facebook"  },
+  { icon: FaInstagram, href: "https://www.instagram.com/strivers.hub/",                label: "Instagram" },
+  { icon: FaLinkedin,  href: "https://www.linkedin.com/company/the-asia-foundation",   label: "LinkedIn"  },
+  { icon: FaYoutube,   href: "https://www.youtube.com/@StriversHUB",                   label: "YouTube"   },
 ];
 
 export default function Footer2() {
@@ -19,44 +19,61 @@ export default function Footer2() {
     <footer className="bg-brand-dark text-white">
       <div className="container-max px-4 md:px-8 pt-10 pb-8">
 
-        {/* Top logo row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 items-end gap-8 pb-8">
+        {/* Top logo row — flex so each logo keeps natural width, gap is consistent */}
+        <div className="flex flex-wrap items-end gap-x-20 gap-y-6 pb-8">
 
+          {/* Strivers Hub */}
           <div>
-            <Link href="/">
-              <Image
-                src="/logo.white.svg"
-                alt="Strivers Hub"
-                width={186}
-                height={55}
-                className="h-[65px] w-auto object-contain object-left"
-              />
-            </Link>
+            <Image
+              src="/logo.white.svg"
+              alt="Strivers Hub"
+              width={160}
+              height={48}
+              className="h-[50px] w-auto object-contain"
+            />
           </div>
 
+          {/* Implementing Partner: TAF */}
           <div className="flex flex-col items-start gap-2">
-            <p className="text-xs font-bold text-white uppercase tracking-wide">
+            <p className="text-xs font-bold text-white tracking-wide">
+              {t("footer2.implementing_partner")}
+            </p>
+            <div className="h-[50px] content-center">
+              <Image
+              src="/TAF.white.webp"
+              alt="The Asia Foundation"
+              width={232}
+              height={35}
+              className="h-[35px] w-auto object-contain"
+            />
+            </div>
+          </div>
+
+          {/* Strategic Partner: MyDigital */}
+          <div className="flex flex-col items-start gap-2">
+            <p className="text-xs font-bold text-white tracking-wide">
               {t("footer2.strategic_partner")}
             </p>
             <Image
               src="/MyDigital.white.png"
               alt="MyDIGITAL"
-              width={160}
+              width={120}
               height={48}
-              className="h-[65px] w-auto object-contain object-left"
+              className="h-[50px] w-auto object-contain"
             />
           </div>
 
+          {/* Supported by: CFIG */}
           <div className="flex flex-col items-start gap-2">
-            <p className="text-xs font-bold text-white uppercase tracking-wide">
+            <p className="text-xs font-bold text-white tracking-wide">
               {t("footer2.supported_by")}
             </p>
             <Image
               src="/CFIG.white.png"
               alt="Center for Inclusive Growth"
-              width={200}
+              width={160}
               height={48}
-              className="h-[65px] w-auto object-contain object-left"
+              className="h-[50px] w-auto object-contain"
             />
           </div>
 

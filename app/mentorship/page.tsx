@@ -98,7 +98,7 @@ export default function MentorshipPage() {
             {/* Left: image */}
             <div className="flex-1 rounded-3xl overflow-hidden min-h-[360px] relative hidden md:block">
               <img
-                src="hero.image.png"
+                src="mentorship.image.png"
                 alt="Women mentorship"
                 className="w-full h-full object-cover"
               />
