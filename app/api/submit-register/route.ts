@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
 export interface RegisterPayload {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
+  password: string;
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body: RegisterPayload = await req.json();
 
-    const headers = ["Timestamp", "First Name", "Last Name", "Email Address", "Contact Number"];
-    const values = [
-      new Date().toISOString().replace("T", " ").slice(0, 19),
-      body.firstName,
-      body.lastName,
-      body.email,
-      body.phone,
-    ];
-
-    console.log("[submit-register] new registration:", JSON.stringify(values));
+    // Hash password before storing — never save plain text
+    const passwordHash = crypto
+      .createHash("sha256")
+      .update(body.password)
+      .digest("hex");
 
     const scriptUrl = process.env.REGISTER_SCRIPT_URL;
     if (!scriptUrl) {
@@ -31,14 +28,27 @@ export async function POST(req: NextRequest) {
     const response = await fetch(scriptUrl, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ headers, values }),
+      body: JSON.stringify({
+        action: "register",
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        phone: body.phone,
+        passwordHash,
+      }),
       redirect: "follow",
     });
 
-    if (!response.ok) {
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || result.success === false) {
+      if (result.error === "EMAIL_EXISTS") {
+        return NextResponse.json({ success: false, error: "EMAIL_EXISTS" });
+      }
       throw new Error(`Apps Script returned ${response.status}`);
     }
 
+    console.log("[submit-register] registered:", body.email);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[submit-register] error:", err);

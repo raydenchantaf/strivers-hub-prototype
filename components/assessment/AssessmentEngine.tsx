@@ -117,6 +117,8 @@ export default function AssessmentEngine() {
       sessionStorage.removeItem("sh_progress");
       sessionStorage.setItem("sh_score", String(finalScore));
       sessionStorage.setItem("sh_language", language);
+      // Also persist to cookie so dashboard survives page refresh
+      document.cookie = `sh_result=${encodeURIComponent(JSON.stringify({ score: finalScore, category: tier.category[language], label: tier.label[language], color: tier.color }))};path=/;max-age=${60*60*24*30}`;
 
       // Submit to Google Sheets (fire-and-forget)
       setSubmitting(true);

@@ -13,6 +13,8 @@ export const login = {
     "login.forgotPassword":  "Forgot password?",
     "login.noAccount":       "Don\'t have an account?",
     "login.registerLink":    "Register now",
+    "login.error.invalid":   "Incorrect email or password. Please try again.",
+    "login.error.generic":   "Something went wrong. Please try again.",
   },
   bm: {
     "login.title":           "Log Masuk",
@@ -28,5 +30,7 @@ export const login = {
     "login.forgotPassword":  "Lupa kata laluan?",
     "login.noAccount":       "Tiada akaun?",
     "login.registerLink":    "Daftar sekarang",
+    "login.error.invalid":   "E-mel atau kata laluan tidak betul. Sila cuba lagi.",
+    "login.error.generic":   "Sesuatu telah berlaku. Sila cuba lagi.",
   },
 };

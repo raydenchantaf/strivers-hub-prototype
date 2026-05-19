@@ -2,23 +2,47 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function LoginPage() {
   const { t } = useLanguage();
+  const router = useRouter();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [status, setStatus] = useState<"idle" | "submitting">("idle");
+  const [error, setError] = useState<string | null>(null);
 
   function set(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setError(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("submitting");
-    // Placeholder — wire up auth here when ready
-    setTimeout(() => setStatus("idle"), 1500);
+    setError(null);
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        router.push("/dashboard");
+      } else {
+        setError(
+          data.error === "INVALID_CREDENTIALS"
+            ? t("login.error.invalid")
+            : t("login.error.generic")
+        );
+        setStatus("idle");
+      }
+    } catch {
+      setError(t("login.error.generic"));
+      setStatus("idle");
+    }
   }
 
   const inputClass =
@@ -28,11 +52,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center section-padding py-16">
       <div className="w-full max-w-md">
-
-        {/* Card */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-10">
 
-          {/* Header */}
           <div className="mb-8">
             <p className="text-sm font-semibold text-[#B12069] uppercase tracking-widest mb-1">
               {t("login.welcome")}
@@ -45,7 +66,6 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
-            {/* Email */}
             <div>
               <label className={labelClass}>
                 {t("login.email")} <span className="text-[#B12069]">*</span>
@@ -60,7 +80,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Password */}
             <div>
               <label className={labelClass}>
                 {t("login.password")} <span className="text-[#B12069]">*</span>
@@ -76,7 +95,6 @@ export default function LoginPage() {
               <p className="text-xs text-gray-400 mt-1.5">{t("login.password.hint")}</p>
             </div>
 
-            {/* Forgot password */}
             <div className="flex justify-end -mt-2">
               <a
                 href="https://strivershub.com/en/auth/forgot-password"
@@ -88,6 +106,12 @@ export default function LoginPage() {
               </a>
             </div>
 
+            {error && (
+              <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                {error}
+              </p>
+            )}
+
             <button
               type="submit"
               disabled={status === "submitting"}
@@ -96,7 +120,6 @@ export default function LoginPage() {
               {status === "submitting" ? t("login.submitting") : t("login.submit")}
             </button>
 
-            {/* Register link */}
             <p className="text-center text-sm text-gray-500">
               {t("login.noAccount")}{" "}
               <Link href="/register" className="text-[#B12069] font-semibold hover:underline">

@@ -23,6 +23,7 @@ export const register = {
     "register.error.passwordWeak":      "Password must be at least 8 characters with uppercase, lowercase and a number.",
     "register.hasAccount":              "Already have an account?",
     "register.loginLink":               "Log in now",
+    "register.error.emailExists":       "An account with this email already exists.",
   },
   bm: {
     "register.title":                   "Cipta Akaun",
@@ -48,5 +49,6 @@ export const register = {
     "register.error.passwordWeak":      "Kata laluan mesti sekurang-kurangnya 8 aksara dengan huruf besar, huruf kecil dan nombor.",
     "register.hasAccount":              "Sudah ada akaun?",
     "register.loginLink":               "Log masuk sekarang",
+    "register.error.emailExists":       "Akaun dengan e-mel ini sudah wujud.",
   },
 };

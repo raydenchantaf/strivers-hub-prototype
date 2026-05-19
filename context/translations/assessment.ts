@@ -65,6 +65,6 @@ export const assessment = {
     "notfound.title":  "Halaman Tidak Dijumpai",
     "notfound.body":   "Halaman yang anda cari tidak wujud atau telah dialihkan. Jom kembali ke landasan yang betul.",
     "notfound.home":   "Kembali ke Laman Utama",
-    "notfound.assess": "Mulakan Penilaian",
+    "notfound.assess": "Ambil Penilaian",
   },
 };
