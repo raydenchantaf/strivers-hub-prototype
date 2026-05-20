@@ -34,7 +34,7 @@ function computeScore(answers: Record<number, string | string[]>): number {
 
 // ─── Custom Dropdown ──────────────────────────────────────────────────────────
 
-type DropdownOption = { id: string; label: { en: string; ms: string } };
+type DropdownOption = { id: string; label: { en: string; bm: string } };
 
 function CustomDropdown({
   options,
@@ -45,7 +45,7 @@ function CustomDropdown({
   options: DropdownOption[];
   value: string | null;
   onChange: (id: string) => void;
-  language: "en" | "ms";
+  language: "en" | "bm";
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
