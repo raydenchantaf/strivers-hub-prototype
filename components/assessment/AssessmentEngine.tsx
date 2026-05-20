@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { questions, getScoreTier, Question } from "@/data/questions";
@@ -30,6 +30,82 @@ function computeScore(answers: Record<number, string | string[]>): number {
     const opt = q.options.find((o) => o.id === ans);
     return sum + (opt?.points ?? 0);
   }, 0);
+}
+
+// ─── Custom Dropdown ──────────────────────────────────────────────────────────
+
+type DropdownOption = { id: string; label: { en: string; ms: string } };
+
+function CustomDropdown({
+  options,
+  value,
+  onChange,
+  language,
+}: {
+  options: DropdownOption[];
+  value: string | null;
+  onChange: (id: string) => void;
+  language: "en" | "ms";
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  const selectedOption = options.find((o) => o.id === value);
+  const placeholder = language === "en" ? "— Select an option —" : "— Pilih pilihan —";
+
+  return (
+    <div ref={ref} className="relative py-2">
+      {/* Trigger button */}
+      <button
+        type="button"
+        onClick={() => setOpen((p) => !p)}
+        className={`w-full px-4 py-3.5 rounded-xl border-2 font-medium text-sm bg-white flex items-center justify-between gap-2 transition-all duration-150 outline-none ${
+          value ? "border-primary text-gray-900" : "border-gray-200 text-gray-400"
+        } focus:border-primary`}
+      >
+        <span className="truncate">{selectedOption ? selectedOption.label[language] : placeholder}</span>
+        <svg
+          className={`w-4 h-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {/* Options list */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+          {options.map((option, idx) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => { onChange(option.id); setOpen(false); }}
+              className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors duration-100 ${
+                idx === 0 ? "rounded-t-xl" : ""
+              } ${idx === options.length - 1 ? "rounded-b-xl" : ""} ${
+                value === option.id
+                  ? "bg-primary text-white"
+                  : "text-gray-800 hover:bg-pink-50 hover:text-primary"
+              }`}
+            >
+              {option.label[language]}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -396,7 +472,7 @@ export default function AssessmentEngine() {
       <div className="max-w-2xl w-full">
         <ProgressBar current={currentIndex + 1} total={questions.length} />
 
-        <div className="card mt-6 p-6 md:p-8">
+        <div className="card mt-6 p-6 md:p-8 overflow-visible">
           <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6 leading-snug">
             {currentQuestion.text[language]}
           </h2>
@@ -496,6 +572,16 @@ export default function AssessmentEngine() {
                 {language === "en" ? "selected" : "dipilih"}
               </p>
             </div>
+          )}
+
+          {/* ── Dropdown ── */}
+          {qType === "dropdown" && (
+            <CustomDropdown
+              options={currentQuestion.options}
+              value={selected}
+              onChange={(id) => setSelected(id)}
+              language={language}
+            />
           )}
 
           {/* ── Likert scale (1–5) ── */}

@@ -7,7 +7,7 @@ export interface Option {
 export interface Question {
   id: number;
   /** Defaults to "single" if omitted */
-  type?: "single" | "multi" | "likert";
+  type?: "single" | "multi" | "likert" | "dropdown";
   /** For "multi" questions — max number of options the user may select */
   maxSelections?: number;
   /** For "likert" questions — anchor labels for the low and high ends of the scale */
@@ -183,6 +183,32 @@ export const questions: Question[] = [
       bm: "Sejauh mana keyakinan anda terhadap keupayaan perniagaan anda untuk berkembang dalam 12 bulan akan datang?",
     },
     options: [], // Likert uses 1–5 value directly as points
+  },
+  {
+    id: 13,
+    type: "dropdown",
+    text: {
+      en: "In which state do you currently reside?",
+      bm: "Di negeri manakah anda kini menetap?",
+    },
+    options: [
+      { id: "13_a", label: { en: "Johor", bm: "Johor" }, points: 0 },
+      { id: "13_b", label: { en: "Kedah", bm: "Kedah" }, points: 0 },
+      { id: "13_c", label: { en: "Kelantan", bm: "Kelantan" }, points: 0 },
+      { id: "13_d", label: { en: "Melaka", bm: "Melaka" }, points: 0 },
+      { id: "13_e", label: { en: "Negeri Sembilan", bm: "Negeri Sembilan" }, points: 0 },
+      { id: "13_f", label: { en: "Pahang", bm: "Pahang" }, points: 0 },
+      { id: "13_g", label: { en: "Perak", bm: "Perak" }, points: 0 },
+      { id: "13_h", label: { en: "Perlis", bm: "Perlis" }, points: 0 },
+      { id: "13_i", label: { en: "Penang", bm: "Pulau Pinang" }, points: 0 },
+      { id: "13_j", label: { en: "Sabah", bm: "Sabah" }, points: 0 },
+      { id: "13_k", label: { en: "Sarawak", bm: "Sarawak" }, points: 0 },
+      { id: "13_l", label: { en: "Selangor", bm: "Selangor" }, points: 0 },
+      { id: "13_m", label: { en: "Terengganu", bm: "Terengganu" }, points: 0 },
+      { id: "13_n", label: { en: "W.P. Kuala Lumpur", bm: "W.P. Kuala Lumpur" }, points: 0 },
+      { id: "13_o", label: { en: "W.P. Labuan", bm: "W.P. Labuan" }, points: 0 },
+      { id: "13_p", label: { en: "W.P. Putrajaya", bm: "W.P. Putrajaya" }, points: 0 },
+    ],
   },
 ];
 
