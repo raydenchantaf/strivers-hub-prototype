@@ -3,34 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
-import { questions, getScoreTier, Question } from "@/data/questions";
+import { questions, questionsById, getCategorizationScore, getScoreTier, Question } from "@/data/questions";
 import ProgressBar from "./ProgressBar";
 import RegistrationGate from "./RegistrationGate";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function getQuestionType(q: Question) {
-  return q.type ?? "single";
-}
-
-function computeScore(answers: Record<number, string | string[]>): number {
-  return Object.entries(answers).reduce((sum, [qId, ans]) => {
-    const q = questions.find((q) => q.id === Number(qId));
-    if (!q) return sum;
-    const type = getQuestionType(q);
-    if (type === "likert") return sum + Number(ans || 0);
-    if (type === "multi") {
-      const ids = Array.isArray(ans) ? ans : [];
-      return sum + ids.reduce((s, id) => {
-        const opt = q.options.find((o) => o.id === id);
-        return s + (opt?.points ?? 0);
-      }, 0);
-    }
-    // single
-    const opt = q.options.find((o) => o.id === ans);
-    return sum + (opt?.points ?? 0);
-  }, 0);
-}
 
 // ─── Custom Dropdown ──────────────────────────────────────────────────────────
 
@@ -63,7 +38,6 @@ function CustomDropdown({
 
   return (
     <div ref={ref} className="relative py-2">
-      {/* Trigger button */}
       <button
         type="button"
         onClick={() => setOpen((p) => !p)}
@@ -74,16 +48,11 @@ function CustomDropdown({
         <span className="truncate">{selectedOption ? selectedOption.label[language] : placeholder}</span>
         <svg
           className={`w-4 h-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-
-      {/* Options list */}
       {open && (
         <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
           {options.map((option, idx) => (
@@ -108,6 +77,20 @@ function CustomDropdown({
   );
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Total questions in the longest path (Yes path = 28 questions) */
+const TOTAL_QUESTIONS = 28;
+
+/** Resolve the next question ID given the current question and the answer given */
+function resolveNextId(q: Question, answer: string | string[]): string {
+  if (typeof answer === "string") {
+    const opt = q.options.find((o) => o.id === answer);
+    if (opt?.nextId) return opt.nextId;
+  }
+  return q.nextId;
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function AssessmentEngine() {
@@ -115,37 +98,79 @@ export default function AssessmentEngine() {
   const router = useRouter();
 
   // ── State ──────────────────────────────────────────────────────────────────
-  const [hydrated, setHydrated] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [consented, setConsented] = useState(false);
-  const [checked, setChecked] = useState(false);
-  const [showConsentError, setShowConsentError] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
-  const [selected, setSelected] = useState<string | null>(null);       // single / likert
-  const [selectedMulti, setSelectedMulti] = useState<string[]>([]);   // multi
+  const [hydrated,          setHydrated]          = useState(false);
+  const [started,           setStarted]           = useState(false);
+  const [consented,         setConsented]         = useState(false);
+  const [checked,           setChecked]           = useState(false);
+  const [showConsentError,  setShowConsentError]  = useState(false);
+
+  // Navigation
+  const [currentId,  setCurrentId]  = useState("q1");
+  const [history,    setHistory]    = useState<string[]>([]);
+
+  // Answers (keyed by question ID)
+  const [answers,    setAnswers]    = useState<Record<string, string | string[]>>({});
+  const [otherTexts, setOtherTexts] = useState<Record<string, string>>({});
+
+  // Active selection state — reset when navigating to a new question
+  const [selected,      setSelected]      = useState<string | null>(null);  // single / likert / dropdown
+  const [selectedMulti, setSelectedMulti] = useState<string[]>([]);         // multi
+  const [textInput,     setTextInput]     = useState("");                    // text
+  const [otherInput,    setOtherInput]    = useState("");                    // "other" free text
+
   const [submitting, setSubmitting] = useState(false);
-  const [showGate, setShowGate]     = useState(false);
+  const [showGate,   setShowGate]   = useState(false);
 
-  const currentQuestion = questions[currentIndex];
-  const qType = getQuestionType(currentQuestion);
-  const isLast = currentIndex === questions.length - 1;
-  const hasAnswer = qType === "multi" ? selectedMulti.length > 0 : selected !== null;
+  const currentQuestion = questionsById[currentId];
+  const qType           = currentQuestion.type;
+  const isLast          = currentQuestion.nextId === "[END]";
 
-  // ── Restore progress from sessionStorage on mount ─────────────────────────
+  // Derive "other" visibility from current selections
+  const selectedOptionHasOther =
+    qType === "single" &&
+    currentQuestion.options.find((o) => o.id === selected)?.hasOther === true;
+  const selectedMultiHasOther =
+    qType === "multi" &&
+    currentQuestion.options.some((o) => o.hasOther && selectedMulti.includes(o.id));
+
+  // ── hasAnswer ─────────────────────────────────────────────────────────────
+  const hasAnswer = (() => {
+    if (qType === "multi") {
+      const needed = currentQuestion.maxSelections ?? 0;
+      if (currentQuestion.exactSelections) {
+        if (selectedMulti.length !== needed) return false;
+      } else {
+        if (selectedMulti.length === 0) return false;
+      }
+      if (selectedMultiHasOther && otherInput.trim() === "") return false;
+      return true;
+    }
+    if (qType === "text") return textInput.trim().length > 0;
+    if (qType === "likert") return selected !== null;
+    if (qType === "dropdown") return selected !== null;
+    // single
+    if (selected === null) return false;
+    if (selectedOptionHasOther && otherInput.trim() === "") return false;
+    return true;
+  })();
+
+  // ── Restore session on mount ──────────────────────────────────────────────
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem("sh_progress");
       if (saved) {
         const p = JSON.parse(saved);
-        setStarted(p.started ?? false);
-        setConsented(p.consented ?? false);
-        setChecked(p.checked ?? false);
-        setCurrentIndex(p.currentIndex ?? 0);
-        setAnswers(p.answers ?? {});
-        // Restore the active (possibly uncommitted) selection
-        setSelected(p.selected ?? null);
-        setSelectedMulti(p.selectedMulti ?? []);
+        if (p.started)   setStarted(true);
+        if (p.consented) setConsented(true);
+        if (p.checked)   setChecked(true);
+        if (p.currentId && questionsById[p.currentId]) setCurrentId(p.currentId);
+        if (Array.isArray(p.history))     setHistory(p.history);
+        if (p.answers)    setAnswers(p.answers);
+        if (p.otherTexts) setOtherTexts(p.otherTexts);
+        if (p.selected !== undefined)     setSelected(p.selected);
+        if (Array.isArray(p.selectedMulti)) setSelectedMulti(p.selectedMulti);
+        if (typeof p.textInput === "string") setTextInput(p.textInput);
+        if (typeof p.otherInput === "string") setOtherInput(p.otherInput);
       }
     } catch {
       // Ignore corrupted progress data
@@ -153,7 +178,7 @@ export default function AssessmentEngine() {
     setHydrated(true);
   }, []);
 
-  // Check login status once on mount — logged-in users skip the gate
+  // Check login status
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
     const raw = typeof document !== "undefined"
@@ -162,50 +187,90 @@ export default function AssessmentEngine() {
     setIsLoggedIn(!!raw);
   }, []);
 
-  // ── Persist progress to sessionStorage whenever key state changes ──────────
-  // Includes `selected` and `selectedMulti` so an option the user clicked but
-  // hasn't confirmed with Next is also preserved across navigation.
+  // ── Persist progress ──────────────────────────────────────────────────────
   useEffect(() => {
-    if (!hydrated) return; // don't overwrite restored data on first render
-    sessionStorage.setItem(
-      "sh_progress",
-      JSON.stringify({ started, consented, checked, currentIndex, answers, selected, selectedMulti })
-    );
-  }, [hydrated, started, consented, checked, currentIndex, answers, selected, selectedMulti]);
+    if (!hydrated) return;
+    sessionStorage.setItem("sh_progress", JSON.stringify({
+      started, consented, checked, currentId, history,
+      answers, otherTexts, selected, selectedMulti, textInput, otherInput,
+    }));
+  }, [hydrated, started, consented, checked, currentId, history,
+      answers, otherTexts, selected, selectedMulti, textInput, otherInput]);
+
+  // ── Restore selection when navigating to a question ───────────────────────
+  function restoreSelectionFor(
+    id: string,
+    savedAnswers: Record<string, string | string[]>,
+    savedOthers: Record<string, string>,
+  ) {
+    const q   = questionsById[id];
+    const ans = savedAnswers[id];
+    const other = savedOthers[id] ?? "";
+    setOtherInput(other);
+
+    if (q.type === "multi") {
+      setSelectedMulti(Array.isArray(ans) ? ans : []);
+      setSelected(null);
+      setTextInput("");
+    } else if (q.type === "text") {
+      setTextInput(typeof ans === "string" ? ans : "");
+      setSelected(null);
+      setSelectedMulti([]);
+    } else {
+      setSelected(typeof ans === "string" ? ans : null);
+      setSelectedMulti([]);
+      setTextInput("");
+    }
+  }
 
   // ── Multi-choice toggle ───────────────────────────────────────────────────
   function handleSelectMulti(optionId: string) {
     setSelectedMulti((prev) => {
-      if (prev.includes(optionId)) {
-        return prev.filter((id) => id !== optionId);
-      }
+      if (prev.includes(optionId)) return prev.filter((id) => id !== optionId);
       const max = currentQuestion.maxSelections ?? Infinity;
-      if (prev.length >= max) return prev; // cap reached — ignore
+      if (prev.length >= max) return prev;
       return [...prev, optionId];
     });
+    // Clear other text if the "other" option is being deselected
+    const opt = currentQuestion.options.find((o) => o.id === optionId);
+    if (opt?.hasOther && selectedMulti.includes(optionId)) {
+      setOtherInput("");
+    }
+  }
+
+  // ── Build current answer value ────────────────────────────────────────────
+  function getCurrentAnswer(): string | string[] {
+    if (qType === "multi") return selectedMulti;
+    if (qType === "text")  return textInput.trim();
+    return selected ?? "";
   }
 
   // ── Next / Submit ─────────────────────────────────────────────────────────
   async function handleNext() {
     if (!hasAnswer) return;
 
-    // Build updated answers record
-    const currentAnswer: string | string[] =
-      qType === "multi" ? selectedMulti : (selected as string);
-    const updated = { ...answers, [currentQuestion.id]: currentAnswer };
-    setAnswers(updated);
+    const currentAnswer = getCurrentAnswer();
+    const updatedAnswers = { ...answers, [currentId]: currentAnswer };
+    const updatedOthers  = otherInput.trim()
+      ? { ...otherTexts, [currentId]: otherInput.trim() }
+      : otherTexts;
 
-    if (isLast) {
-      const finalScore = computeScore(updated);
-      const tier = getScoreTier(finalScore);
-      const categoryLabel = tier.category[language];
+    setAnswers(updatedAnswers);
+    setOtherTexts(updatedOthers);
 
-      // Persist result — clear in-progress progress
+    const nextId = resolveNextId(currentQuestion, currentAnswer);
+
+    if (nextId === "[END]") {
+      // ── Categorisation scoring ───────────────────────────────────────────
+      const catScore = getCategorizationScore(updatedAnswers);
+      const tier = getScoreTier(catScore);
+
       sessionStorage.removeItem("sh_progress");
-      sessionStorage.setItem("sh_score", String(finalScore));
+      sessionStorage.setItem("sh_score", String(catScore));
       sessionStorage.setItem("sh_language", language);
-      // Also persist to cookie so dashboard survives page refresh
-      document.cookie = `sh_result=${encodeURIComponent(JSON.stringify({ score: finalScore, category: tier.category[language], label: tier.label[language], color: tier.color }))};path=/;max-age=${60*60*24*30}`;
+      document.cookie = `sh_result=${encodeURIComponent(
+        JSON.stringify({ score: catScore, category: tier.category[language], label: tier.label[language], color: tier.color })
+      )};path=/;max-age=${60 * 60 * 24 * 30}`;
 
       // Submit to Google Sheets (fire-and-forget)
       setSubmitting(true);
@@ -215,65 +280,52 @@ export default function AssessmentEngine() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             language,
-            score: finalScore,
-            category: categoryLabel,
-            answers: updated,
+            score: catScore,
+            category: tier.category[language],
+            answers: updatedAnswers,
+            otherTexts: updatedOthers,
           }),
         });
       } catch {
-        // Silently ignore — data collection never blocks the UX
+        // Silently ignore — data collection never blocks UX
       } finally {
         setSubmitting(false);
       }
 
-      // If already logged in skip the gate and go straight to results
       if (isLoggedIn) {
         router.push("/results");
       } else {
         setShowGate(true);
       }
     } else {
-      const nextIndex = currentIndex + 1;
-      setCurrentIndex(nextIndex);
-
-      // Restore selection for the next question if already answered
-      const nextQ = questions[nextIndex];
-      const nextAns = updated[nextQ?.id];
-      if (getQuestionType(nextQ) === "multi") {
-        setSelectedMulti(Array.isArray(nextAns) ? nextAns : []);
-        setSelected(null);
-      } else {
-        setSelected(typeof nextAns === "string" ? nextAns : null);
-        setSelectedMulti([]);
-      }
+      // ── Navigate forward ─────────────────────────────────────────────────
+      setHistory((prev) => [...prev, currentId]);
+      setCurrentId(nextId);
+      restoreSelectionFor(nextId, updatedAnswers, updatedOthers);
     }
   }
 
   // ── Previous ──────────────────────────────────────────────────────────────
   function handlePrev() {
-    if (currentIndex === 0) {
+    if (history.length === 0) {
       setConsented(false);
       return;
     }
-    // Save current partial answer before navigating back
-    const currentAnswer: string | string[] =
-      qType === "multi" ? selectedMulti : (selected ?? "");
-    const updatedAnswers = { ...answers, [currentQuestion.id]: currentAnswer };
+
+    // Save current partial answer before going back
+    const currentAnswer = getCurrentAnswer();
+    const updatedAnswers = { ...answers, [currentId]: currentAnswer };
+    const updatedOthers  = otherInput.trim()
+      ? { ...otherTexts, [currentId]: otherInput.trim() }
+      : otherTexts;
     setAnswers(updatedAnswers);
+    setOtherTexts(updatedOthers);
 
-    const prevIndex = currentIndex - 1;
-    setCurrentIndex(prevIndex);
-
-    // Restore selection for the previous question
-    const prevQ = questions[prevIndex];
-    const prevAns = updatedAnswers[prevQ.id];
-    if (getQuestionType(prevQ) === "multi") {
-      setSelectedMulti(Array.isArray(prevAns) ? prevAns : []);
-      setSelected(null);
-    } else {
-      setSelected(typeof prevAns === "string" ? prevAns : null);
-      setSelectedMulti([]);
-    }
+    const newHistory = [...history];
+    const prevId = newHistory.pop()!;
+    setHistory(newHistory);
+    setCurrentId(prevId);
+    restoreSelectionFor(prevId, updatedAnswers, updatedOthers);
   }
 
   // ── Start screen ──────────────────────────────────────────────────────────
@@ -286,9 +338,7 @@ export default function AssessmentEngine() {
           </svg>
         ),
         title: t("how2.step1.title"),
-        desc: (
-          <span>{t("how2.step1.pre")} <strong>{t("how2.step1.bold")}</strong> {t("how2.step1.post")}</span>
-        ),
+        desc: <span>{t("how2.step1.pre")} <strong>{t("how2.step1.bold")}</strong> {t("how2.step1.post")}</span>,
       },
       {
         icon: (
@@ -312,12 +362,8 @@ export default function AssessmentEngine() {
 
     return (
       <div className="bg-white">
-
-        {/* Top section — two columns */}
         <div className="container-max section-padding py-14">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-
-            {/* Left: label + title */}
             <div>
               <p className="text-primary text-xs font-extrabold uppercase tracking-widest mb-3">
                 {t("assess.label")}
@@ -326,12 +372,8 @@ export default function AssessmentEngine() {
                 {t("assess.title")}
               </h1>
             </div>
-
-            {/* Right: description + CTA */}
             <div className="flex flex-col items-start gap-6">
-              <p className="text-gray-500 text-base leading-relaxed">
-                {t("assess.subtitle")}
-              </p>
+              <p className="text-gray-500 text-base leading-relaxed">{t("assess.subtitle")}</p>
               <button
                 onClick={() => setStarted(true)}
                 className="btn-primary text-sm py-3 px-7 flex items-center gap-2"
@@ -342,24 +384,19 @@ export default function AssessmentEngine() {
                 </svg>
               </button>
             </div>
-
           </div>
         </div>
 
-        {/* 3-step guide */}
         <div className="bg-[#FFF5F8]">
           <div className="container-max section-padding py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
               {steps.map((step, i) => (
                 <div key={i} className="flex items-stretch">
-                  {/* Step card */}
                   <div className="bg-white rounded-2xl p-8 flex flex-col gap-4 flex-1 shadow-sm">
                     {step.icon}
                     <h3 className="text-base font-extrabold text-gray-900">{step.title}</h3>
                     <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
                   </div>
-
-                  {/* Arrow between steps */}
                   {i < steps.length - 1 && (
                     <div className="hidden md:flex items-center px-2 flex-shrink-0">
                       <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
@@ -375,17 +412,11 @@ export default function AssessmentEngine() {
           </div>
         </div>
 
-        {/* Bottom image — replace src with your own */}
         <div className="container-max section-padding pt-10 pb-10">
           <div className="rounded-3xl overflow-hidden max-h-[420px]">
-            <img
-              src="/hero.image.png"
-              alt="Assessment"
-              className="w-full h-full object-cover object-top"
-            />
+            <img src="/hero.image.png" alt="Assessment" className="w-full h-full object-cover object-top" />
           </div>
         </div>
-
       </div>
     );
   }
@@ -401,34 +432,20 @@ export default function AssessmentEngine() {
                 {t("consent.title")}
               </h1>
             </div>
-
             <div className="h-px bg-gray-100 mb-6" />
-
-            <p className="text-gray-600 text-sm leading-relaxed mb-2">
-              {t("consent.body")}
-            </p>
-
+            <p className="text-gray-600 text-sm leading-relaxed mb-2">{t("consent.body")}</p>
             <div className="h-px bg-gray-100 mt-6 mb-5" />
-
-            {/* Checkbox */}
             <label className="flex items-start gap-3 cursor-pointer group">
               <div className="relative mt-0.5 flex-shrink-0">
                 <input
                   type="checkbox"
                   checked={checked}
-                  onChange={(e) => {
-                    setChecked(e.target.checked);
-                    if (e.target.checked) setShowConsentError(false);
-                  }}
+                  onChange={(e) => { setChecked(e.target.checked); if (e.target.checked) setShowConsentError(false); }}
                   className="sr-only"
                 />
-                <div
-                  className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-                    checked
-                      ? "bg-primary border-primary"
-                      : "border-gray-300 bg-white group-hover:border-primary/50"
-                  }`}
-                >
+                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                  checked ? "bg-primary border-primary" : "border-gray-300 bg-white group-hover:border-primary/50"
+                }`}>
                   {checked && (
                     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 12 12">
                       <path d="M2 6l3 3 5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -436,11 +453,8 @@ export default function AssessmentEngine() {
                   )}
                 </div>
               </div>
-              <span className="text-sm font-medium text-gray-700 leading-snug">
-                {t("consent.checkbox")}
-              </span>
+              <span className="text-sm font-medium text-gray-700 leading-snug">{t("consent.checkbox")}</span>
             </label>
-
             {showConsentError && (
               <p className="mt-3 text-xs text-red-500 flex items-center gap-1.5">
                 <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -449,12 +463,8 @@ export default function AssessmentEngine() {
                 {t("consent.required")}
               </p>
             )}
-
             <button
-              onClick={() => {
-                if (!checked) { setShowConsentError(true); return; }
-                setConsented(true);
-              }}
+              onClick={() => { if (!checked) { setShowConsentError(true); return; } setConsented(true); }}
               className="btn-primary w-full mt-6 py-3.5 text-base"
             >
               {t("consent.proceed")} →
@@ -466,193 +476,221 @@ export default function AssessmentEngine() {
   }
 
   // ── Question screen ───────────────────────────────────────────────────────
+  const progressCurrent = history.length + 1;
+
   return (
     <>
-    <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
-      <div className="max-w-2xl w-full">
-        <ProgressBar current={currentIndex + 1} total={questions.length} />
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
+        <div className="max-w-2xl w-full">
 
-        <div className="card mt-6 p-6 md:p-8 overflow-visible">
-          <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6 leading-snug">
-            {currentQuestion.text[language]}
-          </h2>
+          {/* Section chip */}
+          <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
+            {currentQuestion.section}
+          </p>
 
-          {/* ── Single-choice (radio) ── */}
-          {qType === "single" && (
-            <div className="flex flex-col gap-3">
-              {currentQuestion.options.map((option) => {
-                const isChosen = selected === option.id;
-                return (
-                  <button
-                    key={option.id}
-                    onClick={() => setSelected(option.id)}
-                    className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
-                      isChosen
-                        ? "border-primary bg-brand-rose text-primary shadow-sm"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
-                    }`}
-                  >
-                    <span className="flex items-center gap-3">
-                      <span
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                          isChosen ? "border-primary bg-primary" : "border-gray-300"
-                        }`}
-                      >
-                        {isChosen && (
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
-                            <path d="M10 3L5 8.5 2 5.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                          </svg>
-                        )}
-                      </span>
-                      {option.label[language]}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+          <ProgressBar current={progressCurrent} total={TOTAL_QUESTIONS} />
 
-          {/* ── Multi-choice (checkbox) ── */}
-          {qType === "multi" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                {language === "en"
-                  ? `Select up to ${currentQuestion.maxSelections}`
-                  : `Pilih sehingga ${currentQuestion.maxSelections}`}
-              </p>
+          <div className="card mt-6 p-6 md:p-8 overflow-visible">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6 leading-snug">
+              {currentQuestion.text[language]}
+            </h2>
 
-              {currentQuestion.options.map((option) => {
-                const isChosen = selectedMulti.includes(option.id);
-                const atCap =
-                  selectedMulti.length >= (currentQuestion.maxSelections ?? Infinity);
-                const isDisabled = !isChosen && atCap;
-
-                return (
-                  <button
-                    key={option.id}
-                    onClick={() => handleSelectMulti(option.id)}
-                    disabled={isDisabled}
-                    className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
-                      isChosen
-                        ? "border-primary bg-brand-rose text-primary shadow-sm"
-                        : isDisabled
-                        ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
-                    }`}
-                  >
-                    <span className="flex items-center gap-3">
-                      {/* Checkbox indicator */}
-                      <span
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                          isChosen
-                            ? "border-primary bg-primary"
-                            : isDisabled
-                            ? "border-gray-200 bg-gray-100"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        {isChosen && (
-                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 12 12">
-                            <path d="M2 6l3 3 5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        )}
-                      </span>
-                      {option.label[language]}
-                    </span>
-                  </button>
-                );
-              })}
-
-              {/* Selection counter */}
-              <p className="text-xs text-right text-gray-400 mt-1">
-                <span className={selectedMulti.length >= (currentQuestion.maxSelections ?? Infinity) ? "text-primary font-semibold" : ""}>
-                  {selectedMulti.length}
-                </span>
-                {" "}/ {currentQuestion.maxSelections}{" "}
-                {language === "en" ? "selected" : "dipilih"}
-              </p>
-            </div>
-          )}
-
-          {/* ── Dropdown ── */}
-          {qType === "dropdown" && (
-            <CustomDropdown
-              options={currentQuestion.options}
-              value={selected}
-              onChange={(id) => setSelected(id)}
-              language={language}
-            />
-          )}
-
-          {/* ── Likert scale (1–5) ── */}
-          {qType === "likert" && (
-            <div className="py-2">
-              {/* Scale buttons */}
-              <div className="flex gap-2 sm:gap-3 justify-between mb-3">
-                {[1, 2, 3, 4, 5].map((val) => {
-                  const isChosen = selected === String(val);
+            {/* ── Single-choice ── */}
+            {qType === "single" && (
+              <div className="flex flex-col gap-3">
+                {currentQuestion.options.map((option) => {
+                  const isChosen = selected === option.id;
                   return (
                     <button
-                      key={val}
-                      onClick={() => setSelected(String(val))}
-                      className={`flex-1 py-5 rounded-xl border-2 font-bold text-xl transition-all duration-150 ${
+                      key={option.id}
+                      onClick={() => { setSelected(option.id); if (!option.hasOther) setOtherInput(""); }}
+                      className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
                         isChosen
-                          ? "border-primary bg-brand-rose text-primary shadow-sm scale-105"
-                          : "border-gray-200 bg-white text-gray-500 hover:border-primary/40 hover:bg-gray-50"
+                          ? "border-primary bg-brand-rose text-primary shadow-sm"
+                          : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
                       }`}
                     >
-                      {val}
+                      <span className="flex items-center gap-3">
+                        <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                          isChosen ? "border-primary bg-primary" : "border-gray-300"
+                        }`}>
+                          {isChosen && (
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
+                              <path d="M10 3L5 8.5 2 5.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                            </svg>
+                          )}
+                        </span>
+                        {option.label[language]}
+                      </span>
                     </button>
                   );
                 })}
+                {selectedOptionHasOther && (
+                  <input
+                    type="text"
+                    value={otherInput}
+                    onChange={(e) => setOtherInput(e.target.value)}
+                    placeholder={language === "en" ? "Please specify…" : "Sila nyatakan…"}
+                    className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-primary text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary"
+                  />
+                )}
               </div>
-
-              {/* Anchor labels */}
-              {currentQuestion.likertLabels && (
-                <div className="flex justify-between text-xs text-gray-400 px-1">
-                  <span>← {currentQuestion.likertLabels.low[language]}</span>
-                  <span>{currentQuestion.likertLabels.high[language]} →</span>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Navigation */}
-        <div className="flex justify-between mt-6 gap-4">
-          <button onClick={handlePrev} className="btn-outline py-3 px-6">
-            ← {t("assess.prev")}
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={!hasAnswer || submitting}
-            className="btn-primary py-3 px-6 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {submitting ? (
-              <>
-                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                </svg>
-                {language === "en" ? "Saving…" : "Menyimpan…"}
-              </>
-            ) : isLast ? (
-              t("assess.submit")
-            ) : (
-              `${t("assess.next")} →`
             )}
-          </button>
+
+            {/* ── Multi-choice ── */}
+            {qType === "multi" && (
+              <div className="flex flex-col gap-3">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                  {currentQuestion.exactSelections
+                    ? (language === "en" ? `Select exactly ${currentQuestion.maxSelections}` : `Pilih tepat ${currentQuestion.maxSelections}`)
+                    : currentQuestion.maxSelections
+                    ? (language === "en" ? `Select up to ${currentQuestion.maxSelections}` : `Pilih sehingga ${currentQuestion.maxSelections}`)
+                    : (language === "en" ? "Select all that apply" : "Pilih semua yang berkenaan")}
+                </p>
+
+                {currentQuestion.options.map((option) => {
+                  const isChosen  = selectedMulti.includes(option.id);
+                  const atCap     = !isChosen && selectedMulti.length >= (currentQuestion.maxSelections ?? Infinity);
+                  const isDisabled = atCap;
+
+                  return (
+                    <button
+                      key={option.id}
+                      onClick={() => handleSelectMulti(option.id)}
+                      disabled={isDisabled}
+                      className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
+                        isChosen
+                          ? "border-primary bg-brand-rose text-primary shadow-sm"
+                          : isDisabled
+                          ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
+                          : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
+                      }`}
+                    >
+                      <span className="flex items-center gap-3">
+                        <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                          isChosen ? "border-primary bg-primary" : isDisabled ? "border-gray-200 bg-gray-100" : "border-gray-300"
+                        }`}>
+                          {isChosen && (
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 12 12">
+                              <path d="M2 6l3 3 5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                        </span>
+                        {option.label[language]}
+                      </span>
+                    </button>
+                  );
+                })}
+
+                {selectedMultiHasOther && (
+                  <input
+                    type="text"
+                    value={otherInput}
+                    onChange={(e) => setOtherInput(e.target.value)}
+                    placeholder={language === "en" ? "Please specify…" : "Sila nyatakan…"}
+                    className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-primary text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary"
+                  />
+                )}
+
+                {currentQuestion.maxSelections && (
+                  <p className="text-xs text-right text-gray-400 mt-1">
+                    <span className={selectedMulti.length >= currentQuestion.maxSelections ? "text-primary font-semibold" : ""}>
+                      {selectedMulti.length}
+                    </span>
+                    {" "}/ {currentQuestion.maxSelections}{" "}
+                    {language === "en" ? "selected" : "dipilih"}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* ── Dropdown ── */}
+            {qType === "dropdown" && (
+              <CustomDropdown
+                options={currentQuestion.options}
+                value={selected}
+                onChange={(id) => setSelected(id)}
+                language={language}
+              />
+            )}
+
+            {/* ── Likert scale (1–5) ── */}
+            {qType === "likert" && (
+              <div className="py-2">
+                <div className="flex gap-2 sm:gap-3 justify-between mb-3">
+                  {[1, 2, 3, 4, 5].map((val) => {
+                    const isChosen = selected === String(val);
+                    return (
+                      <button
+                        key={val}
+                        onClick={() => setSelected(String(val))}
+                        className={`flex-1 py-5 rounded-xl border-2 font-bold text-xl transition-all duration-150 ${
+                          isChosen
+                            ? "border-primary bg-brand-rose text-primary shadow-sm scale-105"
+                            : "border-gray-200 bg-white text-gray-500 hover:border-primary/40 hover:bg-gray-50"
+                        }`}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+                {currentQuestion.likertLabels && (
+                  <div className="flex justify-between text-xs text-gray-400 px-1">
+                    <span>← {currentQuestion.likertLabels.low[language]}</span>
+                    <span>{currentQuestion.likertLabels.high[language]} →</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── Text input ── */}
+            {qType === "text" && (
+              <div className="py-2">
+                <input
+                  type="text"
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  placeholder={currentQuestion.placeholder?.[language] ?? ""}
+                  className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                  onKeyDown={(e) => { if (e.key === "Enter" && hasAnswer) handleNext(); }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Navigation */}
+          <div className="flex justify-between mt-6 gap-4">
+            <button onClick={handlePrev} className="btn-outline py-3 px-6">
+              ← {t("assess.prev")}
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={!hasAnswer || submitting}
+              className="btn-primary py-3 px-6 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {submitting ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                  {language === "en" ? "Saving…" : "Menyimpan…"}
+                </>
+              ) : isLast ? (
+                t("assess.submit")
+              ) : (
+                `${t("assess.next")} →`
+              )}
+            </button>
+          </div>
+
         </div>
       </div>
-    </div>
 
-      {/* Registration gate overlay — shown after final submission */}
       {showGate && (
         <RegistrationGate
-          onSkip={() => {
-            setShowGate(false);
-            router.push("/results");
-          }}
+          onSkip={() => { setShowGate(false); router.push("/results"); }}
         />
       )}
     </>
