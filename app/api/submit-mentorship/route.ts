@@ -1,42 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sql } from "@/lib/db";
 
 export interface MentorshipSignup {
-  name: string;
-  email: string;
-  phone: string;
+  firstName: string;
+  lastName:  string;
+  email:     string;
+  phone:     string;
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body: MentorshipSignup = await req.json();
+    const { firstName, lastName, email, phone } = body;
 
-    const headers = ["Timestamp", "Full Name", "Email Address", "Contact Number"];
-    const values = [
-      new Date().toISOString().replace("T", " ").slice(0, 19),
-      body.name,
-      body.email,
-      body.phone,
-    ];
-
-    console.log("[submit-mentorship] signup:", JSON.stringify(values));
-
-    const scriptUrl = process.env.MENTORSHIP_SCRIPT_URL;
-    if (!scriptUrl) {
-      console.warn("MENTORSHIP_SCRIPT_URL not set — skipping Sheets submission");
-      return NextResponse.json({ success: true, skipped: true });
+    if (!firstName || !lastName || !email) {
+      return NextResponse.json({ success: false, error: "MISSING_FIELDS" }, { status: 400 });
     }
 
-    const response = await fetch(scriptUrl, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ headers, values }),
-      redirect: "follow",
-    });
+    await sql`
+      INSERT INTO mentorship_signups (first_name, last_name, email, phone)
+      VALUES (${firstName.trim()}, ${lastName.trim()}, ${email.toLowerCase().trim()}, ${phone?.trim() ?? null})
+    `;
 
-    if (!response.ok) {
-      throw new Error(`Apps Script returned ${response.status}`);
-    }
-
+    console.log("[submit-mentorship] signup:", firstName.trim(), lastName.trim(), email);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("[submit-mentorship] error:", err);

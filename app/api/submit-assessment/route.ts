@@ -1,41 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sql } from "@/lib/db";
 
 export interface AssessmentSubmission {
-  language: "en" | "bm";
-  score: number;
-  category: string;
-  answers: Record<number, string>; // questionId -> optionId
+  language:        "en" | "bm";
+  score:           number;
+  category:        string;
+  answers:         Record<string, string | string[]>;
+  answersReadable?: Record<string, string>;
+  otherTexts?:     Record<string, string>;
+}
+
+/** Extract user ID from the sh_session cookie if present */
+function getUserIdFromCookie(req: NextRequest): number | null {
+  try {
+    const raw = req.cookies.get("sh_session")?.value;
+    if (!raw) return null;
+    const session = JSON.parse(Buffer.from(raw, "base64").toString("utf8"));
+    const id = Number(session.id);
+    return Number.isFinite(id) && id > 0 ? id : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body: AssessmentSubmission = await req.json();
+    const { language, score, category, answers, answersReadable, otherTexts } = body;
 
-    const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
-    if (!scriptUrl) {
-      // In development without a script URL, just log and return success
-      // so the assessment flow still works locally
-      console.warn("GOOGLE_SCRIPT_URL not set — skipping Sheets submission");
-      return NextResponse.json({ success: true, skipped: true });
-    }
+    const userId = getUserIdFromCookie(req);
 
-    // Forward to Google Apps Script Web App
-    // Using text/plain avoids a CORS preflight that Apps Script can't handle
-    const response = await fetch(scriptUrl, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(body),
-      redirect: "follow",
-    });
+    await sql`
+      INSERT INTO assessment_submissions (user_id, language, score, category, answers, answers_readable, other_texts)
+      VALUES (
+        ${userId},
+        ${language},
+        ${score},
+        ${category},
+        ${JSON.stringify(answers)},
+        ${answersReadable ? JSON.stringify(answersReadable) : null},
+        ${otherTexts ? JSON.stringify(otherTexts) : null}
+      )
+    `;
 
-    if (!response.ok) {
-      throw new Error(`Apps Script returned ${response.status}`);
-    }
-
+    console.log("[submit-assessment] saved — score:", score, "user:", userId ?? "anonymous");
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("Assessment submission error:", err);
-    // Return 200 anyway — we never want a DB failure to break the user flow
+    console.error("[submit-assessment] error:", err);
+    // Return 200 always — a DB failure must never block the user's results screen
     return NextResponse.json({ success: false, error: String(err) }, { status: 200 });
   }
 }

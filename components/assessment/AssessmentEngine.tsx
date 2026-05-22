@@ -91,6 +91,52 @@ function resolveNextId(q: Question, answer: string | string[]): string {
   return q.nextId;
 }
 
+/**
+ * Resolve all raw answer IDs to their human-readable labels.
+ * Stores answer labels only (not question text) — compact but fully readable at export time.
+ */
+function buildAnswersReadable(
+  allAnswers: Record<string, string | string[]>,
+  lang: "en" | "bm",
+): Record<string, string> {
+  const readable: Record<string, string> = {};
+
+  for (const [qId, answer] of Object.entries(allAnswers)) {
+    const q = questionsById[qId];
+
+    if (!q) {
+      // Multi-text subfields (q5h, q5i, q5j) — raw text, store as-is
+      readable[qId] = typeof answer === "string" ? answer : (answer as string[]).join(", ");
+      continue;
+    }
+
+    switch (q.type) {
+      case "text":
+      case "likert":
+        readable[qId] = typeof answer === "string" ? answer : "";
+        break;
+      case "multi-text":
+        // q5g is both the parent question ID and first-name field — store its raw value
+        readable[qId] = typeof answer === "string" ? answer : "";
+        break;
+      case "multi": {
+        const ids = Array.isArray(answer) ? answer : [answer as string];
+        readable[qId] = ids
+          .map((id) => q.options.find((o) => o.id === id)?.label[lang] ?? id)
+          .join(", ");
+        break;
+      }
+      default: {
+        // single, dropdown
+        const opt = q.options.find((o) => o.id === answer);
+        readable[qId] = opt?.label[lang] ?? (typeof answer === "string" ? answer : "");
+      }
+    }
+  }
+
+  return readable;
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function AssessmentEngine() {
@@ -317,7 +363,7 @@ export default function AssessmentEngine() {
         JSON.stringify({ score: catScore, category: tier.category[language], label: tier.label[language], color: tier.color })
       )};path=/;max-age=${60 * 60 * 24 * 30}`;
 
-      // Submit to Google Sheets (fire-and-forget)
+      // Submit to Neon (fire-and-forget)
       setSubmitting(true);
       try {
         await fetch("/api/submit-assessment", {
@@ -328,6 +374,7 @@ export default function AssessmentEngine() {
             score: catScore,
             category: tier.category[language],
             answers: updatedAnswers,
+            answersReadable: buildAnswersReadable(updatedAnswers, language),
             otherTexts: updatedOthers,
           }),
         });

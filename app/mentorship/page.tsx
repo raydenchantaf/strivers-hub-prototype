@@ -6,7 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function MentorshipPage() {
   const { t } = useLanguage();
 
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "" });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   const benefits = [
@@ -42,7 +42,7 @@ export default function MentorshipPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name || !form.email || !form.phone) return;
+    if (!form.firstName || !form.lastName || !form.email || !form.phone) return;
     setStatus("submitting");
     try {
       await fetch("/api/submit-mentorship", {
@@ -51,7 +51,7 @@ export default function MentorshipPage() {
         body: JSON.stringify(form),
       });
       setStatus("success");
-      setForm({ name: "", email: "", phone: "" });
+      setForm({ firstName: "", lastName: "", email: "", phone: "" });
     } catch {
       setStatus("error");
     }
@@ -128,19 +128,34 @@ export default function MentorshipPage() {
             ) : (
               <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col gap-5">
 
-                {/* Name */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    {t("mentorship.form.name")} <span className="text-[#B12069]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder={t("mentorship.form.name.placeholder")}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition"
-                  />
+                {/* First Name & Last Name */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                      {t("mentorship.form.firstName")} <span className="text-[#B12069]">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={form.firstName}
+                      onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                      placeholder={t("mentorship.form.firstName.placeholder")}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                      {t("mentorship.form.lastName")} <span className="text-[#B12069]">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={form.lastName}
+                      onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                      placeholder={t("mentorship.form.lastName.placeholder")}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition"
+                    />
+                  </div>
                 </div>
 
                 {/* Email */}

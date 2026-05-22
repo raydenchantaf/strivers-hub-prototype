@@ -1,47 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { sql } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
 
-    const scriptUrl = process.env.REGISTER_SCRIPT_URL;
-    if (!scriptUrl) {
-      console.warn("REGISTER_SCRIPT_URL not set");
-      return NextResponse.json({ success: false, error: "Service unavailable" });
+    if (!email || !password) {
+      return NextResponse.json({ success: false, error: "MISSING_FIELDS" }, { status: 400 });
     }
 
-    // Step 1: fetch the stored hash for this email from Apps Script
-    const response = await fetch(scriptUrl, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "login", email }),
-      redirect: "follow",
-    });
+    // Fetch user by email
+    const rows = await sql`
+      SELECT id, first_name, last_name, email, password_hash
+      FROM users
+      WHERE email = ${email.toLowerCase().trim()}
+      LIMIT 1
+    `;
 
-    const result = await response.json().catch(() => ({}));
-
-    if (!result.success || !result.passwordHash) {
+    if (rows.length === 0) {
       return NextResponse.json({ success: false, error: "INVALID_CREDENTIALS" });
     }
 
-    // Step 2: compare submitted password against stored bcrypt hash
-    const match = await bcrypt.compare(password, result.passwordHash);
+    const user = rows[0];
+
+    // Compare submitted password against stored bcrypt hash
+    const match = await bcrypt.compare(password, user.password_hash);
     if (!match) {
       return NextResponse.json({ success: false, error: "INVALID_CREDENTIALS" });
     }
 
     // Build session payload
     const session = {
-      firstName: result.firstName,
-      lastName:  result.lastName,
-      email:     result.email,
+      id:        user.id,
+      firstName: user.first_name,
+      lastName:  user.last_name,
+      email:     user.email,
     };
 
     const sessionValue = Buffer.from(JSON.stringify(session)).toString("base64");
-    const userValue    = JSON.stringify(session);
+    const userValue    = JSON.stringify({ firstName: session.firstName, lastName: session.lastName, email: session.email });
 
-    const res = NextResponse.json({ success: true, firstName: result.firstName });
+    const res = NextResponse.json({ success: true, firstName: session.firstName });
 
     const cookieOpts = { sameSite: "lax" as const, path: "/", maxAge: 60 * 60 * 24 * 7 };
     res.cookies.set("sh_session", sessionValue, { ...cookieOpts, httpOnly: true });
@@ -50,6 +50,6 @@ export async function POST(req: NextRequest) {
     return res;
   } catch (err) {
     console.error("[login] error:", err);
-    return NextResponse.json({ success: false, error: String(err) }, { status: 200 });
+    return NextResponse.json({ success: false, error: String(err) }, { status: 500 });
   }
 }
