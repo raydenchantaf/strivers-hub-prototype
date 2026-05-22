@@ -1,6 +1,6 @@
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type QuestionType = "single" | "multi" | "likert" | "dropdown" | "text";
+export type QuestionType = "single" | "multi" | "likert" | "dropdown" | "text" | "multi-text";
 
 export interface Option {
   id: string;
@@ -8,6 +8,14 @@ export interface Option {
   points: number;
   nextId?: string;
   hasOther?: boolean;
+}
+
+export interface MultiTextField {
+  id: string;
+  label: { en: string; bm: string };
+  placeholder?: { en: string; bm: string };
+  inputType?: "text" | "email" | "tel" | "number";
+  required?: boolean;
 }
 
 export interface Question {
@@ -21,6 +29,8 @@ export interface Question {
   options: Option[];
   nextId: string;
   placeholder?: { en: string; bm: string };
+  inputType?: "text" | "number";
+  fields?: MultiTextField[];
 }
 
 export const questions: Question[] = [
@@ -54,7 +64,7 @@ export const questions: Question[] = [
     nextId: "q2a1",
   },
   {
-    id: "q2a1", section: "Business Info", type: "text",
+    id: "q2a1", section: "Business Info", type: "text", inputType: "number",
     text: { en: "How many years has your business been in operation?", bm: "Berapa lamakah perniagaan anda sudah beroperasi?" },
     options: [], nextId: "q2a2",
     placeholder: { en: "Enter number of years (e.g., 3)", bm: "Masukkan bilangan tahun (cth., 3)" },
@@ -294,10 +304,17 @@ export const questions: Question[] = [
     ],
     nextId: "q5g",
   },
-  { id: "q5g", section: "Demographic", type: "text", text: { en: "First name", bm: "Nama pertama" }, options: [], nextId: "q5h", placeholder: { en: "Enter your first name", bm: "Masukkan nama pertama anda" } },
-  { id: "q5h", section: "Demographic", type: "text", text: { en: "Last name",  bm: "Nama keluarga"  }, options: [], nextId: "q5i", placeholder: { en: "Enter your last name",  bm: "Masukkan nama keluarga anda"  } },
-  { id: "q5i", section: "Demographic", type: "text", text: { en: "Email",       bm: "E-mel"          }, options: [], nextId: "q5j", placeholder: { en: "Enter your email address", bm: "Masukkan alamat e-mel anda"   } },
-  { id: "q5j", section: "Demographic", type: "text", text: { en: "Contact number", bm: "Nombor telefon" }, options: [], nextId: "q5k", placeholder: { en: "Enter your contact number", bm: "Masukkan nombor telefon anda" } },
+  {
+    id: "q5g", section: "Demographic", type: "multi-text",
+    text: { en: "Please provide your contact details", bm: "Sila berikan maklumat hubungan anda" },
+    options: [], nextId: "q5k",
+    fields: [
+      { id: "q5g", label: { en: "First name",      bm: "Nama pertama"   }, placeholder: { en: "Enter your first name",       bm: "Masukkan nama pertama anda"       }, required: true  },
+      { id: "q5h", label: { en: "Last name",       bm: "Nama keluarga"  }, placeholder: { en: "Enter your last name",        bm: "Masukkan nama keluarga anda"      }, required: true  },
+      { id: "q5i", label: { en: "Email",           bm: "E-mel"          }, placeholder: { en: "Enter your email address",    bm: "Masukkan alamat e-mel anda"       }, inputType: "email", required: true  },
+      { id: "q5j", label: { en: "Contact number",  bm: "Nombor telefon" }, placeholder: { en: "Enter your contact number",   bm: "Masukkan nombor telefon anda"     }, inputType: "tel",   required: false },
+    ],
+  },
   {
     id: "q5k", section: "Demographic", type: "single",
     text: { en: "How did you hear about Strivers' Hub?", bm: "Bagaimana anda mendapat tahu tentang Strivers' Hub?" },

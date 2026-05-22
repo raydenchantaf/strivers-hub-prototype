@@ -13,12 +13,9 @@ export default function ProgressBar({ current, total }: ProgressBarProps) {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-2">
+      <div className="mb-2">
         <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
           {t("assess.progress")}
-        </span>
-        <span className="text-xs font-bold text-primary">
-          {t("assess.question")} {current} {t("assess.of")} {total}
         </span>
       </div>
       <div className="h-2 bg-white rounded-full overflow-hidden">

@@ -79,8 +79,8 @@ function CustomDropdown({
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Total questions in the longest path (Yes path = 28 questions) */
-const TOTAL_QUESTIONS = 28;
+/** Total questions in the longest path (Yes path = 25 steps after grouping q5g–q5j) */
+const TOTAL_QUESTIONS = 25;
 
 /** Resolve the next question ID given the current question and the answer given */
 function resolveNextId(q: Question, answer: string | string[]): string {
@@ -118,6 +118,8 @@ export default function AssessmentEngine() {
   const [textInput,     setTextInput]     = useState("");                    // text
   const [otherInput,    setOtherInput]    = useState("");                    // "other" free text
 
+  const [multiTextInputs, setMultiTextInputs] = useState<Record<string, string>>({});
+
   const [submitting, setSubmitting] = useState(false);
   const [showGate,   setShowGate]   = useState(false);
 
@@ -132,6 +134,9 @@ export default function AssessmentEngine() {
   const selectedMultiHasOther =
     qType === "multi" &&
     currentQuestion.options.some((o) => o.hasOther && selectedMulti.includes(o.id));
+  const selectedDropdownHasOther =
+    qType === "dropdown" &&
+    currentQuestion.options.find((o) => o.id === selected)?.hasOther === true;
 
   // ── hasAnswer ─────────────────────────────────────────────────────────────
   const hasAnswer = (() => {
@@ -146,8 +151,21 @@ export default function AssessmentEngine() {
       return true;
     }
     if (qType === "text") return textInput.trim().length > 0;
+    if (qType === "multi-text") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      for (const f of currentQuestion.fields ?? []) {
+        const val = (multiTextInputs[f.id] ?? "").trim();
+        if (f.required && val === "") return false;
+        if (f.inputType === "email" && val !== "" && !emailRegex.test(val)) return false;
+      }
+      return true;
+    }
     if (qType === "likert") return selected !== null;
-    if (qType === "dropdown") return selected !== null;
+    if (qType === "dropdown") {
+      if (selected === null) return false;
+      if (selectedDropdownHasOther && otherInput.trim() === "") return false;
+      return true;
+    }
     // single
     if (selected === null) return false;
     if (selectedOptionHasOther && otherInput.trim() === "") return false;
@@ -171,6 +189,7 @@ export default function AssessmentEngine() {
         if (Array.isArray(p.selectedMulti)) setSelectedMulti(p.selectedMulti);
         if (typeof p.textInput === "string") setTextInput(p.textInput);
         if (typeof p.otherInput === "string") setOtherInput(p.otherInput);
+        if (p.multiTextInputs && typeof p.multiTextInputs === "object") setMultiTextInputs(p.multiTextInputs);
       }
     } catch {
       // Ignore corrupted progress data
@@ -192,10 +211,10 @@ export default function AssessmentEngine() {
     if (!hydrated) return;
     sessionStorage.setItem("sh_progress", JSON.stringify({
       started, consented, checked, currentId, history,
-      answers, otherTexts, selected, selectedMulti, textInput, otherInput,
+      answers, otherTexts, selected, selectedMulti, textInput, otherInput, multiTextInputs,
     }));
   }, [hydrated, started, consented, checked, currentId, history,
-      answers, otherTexts, selected, selectedMulti, textInput, otherInput]);
+      answers, otherTexts, selected, selectedMulti, textInput, otherInput, multiTextInputs]);
 
   // ── Restore selection when navigating to a question ───────────────────────
   function restoreSelectionFor(
@@ -212,14 +231,26 @@ export default function AssessmentEngine() {
       setSelectedMulti(Array.isArray(ans) ? ans : []);
       setSelected(null);
       setTextInput("");
+      setMultiTextInputs({});
     } else if (q.type === "text") {
       setTextInput(typeof ans === "string" ? ans : "");
       setSelected(null);
       setSelectedMulti([]);
+      setMultiTextInputs({});
+    } else if (q.type === "multi-text") {
+      const restored: Record<string, string> = {};
+      (q.fields ?? []).forEach((f) => {
+        restored[f.id] = typeof savedAnswers[f.id] === "string" ? savedAnswers[f.id] as string : "";
+      });
+      setMultiTextInputs(restored);
+      setSelected(null);
+      setSelectedMulti([]);
+      setTextInput("");
     } else {
       setSelected(typeof ans === "string" ? ans : null);
       setSelectedMulti([]);
       setTextInput("");
+      setMultiTextInputs({});
     }
   }
 
@@ -249,8 +280,20 @@ export default function AssessmentEngine() {
   async function handleNext() {
     if (!hasAnswer) return;
 
-    const currentAnswer = getCurrentAnswer();
-    const updatedAnswers = { ...answers, [currentId]: currentAnswer };
+    let updatedAnswers: Record<string, string | string[]>;
+    let currentAnswer: string | string[];
+
+    if (qType === "multi-text") {
+      updatedAnswers = { ...answers };
+      (currentQuestion.fields ?? []).forEach((f) => {
+        updatedAnswers[f.id] = (multiTextInputs[f.id] ?? "").trim();
+      });
+      currentAnswer = "";
+    } else {
+      currentAnswer = getCurrentAnswer();
+      updatedAnswers = { ...answers, [currentId]: currentAnswer };
+    }
+
     const updatedOthers  = otherInput.trim()
       ? { ...otherTexts, [currentId]: otherInput.trim() }
       : otherTexts;
@@ -258,7 +301,9 @@ export default function AssessmentEngine() {
     setAnswers(updatedAnswers);
     setOtherTexts(updatedOthers);
 
-    const nextId = resolveNextId(currentQuestion, currentAnswer);
+    const nextId = qType === "multi-text"
+      ? currentQuestion.nextId
+      : resolveNextId(currentQuestion, currentAnswer);
 
     if (nextId === "[END]") {
       // ── Categorisation scoring ───────────────────────────────────────────
@@ -313,8 +358,15 @@ export default function AssessmentEngine() {
     }
 
     // Save current partial answer before going back
-    const currentAnswer = getCurrentAnswer();
-    const updatedAnswers = { ...answers, [currentId]: currentAnswer };
+    let updatedAnswers: Record<string, string | string[]>;
+    if (qType === "multi-text") {
+      updatedAnswers = { ...answers };
+      (currentQuestion.fields ?? []).forEach((f) => {
+        updatedAnswers[f.id] = (multiTextInputs[f.id] ?? "").trim();
+      });
+    } else {
+      updatedAnswers = { ...answers, [currentId]: getCurrentAnswer() };
+    }
     const updatedOthers  = otherInput.trim()
       ? { ...otherTexts, [currentId]: otherInput.trim() }
       : otherTexts;
@@ -483,11 +535,6 @@ export default function AssessmentEngine() {
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
         <div className="max-w-2xl w-full">
 
-          {/* Section chip */}
-          <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
-            {currentQuestion.section}
-          </p>
-
           <ProgressBar current={progressCurrent} total={TOTAL_QUESTIONS} />
 
           <div className="card mt-6 p-6 md:p-8 overflow-visible">
@@ -606,12 +653,70 @@ export default function AssessmentEngine() {
 
             {/* ── Dropdown ── */}
             {qType === "dropdown" && (
-              <CustomDropdown
-                options={currentQuestion.options}
-                value={selected}
-                onChange={(id) => setSelected(id)}
-                language={language}
-              />
+              <>
+                <CustomDropdown
+                  options={currentQuestion.options}
+                  value={selected}
+                  onChange={(id) => {
+                    setSelected(id);
+                    const opt = currentQuestion.options.find((o) => o.id === id);
+                    if (!opt?.hasOther) setOtherInput("");
+                  }}
+                  language={language}
+                />
+                {selectedDropdownHasOther && (
+                  <input
+                    type="text"
+                    value={otherInput}
+                    onChange={(e) => setOtherInput(e.target.value)}
+                    placeholder={language === "en" ? "Please specify…" : "Sila nyatakan…"}
+                    className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-primary text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary"
+                  />
+                )}
+              </>
+            )}
+
+            {/* ── Multi-text (contact details group) ── */}
+            {qType === "multi-text" && (
+              <div className="flex flex-col gap-5">
+                {(currentQuestion.fields ?? []).map((field) => {
+                  const val = multiTextInputs[field.id] ?? "";
+                  const isEmail = field.inputType === "email";
+                  const emailInvalid = isEmail && val.trim() !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+                  return (
+                    <div key={field.id}>
+                      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                        {field.label[language]}
+                        {!field.required && (
+                          <span className="ml-1.5 normal-case font-normal text-gray-400">
+                            {language === "en" ? "(optional)" : "(pilihan)"}
+                          </span>
+                        )}
+                      </label>
+                      <input
+                        type={field.inputType ?? "text"}
+                        inputMode={field.inputType === "tel" ? "tel" : undefined}
+                        value={val}
+                        onChange={(e) => setMultiTextInputs((prev) => ({ ...prev, [field.id]: e.target.value }))}
+                        placeholder={field.placeholder?.[language] ?? ""}
+                        className={`w-full px-4 py-3.5 rounded-xl border-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none transition-colors ${
+                          emailInvalid
+                            ? "border-red-400 focus:border-red-400"
+                            : "border-gray-200 focus:border-primary"
+                        }`}
+                      />
+                      {emailInvalid && (
+                        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
+                          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          {language === "en" ? "Please enter a valid email address." : "Sila masukkan alamat e-mel yang sah."}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             )}
 
             {/* ── Likert scale (1–5) ── */}
@@ -648,11 +753,13 @@ export default function AssessmentEngine() {
             {qType === "text" && (
               <div className="py-2">
                 <input
-                  type="text"
+                  type={currentQuestion.inputType ?? "text"}
+                  inputMode={currentQuestion.inputType === "number" ? "numeric" : undefined}
+                  min={currentQuestion.inputType === "number" ? 0 : undefined}
                   value={textInput}
                   onChange={(e) => setTextInput(e.target.value)}
                   placeholder={currentQuestion.placeholder?.[language] ?? ""}
-                  className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary transition-colors"
+                  className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   onKeyDown={(e) => { if (e.key === "Enter" && hasAnswer) handleNext(); }}
                 />
               </div>
