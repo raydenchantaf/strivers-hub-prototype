@@ -10,12 +10,16 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
-    "@types/bcryptjs": "^3.0.0",
+    "@portabletext/react": "^3.2.1",
+    "@sanity/image-url": "^1.1.0",
+    "styled-components": "^6.1.13",
     "bcryptjs": "^3.0.3",
     "next": "^15.3.2",
+    "next-sanity": "^9.8.21",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "sanity": "^3.88.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
