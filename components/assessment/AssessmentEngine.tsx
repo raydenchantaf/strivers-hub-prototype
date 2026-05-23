@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { questions, questionsById, getCategorizationScore, getScoreTier, Question } from "@/data/questions";
@@ -490,22 +490,35 @@ export default function AssessmentEngine() {
           <div className="container-max section-padding py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
               {steps.map((step, i) => (
-                <div key={i} className="flex items-stretch">
-                  <div className="bg-white rounded-2xl p-8 flex flex-col gap-4 flex-1 shadow-sm">
-                    {step.icon}
-                    <h3 className="text-base font-extrabold text-gray-900">{step.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                <Fragment key={i}>
+                  {/* Card + desktop right arrow (desktop arrow lives inside the flex row) */}
+                  <div className="flex items-stretch">
+                    <div className="bg-white rounded-2xl p-8 flex flex-col gap-4 flex-1 shadow-sm">
+                      {step.icon}
+                      <h3 className="text-base font-extrabold text-gray-900">{step.title}</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                    </div>
+                    {i < steps.length - 1 && (
+                      <div className="hidden md:flex items-center px-2 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
                   </div>
+                  {/* Mobile down arrow — separate grid item, centred, hidden on desktop */}
                   {i < steps.length - 1 && (
-                    <div className="hidden md:flex items-center px-2 flex-shrink-0">
-                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                    <div className="flex md:hidden justify-center items-center py-3">
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                         <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                       </div>
                     </div>
                   )}
-                </div>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -513,7 +526,7 @@ export default function AssessmentEngine() {
 
         <div className="container-max section-padding pt-10 pb-10">
           <div className="rounded-3xl overflow-hidden max-h-[420px]">
-            <img src="/hero.image.png" alt="Assessment" className="w-full h-full object-cover object-top" />
+            <img src="/assessment.image.png" alt="Assessment" className="w-full h-full object-cover object-top" />
           </div>
         </div>
       </div>

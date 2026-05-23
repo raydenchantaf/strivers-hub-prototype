@@ -1,12 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is not set");
+export function getDb() {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL environment variable is not set");
+  return neon(url);
 }
-
-/**
- * Neon serverless SQL client.
- * Import `sql` in any API route and use as a tagged template:
- *   const rows = await sql`SELECT * FROM users WHERE email = ${email}`;
- */
-export const sql = neon(process.env.DATABASE_URL);

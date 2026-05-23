@@ -211,12 +211,12 @@ export default function Navbar() {
                 ) : (
                   <>
                     <Link href="/login"
-                      className="text-sm font-semibold py-2 px-4 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+                      className="text-sm font-semibold py-2 px-4 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-colors min-w-[110px] text-center"
                     >
                       {t("nav.login")}
                     </Link>
-                    <Link href="/register" className="btn-primary text-sm py-2 px-4">
-                      {t("nav.joinNow")}
+                    <Link href="/register" className="btn-primary text-sm py-2 px-4 min-w-[110px] text-center">
+                      {t("nav.joinUs")}
                     </Link>
                   </>
                 )}
