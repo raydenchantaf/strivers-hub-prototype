@@ -2,68 +2,63 @@
 
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { urlFor, type SanityResource, type ResourceCategory } from "@/lib/sanity";
+import { urlFor, type SanityResource, type SanityCategory } from "@/lib/sanity";
 import Link from "next/link";
 
-const categoryColors: Record<string, string> = {
-  finance:    "bg-emerald-100 text-emerald-700",
-  digital:    "bg-blue-100    text-blue-700",
-  marketing:  "bg-purple-100  text-purple-700",
-  legal:      "bg-orange-100  text-orange-700",
-  mentorship: "bg-pink-100    text-pink-700",
-  grants:     "bg-yellow-100  text-yellow-700",
-};
-
-type Filter = "all" | ResourceCategory;
-
-const ALL_FILTERS: Filter[] = [
-  "all", "finance", "digital", "marketing", "legal", "mentorship", "grants",
-];
-
-const filterLabels: Record<Filter, { en: string; bm: string }> = {
-  all:        { en: "All",        bm: "Semua" },
-  finance:    { en: "Finance",    bm: "Kewangan" },
-  digital:    { en: "Digital",    bm: "Digital" },
-  marketing:  { en: "Marketing",  bm: "Pemasaran" },
-  legal:      { en: "Legal",      bm: "Undang-undang" },
-  mentorship: { en: "Mentorship", bm: "Bimbingan" },
-  grants:     { en: "Grants",     bm: "Geran" },
-};
+const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange uppercase";
 
 interface Props {
-  resources: SanityResource[];
+  resources:  SanityResource[];
+  categories: SanityCategory[];
 }
 
-export default function ResourcesGrid({ resources }: Props) {
+export default function ResourcesGrid({ resources, categories }: Props) {
   const { language } = useLanguage();
-  const [activeFilter, setActiveFilter] = useState<Filter>("all");
+  const [activeFilter, setActiveFilter] = useState<string>("all");
 
-  // Only show filters that have at least one article (plus "All")
-  const usedCategories = new Set(resources.map((r) => r.category));
-  const visibleFilters = ALL_FILTERS.filter(
-    (f) => f === "all" || usedCategories.has(f as ResourceCategory)
+  // Only surface categories that have at least one article
+  const usedValues = new Set(
+    resources.flatMap((r) =>
+      Array.isArray(r.category) ? r.category.map((c) => c.value) : []
+    )
   );
+  const visibleCategories = categories.filter((c) => usedValues.has(c.value));
 
   const filtered =
     activeFilter === "all"
       ? resources
-      : resources.filter((r) => r.category === activeFilter);
+      : resources.filter((r) =>
+          Array.isArray(r.category) &&
+          r.category.some((c) => c.value === activeFilter)
+        );
 
   return (
     <>
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2 mb-8">
-        {visibleFilters.map((f) => (
+        {/* "All" tab */}
+        <button
+          onClick={() => setActiveFilter("all")}
+          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+            activeFilter === "all"
+              ? "bg-primary text-white shadow-md"
+              : "bg-white border border-gray-200 text-gray-600 hover:border-primary hover:text-primary"
+          }`}
+        >
+          {language === "bm" ? "Semua" : "All"}
+        </button>
+
+        {visibleCategories.map((cat) => (
           <button
-            key={f}
-            onClick={() => setActiveFilter(f)}
+            key={cat._id}
+            onClick={() => setActiveFilter(cat.value)}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-              activeFilter === f
+              activeFilter === cat.value
                 ? "bg-primary text-white shadow-md"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-primary hover:text-primary"
             }`}
           >
-            {filterLabels[f][language]}
+            {language === "bm" ? cat.title_bm : cat.title_en}
           </button>
         ))}
       </div>
@@ -74,8 +69,12 @@ export default function ResourcesGrid({ resources }: Props) {
           {filtered.map((article) => {
             const title   = language === "bm" ? article.title_bm   : article.title_en;
             const excerpt = language === "bm" ? article.excerpt_bm : article.excerpt_en;
-            const imgSrc  = article.image
-              ? urlFor(article.image).width(600).height(338).fit("crop").auto("format").url()
+            const cats: SanityCategory[] = Array.isArray(article.category) ? article.category : [];
+            const activeImage = language === "bm"
+              ? (article.image_bm ?? article.image_en)
+              : (article.image_en ?? article.image_bm);
+            const imgSrc = activeImage
+              ? urlFor(activeImage).width(600).height(338).fit("crop").auto("format").url()
               : "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80";
 
             return (
@@ -83,20 +82,21 @@ export default function ResourcesGrid({ resources }: Props) {
                 <div className="aspect-video overflow-hidden">
                   <img
                     src={imgSrc}
-                    alt={article.image?.alt || title}
+                    alt={activeImage?.alt || title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <div className="p-5">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${
-                        categoryColors[article.category] ?? "bg-gray-100 text-gray-600"
-                      }`}
-                    >
-                      {filterLabels[article.category as Filter]?.[language] ?? article.category}
-                    </span>
-                    <span className="text-xs text-gray-400">{article.readTime} min read</span>
+                  {/* Category badges */}
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {cats.map((cat) => (
+                      <span
+                        key={cat._id}
+                        className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
+                      >
+                        {language === "bm" ? cat.title_bm : cat.title_en}
+                      </span>
+                    ))}
                   </div>
 
                   <p className="text-xs text-gray-400 mb-1.5">
@@ -106,9 +106,11 @@ export default function ResourcesGrid({ resources }: Props) {
                     )}
                   </p>
 
-                  <h3 className="font-bold text-gray-900 text-sm mb-2 leading-snug group-hover:text-primary transition-colors">
-                    {title}
-                  </h3>
+                  <Link href={`/resources/${article.slug.current}`}>
+                    <h3 className="font-bold text-gray-900 text-sm mb-2 leading-snug group-hover:text-primary transition-colors">
+                      {title}
+                    </h3>
+                  </Link>
                   <p className="text-gray-500 text-xs leading-relaxed mb-4">
                     {excerpt}
                   </p>

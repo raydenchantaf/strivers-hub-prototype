@@ -19,6 +19,10 @@ export default defineConfig({
             S.listItem()
               .title("Resources")
               .child(S.documentTypeList("resource").title("All Resources")),
+            S.divider(),
+            S.listItem()
+              .title("Categories")
+              .child(S.documentTypeList("category").title("All Categories")),
           ]),
     }),
   ],

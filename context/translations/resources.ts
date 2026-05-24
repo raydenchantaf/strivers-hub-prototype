@@ -1,7 +1,7 @@
 export const resources = {
   en: {
     "resources.title":    "Insights & Resources",
-    "resources.subtitle": "Curated articles, guides, and tools to help your business grow.",
+    "resources.subtitle": "Discover and embark on your entrepreneurial journey through our extensive collection at your fingertips.",
     "resources.all":      "All",
     "resources.finance":  "Finance",
     "resources.digital":  "Digital",
@@ -9,8 +9,8 @@ export const resources = {
     "resources.legal":    "Legal",
   },
   bm: {
-    "resources.title":    "Pandangan & Sumber",
-    "resources.subtitle": "Artikel, panduan, dan alat yang dipilih khas untuk membantu perniagaan anda berkembang.",
+    "resources.title":    "Hub Ilmu & Koleksi Maklumat",
+    "resources.subtitle": "Mulakan perjalanan keusahawanan anda dengan menerokai sumber-sumber yang telah disediakan.",
     "resources.all":      "Semua",
     "resources.finance":  "Kewangan",
     "resources.digital":  "Digital",

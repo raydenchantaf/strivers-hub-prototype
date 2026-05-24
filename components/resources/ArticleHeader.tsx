@@ -1,46 +1,39 @@
 "use client";
 
 import { useLanguage } from "@/context/LanguageContext";
+import { urlFor, type SanityCategory, type SanityResource } from "@/lib/sanity";
 
-const categoryColors: Record<string, string> = {
-  finance:    "bg-emerald-100 text-emerald-700",
-  digital:    "bg-blue-100    text-blue-700",
-  marketing:  "bg-purple-100  text-purple-700",
-  legal:      "bg-orange-100  text-orange-700",
-  mentorship: "bg-pink-100    text-pink-700",
-  grants:     "bg-yellow-100  text-yellow-700",
-};
-
-const categoryLabels: Record<string, { en: string; bm: string }> = {
-  finance:    { en: "Finance",    bm: "Kewangan" },
-  digital:    { en: "Digital",    bm: "Digital" },
-  marketing:  { en: "Marketing",  bm: "Pemasaran" },
-  legal:      { en: "Legal",      bm: "Undang-undang" },
-  mentorship: { en: "Mentorship", bm: "Bimbingan" },
-  grants:     { en: "Grants",     bm: "Geran" },
-};
+const BADGE_CLASS = "bg-primary/10 text-primary";
 
 interface Props {
   title_en: string;
   title_bm: string;
-  category: string;
-  readTime: number;
+  category: SanityCategory[];
   publishedAt: string;
+  image_en?: SanityResource["image_en"];
+  image_bm?: SanityResource["image_bm"];
 }
 
 export default function ArticleHeader({
   title_en,
   title_bm,
   category,
-  readTime,
   publishedAt,
+  image_en,
+  image_bm,
 }: Props) {
   const { language } = useLanguage();
 
   const isBm     = language === "bm";
   const title    = isBm ? title_bm : title_en;
   const subtitle = isBm ? title_en : title_bm;
-  const catLabel = categoryLabels[category]?.[language] ?? category;
+  const cats: SanityCategory[] = Array.isArray(category) ? category : [];
+
+  // Pick the language-appropriate image, fall back to the other if unavailable
+  const activeImage = isBm ? (image_bm ?? image_en) : (image_en ?? image_bm);
+  const coverSrc = activeImage
+    ? urlFor(activeImage).width(900).auto("format").url()
+    : null;
 
   const formattedDate = new Date(publishedAt).toLocaleDateString(
     isBm ? "ms-MY" : "en-MY",
@@ -49,18 +42,27 @@ export default function ArticleHeader({
 
   return (
     <>
+      {/* Cover image — language-aware */}
+      {coverSrc && (
+        <div className="w-full rounded-xl overflow-hidden mb-8">
+          <img
+            src={coverSrc}
+            alt={activeImage?.alt || title}
+            className="w-full h-auto"
+          />
+        </div>
+      )}
+
       {/* Meta row */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
-        <span
-          className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${
-            categoryColors[category] ?? "bg-gray-100 text-gray-600"
-          }`}
-        >
-          {catLabel}
-        </span>
-        <span className="text-xs text-gray-400">
-          {readTime} {isBm ? "min baca" : "min read"}
-        </span>
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        {cats.map((cat) => (
+          <span
+            key={cat._id}
+            className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
+          >
+            {isBm ? cat.title_bm : cat.title_en}
+          </span>
+        ))}
         <span className="text-xs text-gray-400">{formattedDate}</span>
       </div>
 

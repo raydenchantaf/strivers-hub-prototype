@@ -18,7 +18,7 @@ const config: Config = {
         brand: {
           pink: "var(--color-brand-pink)",
           rose: "var(--color-brand-rose)",
-          orange: "var(--color-brand-orange)",
+          orange: "#FF7000",
           dark: "var(--color-brand-dark)",
         },
       },
