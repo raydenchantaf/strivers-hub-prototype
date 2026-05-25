@@ -26,6 +26,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "INVALID_CREDENTIALS" });
     }
 
+    // Claim any anonymous submissions that contain this user's email
+    // (submitted before they registered — matched via the demographic q5i field)
+    await sql`
+      UPDATE assessment_submissions
+      SET user_id = ${user.id}
+      WHERE user_id IS NULL
+        AND answers_readable->>'q5i' = ${email.toLowerCase().trim()}
+    `;
+
     const session = {
       id:        user.id,
       firstName: user.first_name,

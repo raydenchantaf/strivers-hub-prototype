@@ -46,7 +46,6 @@ async function run() {
       s.score,
       s.category,
       s.answers_readable,
-      s.other_texts,
       u.first_name       AS user_first_name,
       u.last_name        AS user_last_name,
       u.email            AS user_email
@@ -83,7 +82,6 @@ async function run() {
   // ── Build rows ──────────────────────────────────────────────────────────────
   const dataRows = rows.map((row) => {
     const readable = row.answers_readable ?? {};
-    const others   = row.other_texts ?? {};
 
     const meta = [
       row.id,
@@ -98,12 +96,7 @@ async function run() {
       row.user_email      ?? "",
     ];
 
-    const answers = questionOrder.map((id) => {
-      let val = readable[id] ?? "";
-      // Append "other" text if this question had a free-text "other" response
-      if (others[id]) val = val ? `${val} — ${others[id]}` : others[id];
-      return val;
-    });
+    const answers = questionOrder.map((id) => readable[id] ?? "");
 
     return [...meta, ...answers];
   });
