@@ -2,84 +2,123 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { FaFacebook, FaYoutube, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import { useLanguage } from "@/context/LanguageContext";
+
+const socialLinks = [
+  { icon: FaFacebook,  href: "https://www.facebook.com/strivershub/",                  label: "Facebook"  },
+  { icon: FaInstagram, href: "https://www.instagram.com/strivers.hub/",                label: "Instagram" },
+  { icon: FaLinkedin,  href: "https://www.linkedin.com/company/the-asia-foundation",   label: "LinkedIn"  },
+  { icon: FaYoutube,   href: "https://www.youtube.com/@StriversHUB",                   label: "YouTube"   },
+];
 
 export default function Footer() {
   const { t } = useLanguage();
 
   return (
     <footer className="bg-brand-dark text-white">
-      <div className="container-max section-padding py-12 px-4 md:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Brand */}
+      <div className="container-max px-4 md:px-8 pt-10 pb-8">
+
+        {/* Top logo row — flex so each logo keeps natural width, gap is consistent */}
+        <div className="flex flex-wrap items-end gap-x-20 gap-y-6 pb-8">
+
+          {/* Strivers Hub */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              {/* Logo */}
-              <Link href="/" className="flex items-center gap-2">
-              <Image src="/logo.white.svg" alt="Strivers' Hub" width={185} height={55} />
-              </Link>
-            </div>
-            <p className="text-white text-sm leading-relaxed">{t("footer.tagline")}</p>
-            <div className="flex gap-4 mt-5">
-              {/* Social Icons */}
-              {["facebook", "instagram", "linkedin"].map((s) => (
-                <a
-                  key={s}
-                  href="#"
-                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"
-                  aria-label={s}
-                >
-                  <span className="text-xs font-bold text-white uppercase">{s[0]}</span>
-                </a>
-              ))}
+            <Image
+              src="/logo.white.svg"
+              alt="Strivers Hub"
+              width={160}
+              height={48}
+              className="h-[50px] w-auto object-contain"
+            />
+          </div>
+
+          {/* Implementing Partner: TAF */}
+          <div className="flex flex-col items-start gap-2">
+            <p className="text-xs font-bold text-white tracking-wide">
+              {t("footer.implementing_partner")}
+            </p>
+            <div className="h-[50px] content-center">
+              <Image
+              src="/TAF.white.webp"
+              alt="The Asia Foundation"
+              width={232}
+              height={35}
+              className="h-[35px] w-auto object-contain"
+            />
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-semibold text-white mb-4">{t("footer.links")}</h4>
-            <ul className="space-y-2.5">
-              {[
-                { label: t("nav.assessment"), href: "/assessment" },
-                { label: t("nav.resources"), href: "/resources" },
-                { label: t("nav.financing"), href: "#" },
-                { label: t("nav.events"), href: "#" },
-                { label: t("nav.about"), href: "#" },
-              ].map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-400 text-sm hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Strategic Partner: MyDigital */}
+          <div className="flex flex-col items-start gap-2">
+            <p className="text-xs font-bold text-white tracking-wide">
+              {t("footer.partnership_with")}
+            </p>
+            <Image
+              src="/MyDigital.white.png"
+              alt="MyDIGITAL"
+              width={120}
+              height={48}
+              className="h-[50px] w-auto object-contain"
+            />
           </div>
 
-          {/* Contact */}
-          <div>
-            <h4 className="font-semibold text-white mb-4">{t("footer.contact")}</h4>
-            <ul className="space-y-2.5 text-sm text-gray-400">
-              <li>hello@strivershub.my</li>
-              <li>+60 3-XXXX XXXX</li>
-              <li>Kuala Lumpur, Malaysia</li>
-            </ul>
-            {/* Partner logos placeholder */}
-            <div className="mt-6 flex items-center gap-4">
-              <div className="bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-300 font-semibold">
-                Mastercard
-              </div>
-              <div className="bg-white/10 rounded-lg px-3 py-2 text-xs text-gray-300 font-semibold">
-                Asia Foundation
-              </div>
-            </div>
+          {/* Supported by: CFIG */}
+          <div className="flex flex-col items-start gap-2">
+            <p className="text-xs font-bold text-white tracking-wide">
+              {t("footer.partnership_with")}
+            </p>
+            <Image
+              src="/CFIG.white.png"
+              alt="Center for Inclusive Growth"
+              width={160}
+              height={48}
+              className="h-[50px] w-auto object-contain"
+            />
           </div>
+
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-6 text-center text-white text-xs">
-          {t("footer.rights")}
+        {/* Divider */}
+        <div className="border-t border-white/20" />
+
+        {/* Description */}
+        <p className="max-w-lg text-sm text-white/80 leading-relaxed mt-8 mb-10">
+          {t("footer.tagline")}
+        </p>
+
+        {/* Bottom bar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+            <p className="text-xs text-white/60 uppercase tracking-widest">
+              {t("footer.rights")}
+            </p>
+            <a
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-white/50 hover:text-white/80 transition-colors underline underline-offset-2"
+            >
+              {t("footer.privacyPolicy")}
+            </a>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {socialLinks.map(({ icon: Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/25 transition-colors duration-200"
+              >
+                <Icon className="w-4 h-4 text-white" />
+              </a>
+            ))}
+          </div>
+
         </div>
       </div>
     </footer>

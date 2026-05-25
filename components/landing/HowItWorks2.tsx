@@ -51,7 +51,7 @@ export default function HowItWorks2() {
           </div>
 
           {/* Right: content */}
-          <div className="relative flex-1 bg-[#B12069] flex flex-col justify-center gap-6 px-8 py-10 md:px-12 md:py-20 overflow-hidden">
+          <div className="relative flex-1 bg-[#822B62] flex flex-col justify-center gap-6 px-8 py-10 md:px-12 md:py-20 overflow-hidden">
             <div className="absolute top-0 right-0 w-56 h-56 rounded-full bg-white/10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
             <div className="absolute bottom-0 right-10 w-36 h-36 rounded-full bg-white/10 translate-y-1/3 pointer-events-none" />
 

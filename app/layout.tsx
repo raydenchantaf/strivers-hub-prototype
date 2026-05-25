@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/context/LanguageContext";
-import { AssessmentResetProvider } from "@/context/AssessmentResetContext";
-import Navbar from "@/components/Navbar";
-import Footer2 from "@/components/Footer2";
-import Footer from "@/components/Footer";
+import AppShell from "@/components/AppShell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,6 +16,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.png",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({
@@ -30,13 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <LanguageProvider>
-          <AssessmentResetProvider>
-            <Navbar />
-            <main>{children}</main>
-            <Footer2 />
-          </AssessmentResetProvider>
-        </LanguageProvider>
+        {/*
+         * AppShell conditionally applies Navbar/Footer/providers.
+         * /studio renders as a clean full-page viewport (no shell).
+         */}
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

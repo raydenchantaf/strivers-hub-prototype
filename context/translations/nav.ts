@@ -1,0 +1,28 @@
+export const nav = {
+  en: {
+    "nav.assessment": "Assessment",
+    "nav.resources":  "Resources",
+    "nav.financing":  "Financing",
+    "nav.events":     "Events",
+    "nav.mentorship": "Mentorship",
+    "nav.about":      "About Us",
+    "nav.login":      "Login",
+    "nav.joinUs":    "Join Us",
+    "nav.dashboard":  "Dashboard",
+    "nav.profile":    "Profile",
+    "nav.logout":     "Log Out",
+  },
+  bm: {
+    "nav.assessment": "Penilaian",
+    "nav.resources":  "Sumber",
+    "nav.financing":  "Pembiayaan",
+    "nav.events":     "Aktiviti",
+    "nav.mentorship": "Mentorship",
+    "nav.about":      "Tentang Kami",
+    "nav.login":      "Log Masuk",
+    "nav.joinUs":    "Sertai Kami",
+    "nav.dashboard":  "Papan Pemuka",
+    "nav.profile":    "Profil",
+    "nav.logout":     "Log Keluar",
+  },
+};

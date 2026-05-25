@@ -46,7 +46,6 @@ export default function InsightsGrid() {
                   >
                     {t(`resources.${article.category}`)}
                   </span>
-                  <span className="text-xs text-gray-400">{article.readTime} min read</span>
                 </div>
                 <h3 className="font-bold text-gray-900 text-sm mb-2 leading-snug group-hover:text-primary transition-colors">
                   {article.title[language]}

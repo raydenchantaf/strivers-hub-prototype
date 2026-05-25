@@ -18,6 +18,7 @@ const config: Config = {
         brand: {
           pink: "var(--color-brand-pink)",
           rose: "var(--color-brand-rose)",
+          orange: "#FF7000",
           dark: "var(--color-brand-dark)",
         },
       },
@@ -26,7 +27,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
 };
 
 export default config;

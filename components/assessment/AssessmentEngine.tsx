@@ -1,34 +1,140 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
-import { questions, getScoreTier, Question } from "@/data/questions";
+import { questions, questionsById, getCategorizationScore, getScoreTier, Question } from "@/data/questions";
 import ProgressBar from "./ProgressBar";
+import RegistrationGate from "./RegistrationGate";
+
+// ─── Custom Dropdown ──────────────────────────────────────────────────────────
+
+type DropdownOption = { id: string; label: { en: string; bm: string } };
+
+function CustomDropdown({
+  options,
+  value,
+  onChange,
+  language,
+}: {
+  options: DropdownOption[];
+  value: string | null;
+  onChange: (id: string) => void;
+  language: "en" | "bm";
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  const selectedOption = options.find((o) => o.id === value);
+  const placeholder = language === "en" ? "— Select an option —" : "— Pilih pilihan —";
+
+  return (
+    <div ref={ref} className="relative py-2">
+      <button
+        type="button"
+        onClick={() => setOpen((p) => !p)}
+        className={`w-full px-4 py-3.5 rounded-xl border-2 font-medium text-sm bg-white flex items-center justify-between gap-2 transition-all duration-150 outline-none ${
+          value ? "border-primary text-gray-900" : "border-gray-200 text-gray-400"
+        } focus:border-primary`}
+      >
+        <span className="truncate">{selectedOption ? selectedOption.label[language] : placeholder}</span>
+        <svg
+          className={`w-4 h-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+          {options.map((option, idx) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => { onChange(option.id); setOpen(false); }}
+              className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors duration-100 ${
+                idx === 0 ? "rounded-t-xl" : ""
+              } ${idx === options.length - 1 ? "rounded-b-xl" : ""} ${
+                value === option.id
+                  ? "bg-primary text-white"
+                  : "text-gray-800 hover:bg-pink-50 hover:text-primary"
+              }`}
+            >
+              {option.label[language]}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function getQuestionType(q: Question) {
-  return q.type ?? "single";
+/** Total questions in the longest path (Yes path = 25 steps after grouping q5g–q5j) */
+const TOTAL_QUESTIONS = 25;
+
+/** Resolve the next question ID given the current question and the answer given */
+function resolveNextId(q: Question, answer: string | string[]): string {
+  if (typeof answer === "string") {
+    const opt = q.options.find((o) => o.id === answer);
+    if (opt?.nextId) return opt.nextId;
+  }
+  return q.nextId;
 }
 
-function computeScore(answers: Record<number, string | string[]>): number {
-  return Object.entries(answers).reduce((sum, [qId, ans]) => {
-    const q = questions.find((q) => q.id === Number(qId));
-    if (!q) return sum;
-    const type = getQuestionType(q);
-    if (type === "likert") return sum + Number(ans || 0);
-    if (type === "multi") {
-      const ids = Array.isArray(ans) ? ans : [];
-      return sum + ids.reduce((s, id) => {
-        const opt = q.options.find((o) => o.id === id);
-        return s + (opt?.points ?? 0);
-      }, 0);
+/**
+ * Resolve all raw answer IDs to their human-readable labels.
+ * Stores answer labels only (not question text) — compact but fully readable at export time.
+ */
+function buildAnswersReadable(
+  allAnswers: Record<string, string | string[]>,
+  lang: "en" | "bm",
+): Record<string, string> {
+  const readable: Record<string, string> = {};
+
+  for (const [qId, answer] of Object.entries(allAnswers)) {
+    const q = questionsById[qId];
+
+    if (!q) {
+      // Multi-text subfields (q5h, q5i, q5j) — raw text, store as-is
+      readable[qId] = typeof answer === "string" ? answer : (answer as string[]).join(", ");
+      continue;
     }
-    // single
-    const opt = q.options.find((o) => o.id === ans);
-    return sum + (opt?.points ?? 0);
-  }, 0);
+
+    switch (q.type) {
+      case "text":
+      case "likert":
+        readable[qId] = typeof answer === "string" ? answer : "";
+        break;
+      case "multi-text":
+        // q5g is both the parent question ID and first-name field — store its raw value
+        readable[qId] = typeof answer === "string" ? answer : "";
+        break;
+      case "multi": {
+        const ids = Array.isArray(answer) ? answer : [answer as string];
+        readable[qId] = ids
+          .map((id) => q.options.find((o) => o.id === id)?.label[lang] ?? id)
+          .join(", ");
+        break;
+      }
+      default: {
+        // single, dropdown
+        const opt = q.options.find((o) => o.id === answer);
+        readable[qId] = opt?.label[lang] ?? (typeof answer === "string" ? answer : "");
+      }
+    }
+  }
+
+  return readable;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -38,36 +144,98 @@ export default function AssessmentEngine() {
   const router = useRouter();
 
   // ── State ──────────────────────────────────────────────────────────────────
-  const [hydrated, setHydrated] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [consented, setConsented] = useState(false);
-  const [checked, setChecked] = useState(false);
-  const [showConsentError, setShowConsentError] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string | string[]>>({});
-  const [selected, setSelected] = useState<string | null>(null);       // single / likert
-  const [selectedMulti, setSelectedMulti] = useState<string[]>([]);   // multi
+  const [hydrated,          setHydrated]          = useState(false);
+  const [started,           setStarted]           = useState(false);
+  const [consented,         setConsented]         = useState(false);
+  const [checked,           setChecked]           = useState(false);
+  const [showConsentError,  setShowConsentError]  = useState(false);
+
+  // Navigation
+  const [currentId,  setCurrentId]  = useState("q1");
+  const [history,    setHistory]    = useState<string[]>([]);
+
+  // Answers (keyed by question ID)
+  const [answers,    setAnswers]    = useState<Record<string, string | string[]>>({});
+  const [otherTexts, setOtherTexts] = useState<Record<string, string>>({});
+
+  // Active selection state — reset when navigating to a new question
+  const [selected,      setSelected]      = useState<string | null>(null);  // single / likert / dropdown
+  const [selectedMulti, setSelectedMulti] = useState<string[]>([]);         // multi
+  const [textInput,     setTextInput]     = useState("");                    // text
+  const [otherInput,    setOtherInput]    = useState("");                    // "other" free text
+
+  const [multiTextInputs, setMultiTextInputs] = useState<Record<string, string>>({});
+
   const [submitting, setSubmitting] = useState(false);
+  const [showGate,   setShowGate]   = useState(false);
 
-  const currentQuestion = questions[currentIndex];
-  const qType = getQuestionType(currentQuestion);
-  const isLast = currentIndex === questions.length - 1;
-  const hasAnswer = qType === "multi" ? selectedMulti.length > 0 : selected !== null;
+  const currentQuestion = questionsById[currentId];
+  const qType           = currentQuestion.type;
+  const isLast          = currentQuestion.nextId === "[END]";
 
-  // ── Restore progress from sessionStorage on mount ─────────────────────────
+  // Derive "other" visibility from current selections
+  const selectedOptionHasOther =
+    qType === "single" &&
+    currentQuestion.options.find((o) => o.id === selected)?.hasOther === true;
+  const selectedMultiHasOther =
+    qType === "multi" &&
+    currentQuestion.options.some((o) => o.hasOther && selectedMulti.includes(o.id));
+  const selectedDropdownHasOther =
+    qType === "dropdown" &&
+    currentQuestion.options.find((o) => o.id === selected)?.hasOther === true;
+
+  // ── hasAnswer ─────────────────────────────────────────────────────────────
+  const hasAnswer = (() => {
+    if (qType === "multi") {
+      const needed = currentQuestion.maxSelections ?? 0;
+      if (currentQuestion.exactSelections) {
+        if (selectedMulti.length !== needed) return false;
+      } else {
+        if (selectedMulti.length === 0) return false;
+      }
+      if (selectedMultiHasOther && otherInput.trim() === "") return false;
+      return true;
+    }
+    if (qType === "text") return textInput.trim().length > 0;
+    if (qType === "multi-text") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      for (const f of currentQuestion.fields ?? []) {
+        const val = (multiTextInputs[f.id] ?? "").trim();
+        if (f.required && val === "") return false;
+        if (f.inputType === "email" && val !== "" && !emailRegex.test(val)) return false;
+      }
+      return true;
+    }
+    if (qType === "likert") return selected !== null;
+    if (qType === "dropdown") {
+      if (selected === null) return false;
+      if (selectedDropdownHasOther && otherInput.trim() === "") return false;
+      return true;
+    }
+    // single
+    if (selected === null) return false;
+    if (selectedOptionHasOther && otherInput.trim() === "") return false;
+    return true;
+  })();
+
+  // ── Restore session on mount ──────────────────────────────────────────────
   useEffect(() => {
     try {
       const saved = sessionStorage.getItem("sh_progress");
       if (saved) {
         const p = JSON.parse(saved);
-        setStarted(p.started ?? false);
-        setConsented(p.consented ?? false);
-        setChecked(p.checked ?? false);
-        setCurrentIndex(p.currentIndex ?? 0);
-        setAnswers(p.answers ?? {});
-        // Restore the active (possibly uncommitted) selection
-        setSelected(p.selected ?? null);
-        setSelectedMulti(p.selectedMulti ?? []);
+        if (p.started)   setStarted(true);
+        if (p.consented) setConsented(true);
+        if (p.checked)   setChecked(true);
+        if (p.currentId && questionsById[p.currentId]) setCurrentId(p.currentId);
+        if (Array.isArray(p.history))     setHistory(p.history);
+        if (p.answers)    setAnswers(p.answers);
+        if (p.otherTexts) setOtherTexts(p.otherTexts);
+        if (p.selected !== undefined)     setSelected(p.selected);
+        if (Array.isArray(p.selectedMulti)) setSelectedMulti(p.selectedMulti);
+        if (typeof p.textInput === "string") setTextInput(p.textInput);
+        if (typeof p.otherInput === "string") setOtherInput(p.otherInput);
+        if (p.multiTextInputs && typeof p.multiTextInputs === "object") setMultiTextInputs(p.multiTextInputs);
       }
     } catch {
       // Ignore corrupted progress data
@@ -75,50 +243,127 @@ export default function AssessmentEngine() {
     setHydrated(true);
   }, []);
 
-  // ── Persist progress to sessionStorage whenever key state changes ──────────
-  // Includes `selected` and `selectedMulti` so an option the user clicked but
-  // hasn't confirmed with Next is also preserved across navigation.
+  // Check login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
-    if (!hydrated) return; // don't overwrite restored data on first render
-    sessionStorage.setItem(
-      "sh_progress",
-      JSON.stringify({ started, consented, checked, currentIndex, answers, selected, selectedMulti })
-    );
-  }, [hydrated, started, consented, checked, currentIndex, answers, selected, selectedMulti]);
+    const raw = typeof document !== "undefined"
+      ? document.cookie.match(/(^| )sh_user=([^;]+)/)
+      : null;
+    setIsLoggedIn(!!raw);
+  }, []);
+
+  // ── Persist progress ──────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!hydrated) return;
+    sessionStorage.setItem("sh_progress", JSON.stringify({
+      started, consented, checked, currentId, history,
+      answers, otherTexts, selected, selectedMulti, textInput, otherInput, multiTextInputs,
+    }));
+  }, [hydrated, started, consented, checked, currentId, history,
+      answers, otherTexts, selected, selectedMulti, textInput, otherInput, multiTextInputs]);
+
+  // ── Restore selection when navigating to a question ───────────────────────
+  function restoreSelectionFor(
+    id: string,
+    savedAnswers: Record<string, string | string[]>,
+    savedOthers: Record<string, string>,
+  ) {
+    const q   = questionsById[id];
+    const ans = savedAnswers[id];
+    const other = savedOthers[id] ?? "";
+    setOtherInput(other);
+
+    if (q.type === "multi") {
+      setSelectedMulti(Array.isArray(ans) ? ans : []);
+      setSelected(null);
+      setTextInput("");
+      setMultiTextInputs({});
+    } else if (q.type === "text") {
+      setTextInput(typeof ans === "string" ? ans : "");
+      setSelected(null);
+      setSelectedMulti([]);
+      setMultiTextInputs({});
+    } else if (q.type === "multi-text") {
+      const restored: Record<string, string> = {};
+      (q.fields ?? []).forEach((f) => {
+        restored[f.id] = typeof savedAnswers[f.id] === "string" ? savedAnswers[f.id] as string : "";
+      });
+      setMultiTextInputs(restored);
+      setSelected(null);
+      setSelectedMulti([]);
+      setTextInput("");
+    } else {
+      setSelected(typeof ans === "string" ? ans : null);
+      setSelectedMulti([]);
+      setTextInput("");
+      setMultiTextInputs({});
+    }
+  }
 
   // ── Multi-choice toggle ───────────────────────────────────────────────────
   function handleSelectMulti(optionId: string) {
     setSelectedMulti((prev) => {
-      if (prev.includes(optionId)) {
-        return prev.filter((id) => id !== optionId);
-      }
+      if (prev.includes(optionId)) return prev.filter((id) => id !== optionId);
       const max = currentQuestion.maxSelections ?? Infinity;
-      if (prev.length >= max) return prev; // cap reached — ignore
+      if (prev.length >= max) return prev;
       return [...prev, optionId];
     });
+    // Clear other text if the "other" option is being deselected
+    const opt = currentQuestion.options.find((o) => o.id === optionId);
+    if (opt?.hasOther && selectedMulti.includes(optionId)) {
+      setOtherInput("");
+    }
+  }
+
+  // ── Build current answer value ────────────────────────────────────────────
+  function getCurrentAnswer(): string | string[] {
+    if (qType === "multi") return selectedMulti;
+    if (qType === "text")  return textInput.trim();
+    return selected ?? "";
   }
 
   // ── Next / Submit ─────────────────────────────────────────────────────────
   async function handleNext() {
     if (!hasAnswer) return;
 
-    // Build updated answers record
-    const currentAnswer: string | string[] =
-      qType === "multi" ? selectedMulti : (selected as string);
-    const updated = { ...answers, [currentQuestion.id]: currentAnswer };
-    setAnswers(updated);
+    let updatedAnswers: Record<string, string | string[]>;
+    let currentAnswer: string | string[];
 
-    if (isLast) {
-      const finalScore = computeScore(updated);
-      const tier = getScoreTier(finalScore);
-      const categoryLabel = tier.category[language];
+    if (qType === "multi-text") {
+      updatedAnswers = { ...answers };
+      (currentQuestion.fields ?? []).forEach((f) => {
+        updatedAnswers[f.id] = (multiTextInputs[f.id] ?? "").trim();
+      });
+      currentAnswer = "";
+    } else {
+      currentAnswer = getCurrentAnswer();
+      updatedAnswers = { ...answers, [currentId]: currentAnswer };
+    }
 
-      // Persist result — clear in-progress progress
+    const updatedOthers  = otherInput.trim()
+      ? { ...otherTexts, [currentId]: otherInput.trim() }
+      : otherTexts;
+
+    setAnswers(updatedAnswers);
+    setOtherTexts(updatedOthers);
+
+    const nextId = qType === "multi-text"
+      ? currentQuestion.nextId
+      : resolveNextId(currentQuestion, currentAnswer);
+
+    if (nextId === "[END]") {
+      // ── Categorisation scoring ───────────────────────────────────────────
+      const catScore = getCategorizationScore(updatedAnswers);
+      const tier = getScoreTier(catScore);
+
       sessionStorage.removeItem("sh_progress");
-      sessionStorage.setItem("sh_score", String(finalScore));
+      sessionStorage.setItem("sh_score", String(catScore));
       sessionStorage.setItem("sh_language", language);
+      document.cookie = `sh_result=${encodeURIComponent(
+        JSON.stringify({ score: catScore, category: tier.category[language], label: tier.label[language], color: tier.color })
+      )};path=/;max-age=${60 * 60 * 24 * 30}`;
 
-      // Submit to Google Sheets (fire-and-forget)
+      // Submit to Neon (fire-and-forget)
       setSubmitting(true);
       try {
         await fetch("/api/submit-assessment", {
@@ -126,86 +371,163 @@ export default function AssessmentEngine() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             language,
-            score: finalScore,
-            category: categoryLabel,
-            answers: updated,
+            score: catScore,
+            category: tier.category[language],
+            answers: updatedAnswers,
+            answersReadable: buildAnswersReadable(updatedAnswers, language),
+            otherTexts: updatedOthers,
           }),
         });
       } catch {
-        // Silently ignore — data collection never blocks the UX
+        // Silently ignore — data collection never blocks UX
       } finally {
         setSubmitting(false);
       }
 
-      router.push("/results");
-    } else {
-      const nextIndex = currentIndex + 1;
-      setCurrentIndex(nextIndex);
-
-      // Restore selection for the next question if already answered
-      const nextQ = questions[nextIndex];
-      const nextAns = updated[nextQ?.id];
-      if (getQuestionType(nextQ) === "multi") {
-        setSelectedMulti(Array.isArray(nextAns) ? nextAns : []);
-        setSelected(null);
+      if (isLoggedIn) {
+        router.push("/results");
       } else {
-        setSelected(typeof nextAns === "string" ? nextAns : null);
-        setSelectedMulti([]);
+        setShowGate(true);
       }
+    } else {
+      // ── Navigate forward ─────────────────────────────────────────────────
+      setHistory((prev) => [...prev, currentId]);
+      setCurrentId(nextId);
+      restoreSelectionFor(nextId, updatedAnswers, updatedOthers);
     }
   }
 
   // ── Previous ──────────────────────────────────────────────────────────────
   function handlePrev() {
-    if (currentIndex === 0) {
+    if (history.length === 0) {
       setConsented(false);
       return;
     }
-    // Save current partial answer before navigating back
-    const currentAnswer: string | string[] =
-      qType === "multi" ? selectedMulti : (selected ?? "");
-    const updatedAnswers = { ...answers, [currentQuestion.id]: currentAnswer };
-    setAnswers(updatedAnswers);
 
-    const prevIndex = currentIndex - 1;
-    setCurrentIndex(prevIndex);
-
-    // Restore selection for the previous question
-    const prevQ = questions[prevIndex];
-    const prevAns = updatedAnswers[prevQ.id];
-    if (getQuestionType(prevQ) === "multi") {
-      setSelectedMulti(Array.isArray(prevAns) ? prevAns : []);
-      setSelected(null);
+    // Save current partial answer before going back
+    let updatedAnswers: Record<string, string | string[]>;
+    if (qType === "multi-text") {
+      updatedAnswers = { ...answers };
+      (currentQuestion.fields ?? []).forEach((f) => {
+        updatedAnswers[f.id] = (multiTextInputs[f.id] ?? "").trim();
+      });
     } else {
-      setSelected(typeof prevAns === "string" ? prevAns : null);
-      setSelectedMulti([]);
+      updatedAnswers = { ...answers, [currentId]: getCurrentAnswer() };
     }
+    const updatedOthers  = otherInput.trim()
+      ? { ...otherTexts, [currentId]: otherInput.trim() }
+      : otherTexts;
+    setAnswers(updatedAnswers);
+    setOtherTexts(updatedOthers);
+
+    const newHistory = [...history];
+    const prevId = newHistory.pop()!;
+    setHistory(newHistory);
+    setCurrentId(prevId);
+    restoreSelectionFor(prevId, updatedAnswers, updatedOthers);
   }
 
   // ── Start screen ──────────────────────────────────────────────────────────
   if (!started) {
+    const steps = [
+      {
+        icon: (
+          <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" strokeWidth={1.2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+        ),
+        title: t("how2.step1.title"),
+        desc: <span>{t("how2.step1.pre")} <strong>{t("how2.step1.bold")}</strong> {t("how2.step1.post")}</span>,
+      },
+      {
+        icon: (
+          <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" strokeWidth={1.2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        ),
+        title: t("how2.step2.title"),
+        desc: <span>{t("how2.step2.desc")}</span>,
+      },
+      {
+        icon: (
+          <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" strokeWidth={1.2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        ),
+        title: t("how2.step3.title"),
+        desc: <span>{t("how2.step3.desc")}</span>,
+      },
+    ];
+
     return (
-      <div className="min-h-[70vh] flex items-center justify-center px-4">
-        <div className="max-w-lg w-full text-center">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">
-            {t("assess.title")}
-          </h1>
-          <p className="text-gray-500 mb-8 leading-relaxed">{t("assess.subtitle")}</p>
-
-          <div className="flex justify-center gap-3 mb-8 flex-wrap">
-            {[`${questions.length} Questions`, "~5 Minutes", "Free"].map((tag) => (
-              <span
-                key={tag}
-                className="bg-brand-rose text-primary text-xs font-semibold px-3 py-1.5 rounded-full"
+      <div className="bg-white">
+        <div className="container-max section-padding py-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div>
+              <p className="text-primary text-xs font-extrabold uppercase tracking-widest mb-3">
+                {t("assess.label")}
+              </p>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 leading-tight">
+                {t("assess.title")}
+              </h1>
+            </div>
+            <div className="flex flex-col items-start gap-6">
+              <p className="text-gray-500 text-base leading-relaxed">{t("assess.subtitle")}</p>
+              <button
+                onClick={() => setStarted(true)}
+                className="btn-primary text-sm py-3 px-7 flex items-center gap-2"
               >
-                {tag}
-              </span>
-            ))}
+                {t("assess.start")}
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </button>
+            </div>
           </div>
+        </div>
 
-          <button onClick={() => setStarted(true)} className="btn-primary text-base py-4 px-10">
-            {t("assess.start")} →
-          </button>
+        <div className="bg-[#FFF5F8]">
+          <div className="container-max section-padding py-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
+              {steps.map((step, i) => (
+                <Fragment key={i}>
+                  {/* Card + desktop right arrow (desktop arrow lives inside the flex row) */}
+                  <div className="flex items-stretch">
+                    <div className="bg-white rounded-2xl p-8 flex flex-col gap-4 flex-1 shadow-sm">
+                      {step.icon}
+                      <h3 className="text-base font-extrabold text-gray-900">{step.title}</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                    </div>
+                    {i < steps.length - 1 && (
+                      <div className="hidden md:flex items-center px-2 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {/* Mobile down arrow — separate grid item, centred, hidden on desktop */}
+                  {i < steps.length - 1 && (
+                    <div className="flex md:hidden justify-center items-center py-3">
+                      <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  )}
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="container-max section-padding pt-10 pb-10">
+          <div className="rounded-3xl overflow-hidden max-h-[420px]">
+            <img src="/assessment.image.png" alt="Assessment" className="w-full h-full object-cover object-top" />
+          </div>
         </div>
       </div>
     );
@@ -222,34 +544,20 @@ export default function AssessmentEngine() {
                 {t("consent.title")}
               </h1>
             </div>
-
             <div className="h-px bg-gray-100 mb-6" />
-
-            <p className="text-gray-600 text-sm leading-relaxed mb-2">
-              {t("consent.body")}
-            </p>
-
+            <p className="text-gray-600 text-sm leading-relaxed mb-2">{t("consent.body")}</p>
             <div className="h-px bg-gray-100 mt-6 mb-5" />
-
-            {/* Checkbox */}
             <label className="flex items-start gap-3 cursor-pointer group">
               <div className="relative mt-0.5 flex-shrink-0">
                 <input
                   type="checkbox"
                   checked={checked}
-                  onChange={(e) => {
-                    setChecked(e.target.checked);
-                    if (e.target.checked) setShowConsentError(false);
-                  }}
+                  onChange={(e) => { setChecked(e.target.checked); if (e.target.checked) setShowConsentError(false); }}
                   className="sr-only"
                 />
-                <div
-                  className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-                    checked
-                      ? "bg-primary border-primary"
-                      : "border-gray-300 bg-white group-hover:border-primary/50"
-                  }`}
-                >
+                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                  checked ? "bg-primary border-primary" : "border-gray-300 bg-white group-hover:border-primary/50"
+                }`}>
                   {checked && (
                     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 12 12">
                       <path d="M2 6l3 3 5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -257,11 +565,8 @@ export default function AssessmentEngine() {
                   )}
                 </div>
               </div>
-              <span className="text-sm font-medium text-gray-700 leading-snug">
-                {t("consent.checkbox")}
-              </span>
+              <span className="text-sm font-medium text-gray-700 leading-snug">{t("consent.checkbox")}</span>
             </label>
-
             {showConsentError && (
               <p className="mt-3 text-xs text-red-500 flex items-center gap-1.5">
                 <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -270,12 +575,8 @@ export default function AssessmentEngine() {
                 {t("consent.required")}
               </p>
             )}
-
             <button
-              onClick={() => {
-                if (!checked) { setShowConsentError(true); return; }
-                setConsented(true);
-              }}
+              onClick={() => { if (!checked) { setShowConsentError(true); return; } setConsented(true); }}
               className="btn-primary w-full mt-6 py-3.5 text-base"
             >
               {t("consent.proceed")} →
@@ -287,173 +588,278 @@ export default function AssessmentEngine() {
   }
 
   // ── Question screen ───────────────────────────────────────────────────────
+  const progressCurrent = history.length + 1;
+
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
-      <div className="max-w-2xl w-full">
-        <ProgressBar current={currentIndex + 1} total={questions.length} />
+    <>
+      <div className="min-h-[70vh] flex items-center justify-center px-4 py-10">
+        <div className="max-w-2xl w-full">
 
-        <div className="card mt-6 p-6 md:p-8">
-          <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6 leading-snug">
-            {currentQuestion.text[language]}
-          </h2>
+          <ProgressBar current={progressCurrent} total={TOTAL_QUESTIONS} />
 
-          {/* ── Single-choice (radio) ── */}
-          {qType === "single" && (
-            <div className="flex flex-col gap-3">
-              {currentQuestion.options.map((option) => {
-                const isChosen = selected === option.id;
-                return (
-                  <button
-                    key={option.id}
-                    onClick={() => setSelected(option.id)}
-                    className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
-                      isChosen
-                        ? "border-primary bg-brand-rose text-primary shadow-sm"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
-                    }`}
-                  >
-                    <span className="flex items-center gap-3">
-                      <span
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                          isChosen ? "border-primary bg-primary" : "border-gray-300"
-                        }`}
-                      >
-                        {isChosen && (
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
-                            <path d="M10 3L5 8.5 2 5.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                          </svg>
-                        )}
-                      </span>
-                      {option.label[language]}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+          <div className="card mt-6 p-6 md:p-8 overflow-visible">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6 leading-snug">
+              {currentQuestion.text[language]}
+            </h2>
 
-          {/* ── Multi-choice (checkbox) ── */}
-          {qType === "multi" && (
-            <div className="flex flex-col gap-3">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
-                {language === "en"
-                  ? `Select up to ${currentQuestion.maxSelections}`
-                  : `Pilih sehingga ${currentQuestion.maxSelections}`}
-              </p>
-
-              {currentQuestion.options.map((option) => {
-                const isChosen = selectedMulti.includes(option.id);
-                const atCap =
-                  selectedMulti.length >= (currentQuestion.maxSelections ?? Infinity);
-                const isDisabled = !isChosen && atCap;
-
-                return (
-                  <button
-                    key={option.id}
-                    onClick={() => handleSelectMulti(option.id)}
-                    disabled={isDisabled}
-                    className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
-                      isChosen
-                        ? "border-primary bg-brand-rose text-primary shadow-sm"
-                        : isDisabled
-                        ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
-                    }`}
-                  >
-                    <span className="flex items-center gap-3">
-                      {/* Checkbox indicator */}
-                      <span
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                          isChosen
-                            ? "border-primary bg-primary"
-                            : isDisabled
-                            ? "border-gray-200 bg-gray-100"
-                            : "border-gray-300"
-                        }`}
-                      >
-                        {isChosen && (
-                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 12 12">
-                            <path d="M2 6l3 3 5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        )}
-                      </span>
-                      {option.label[language]}
-                    </span>
-                  </button>
-                );
-              })}
-
-              {/* Selection counter */}
-              <p className="text-xs text-right text-gray-400 mt-1">
-                <span className={selectedMulti.length >= (currentQuestion.maxSelections ?? Infinity) ? "text-primary font-semibold" : ""}>
-                  {selectedMulti.length}
-                </span>
-                {" "}/ {currentQuestion.maxSelections}{" "}
-                {language === "en" ? "selected" : "dipilih"}
-              </p>
-            </div>
-          )}
-
-          {/* ── Likert scale (1–5) ── */}
-          {qType === "likert" && (
-            <div className="py-2">
-              {/* Scale buttons */}
-              <div className="flex gap-2 sm:gap-3 justify-between mb-3">
-                {[1, 2, 3, 4, 5].map((val) => {
-                  const isChosen = selected === String(val);
+            {/* ── Single-choice ── */}
+            {qType === "single" && (
+              <div className="flex flex-col gap-3">
+                {currentQuestion.options.map((option) => {
+                  const isChosen = selected === option.id;
                   return (
                     <button
-                      key={val}
-                      onClick={() => setSelected(String(val))}
-                      className={`flex-1 py-5 rounded-xl border-2 font-bold text-xl transition-all duration-150 ${
+                      key={option.id}
+                      onClick={() => { setSelected(option.id); if (!option.hasOther) setOtherInput(""); }}
+                      className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
                         isChosen
-                          ? "border-primary bg-brand-rose text-primary shadow-sm scale-105"
-                          : "border-gray-200 bg-white text-gray-500 hover:border-primary/40 hover:bg-gray-50"
+                          ? "border-primary bg-brand-rose text-primary shadow-sm"
+                          : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
                       }`}
                     >
-                      {val}
+                      <span className="flex items-center gap-3">
+                        <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                          isChosen ? "border-primary bg-primary" : "border-gray-300"
+                        }`}>
+                          {isChosen && (
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
+                              <path d="M10 3L5 8.5 2 5.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                            </svg>
+                          )}
+                        </span>
+                        {option.label[language]}
+                      </span>
                     </button>
                   );
                 })}
+                {selectedOptionHasOther && (
+                  <input
+                    type="text"
+                    value={otherInput}
+                    onChange={(e) => setOtherInput(e.target.value)}
+                    placeholder={language === "en" ? "Please specify…" : "Sila nyatakan…"}
+                    className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-primary text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary"
+                  />
+                )}
               </div>
-
-              {/* Anchor labels */}
-              {currentQuestion.likertLabels && (
-                <div className="flex justify-between text-xs text-gray-400 px-1">
-                  <span>← {currentQuestion.likertLabels.low[language]}</span>
-                  <span>{currentQuestion.likertLabels.high[language]} →</span>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Navigation */}
-        <div className="flex justify-between mt-6 gap-4">
-          <button onClick={handlePrev} className="btn-outline py-3 px-6">
-            ← {t("assess.prev")}
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={!hasAnswer || submitting}
-            className="btn-primary py-3 px-6 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {submitting ? (
-              <>
-                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                </svg>
-                {language === "en" ? "Saving…" : "Menyimpan…"}
-              </>
-            ) : isLast ? (
-              t("assess.submit")
-            ) : (
-              `${t("assess.next")} →`
             )}
-          </button>
+
+            {/* ── Multi-choice ── */}
+            {qType === "multi" && (
+              <div className="flex flex-col gap-3">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                  {currentQuestion.exactSelections
+                    ? (language === "en" ? `Select exactly ${currentQuestion.maxSelections}` : `Pilih tepat ${currentQuestion.maxSelections}`)
+                    : currentQuestion.maxSelections
+                    ? (language === "en" ? `Select up to ${currentQuestion.maxSelections}` : `Pilih sehingga ${currentQuestion.maxSelections}`)
+                    : (language === "en" ? "Select all that apply" : "Pilih semua yang berkenaan")}
+                </p>
+
+                {currentQuestion.options.map((option) => {
+                  const isChosen  = selectedMulti.includes(option.id);
+                  const atCap     = !isChosen && selectedMulti.length >= (currentQuestion.maxSelections ?? Infinity);
+                  const isDisabled = atCap;
+
+                  return (
+                    <button
+                      key={option.id}
+                      onClick={() => handleSelectMulti(option.id)}
+                      disabled={isDisabled}
+                      className={`w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-sm transition-all duration-150 ${
+                        isChosen
+                          ? "border-primary bg-brand-rose text-primary shadow-sm"
+                          : isDisabled
+                          ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed"
+                          : "border-gray-200 bg-white text-gray-700 hover:border-primary/40 hover:bg-gray-50"
+                      }`}
+                    >
+                      <span className="flex items-center gap-3">
+                        <span className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                          isChosen ? "border-primary bg-primary" : isDisabled ? "border-gray-200 bg-gray-100" : "border-gray-300"
+                        }`}>
+                          {isChosen && (
+                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 12 12">
+                              <path d="M2 6l3 3 5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                        </span>
+                        {option.label[language]}
+                      </span>
+                    </button>
+                  );
+                })}
+
+                {selectedMultiHasOther && (
+                  <input
+                    type="text"
+                    value={otherInput}
+                    onChange={(e) => setOtherInput(e.target.value)}
+                    placeholder={language === "en" ? "Please specify…" : "Sila nyatakan…"}
+                    className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-primary text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary"
+                  />
+                )}
+
+                {currentQuestion.maxSelections && (
+                  <p className="text-xs text-right text-gray-400 mt-1">
+                    <span className={selectedMulti.length >= currentQuestion.maxSelections ? "text-primary font-semibold" : ""}>
+                      {selectedMulti.length}
+                    </span>
+                    {" "}/ {currentQuestion.maxSelections}{" "}
+                    {language === "en" ? "selected" : "dipilih"}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* ── Dropdown ── */}
+            {qType === "dropdown" && (
+              <>
+                <CustomDropdown
+                  options={currentQuestion.options}
+                  value={selected}
+                  onChange={(id) => {
+                    setSelected(id);
+                    const opt = currentQuestion.options.find((o) => o.id === id);
+                    if (!opt?.hasOther) setOtherInput("");
+                  }}
+                  language={language}
+                />
+                {selectedDropdownHasOther && (
+                  <input
+                    type="text"
+                    value={otherInput}
+                    onChange={(e) => setOtherInput(e.target.value)}
+                    placeholder={language === "en" ? "Please specify…" : "Sila nyatakan…"}
+                    className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-primary text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary"
+                  />
+                )}
+              </>
+            )}
+
+            {/* ── Multi-text (contact details group) ── */}
+            {qType === "multi-text" && (
+              <div className="flex flex-col gap-5">
+                {(currentQuestion.fields ?? []).map((field) => {
+                  const val = multiTextInputs[field.id] ?? "";
+                  const isEmail = field.inputType === "email";
+                  const emailInvalid = isEmail && val.trim() !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+                  return (
+                    <div key={field.id}>
+                      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+                        {field.label[language]}
+                        {!field.required && (
+                          <span className="ml-1.5 normal-case font-normal text-gray-400">
+                            {language === "en" ? "(optional)" : "(pilihan)"}
+                          </span>
+                        )}
+                      </label>
+                      <input
+                        type={field.inputType ?? "text"}
+                        inputMode={field.inputType === "tel" ? "tel" : undefined}
+                        value={val}
+                        onChange={(e) => setMultiTextInputs((prev) => ({ ...prev, [field.id]: e.target.value }))}
+                        placeholder={field.placeholder?.[language] ?? ""}
+                        className={`w-full px-4 py-3.5 rounded-xl border-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none transition-colors ${
+                          emailInvalid
+                            ? "border-red-400 focus:border-red-400"
+                            : "border-gray-200 focus:border-primary"
+                        }`}
+                      />
+                      {emailInvalid && (
+                        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
+                          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                          {language === "en" ? "Please enter a valid email address." : "Sila masukkan alamat e-mel yang sah."}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* ── Likert scale (1–5) ── */}
+            {qType === "likert" && (
+              <div className="py-2">
+                <div className="flex gap-2 sm:gap-3 justify-between mb-3">
+                  {[1, 2, 3, 4, 5].map((val) => {
+                    const isChosen = selected === String(val);
+                    return (
+                      <button
+                        key={val}
+                        onClick={() => setSelected(String(val))}
+                        className={`flex-1 py-5 rounded-xl border-2 font-bold text-xl transition-all duration-150 ${
+                          isChosen
+                            ? "border-primary bg-brand-rose text-primary shadow-sm scale-105"
+                            : "border-gray-200 bg-white text-gray-500 hover:border-primary/40 hover:bg-gray-50"
+                        }`}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+                {currentQuestion.likertLabels && (
+                  <div className="flex justify-between text-xs text-gray-400 px-1">
+                    <span>← {currentQuestion.likertLabels.low[language]}</span>
+                    <span>{currentQuestion.likertLabels.high[language]} →</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ── Text input ── */}
+            {qType === "text" && (
+              <div className="py-2">
+                <input
+                  type={currentQuestion.inputType ?? "text"}
+                  inputMode={currentQuestion.inputType === "number" ? "numeric" : undefined}
+                  min={currentQuestion.inputType === "number" ? 0 : undefined}
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  placeholder={currentQuestion.placeholder?.[language] ?? ""}
+                  className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  onKeyDown={(e) => { if (e.key === "Enter" && hasAnswer) handleNext(); }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Navigation */}
+          <div className="flex justify-between mt-6 gap-4">
+            <button onClick={handlePrev} className="btn-outline py-3 px-6">
+              ← {t("assess.prev")}
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={!hasAnswer || submitting}
+              className="btn-primary py-3 px-6 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              {submitting ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                  {language === "en" ? "Saving…" : "Menyimpan…"}
+                </>
+              ) : isLast ? (
+                t("assess.submit")
+              ) : (
+                `${t("assess.next")} →`
+              )}
+            </button>
+          </div>
+
         </div>
       </div>
-    </div>
+
+      {showGate && (
+        <RegistrationGate
+          onSkip={() => { setShowGate(false); router.push("/results"); }}
+        />
+      )}
+    </>
   );
 }
