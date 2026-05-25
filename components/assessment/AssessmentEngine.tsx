@@ -263,6 +263,37 @@ export default function AssessmentEngine() {
     setIsLoggedIn(!!raw);
   }, []);
 
+  // ── Auto-skip q5g–q5j for logged-in users (Option A) ────────────────────
+  useEffect(() => {
+    if (!started || !hydrated || !isLoggedIn) return;
+    if (currentId !== "q5g") return;
+
+    try {
+      const raw = document.cookie
+        .split("; ")
+        .find((c) => c.startsWith("sh_user="))
+        ?.split("=")[1];
+      if (!raw) return;
+      const user = JSON.parse(decodeURIComponent(raw));
+      if (!user.firstName || !user.email) return;
+
+      // Auto-populate contact answers from the session, then jump to q5k
+      const autoAnswers = {
+        ...answers,
+        q5g: user.firstName ?? "",
+        q5h: user.lastName  ?? "",
+        q5i: user.email     ?? "",
+        q5j: "",             // phone not in session cookie; optional field
+      };
+
+      setAnswers(autoAnswers);
+      setCurrentId("q5k");
+      restoreSelectionFor("q5k", autoAnswers, otherTexts);
+    } catch {
+      // Cookie parse failed — fall through and show the screen normally
+    }
+  }, [currentId, started, hydrated, isLoggedIn]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── Persist progress ──────────────────────────────────────────────────────
   useEffect(() => {
     if (!hydrated) return;
