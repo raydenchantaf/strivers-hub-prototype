@@ -30,9 +30,10 @@ function getCookie(name: string): string | null {
 export default function DashboardPage() {
   const { t, language } = useLanguage();
   const router = useRouter();
-  const [session, setSession] = useState<Session | null>(null);
-  const [result, setResult]   = useState<AssessmentResult | null>(null);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const [session, setSession]             = useState<Session | null>(null);
+  const [result, setResult]               = useState<AssessmentResult | null>(null);
+  const [loggingOut, setLoggingOut]       = useState(false);
+  const [loadingResult, setLoadingResult] = useState(true);
 
   useEffect(() => {
     const raw = getCookie("sh_user");
@@ -45,17 +46,37 @@ export default function DashboardPage() {
       return;
     }
 
-    const resultRaw = getCookie("sh_result");
-    if (resultRaw) {
-      try { setResult(JSON.parse(resultRaw)); } catch {}
-    } else {
-      const score = sessionStorage.getItem("sh_score");
-      const lang  = (sessionStorage.getItem("sh_language") as "en" | "bm") ?? language;
-      if (score) {
-        const tier = getScoreTier(Number(score));
-        setResult({ score: Number(score), category: tier.category[lang], label: tier.label[lang], color: tier.color });
-      }
-    }
+    // Fetch latest assessment result from DB (works across devices)
+    fetch("/api/get-assessment")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success && data.result) {
+          const { score } = data.result;
+          const lang = (data.result.language as "en" | "bm") ?? language;
+          const tier = getScoreTier(score);
+          setResult({ score, category: tier.category[lang], label: tier.label[lang], color: tier.color });
+        } else {
+          // Fall back to client-side cookie / sessionStorage (same-device submit)
+          const resultRaw = getCookie("sh_result");
+          if (resultRaw) {
+            try { setResult(JSON.parse(resultRaw)); } catch {}
+          } else {
+            const score = sessionStorage.getItem("sh_score");
+            const lang  = (sessionStorage.getItem("sh_language") as "en" | "bm") ?? language;
+            if (score) {
+              const tier = getScoreTier(Number(score));
+              setResult({ score: Number(score), category: tier.category[lang], label: tier.label[lang], color: tier.color });
+            }
+          }
+        }
+      })
+      .catch(() => {
+        const resultRaw = getCookie("sh_result");
+        if (resultRaw) {
+          try { setResult(JSON.parse(resultRaw)); } catch {}
+        }
+      })
+      .finally(() => setLoadingResult(false));
   }, [router, language]);
 
   async function handleLogout() {
@@ -111,7 +132,11 @@ export default function DashboardPage() {
             {t("dashboard.assessment.title")}
           </h2>
 
-          {result && tier ? (
+          {loadingResult ? (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex items-center justify-center">
+              <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : result && tier ? (
             <>
               <AssessmentResultCard score={result.score} maxScore={maxScore} tier={tier} language={language} />
               <div className="mt-4">

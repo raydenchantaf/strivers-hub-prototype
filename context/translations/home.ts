@@ -39,6 +39,11 @@ export const home = {
     "stats.entrepreneurs": "Entrepreneurs Reached",
     "stats.satisfaction":  "Satisfaction Rate",
 
+    // MyDigital
+    "mydigital.headline": "Expand Your Digital Journey Beyond Strivers' Hub",
+    "mydigital.body":     "As part of a broader national effort, we also connect you to MyDigital's Rakyat Digital platform, where you can explore additional programmes, resources, and digital opportunities.",
+    "mydigital.cta":      "Explore Rakyat Digital",
+
     // Partners
     "partners.title":    "Expand Your Digital Journey Beyond Strivers' Hub",
     "partners.subtitle": "We've partnered with leading organisations to bring you more opportunities.",
@@ -95,6 +100,11 @@ export const home = {
     "stats.programs":      "Program",
     "stats.entrepreneurs": "Usahawan Dicapai",
     "stats.satisfaction":  "Kadar Kepuasan",
+
+    // MyDigital
+    "mydigital.headline": "Luaskan Perjalanan Digital Anda Melampaui Strivers' Hub",
+    "mydigital.body":     "Sebagai sebahagian daripada usaha nasional yang lebih luas, kami juga menghubungkan anda ke platform Rakyat Digital MyDigital, di mana anda boleh meneroka program, sumber, dan peluang digital tambahan.",
+    "mydigital.cta":      "Terokai Rakyat Digital",
 
     // Partners
     "partners.title":    "Luaskan Perjalanan Digital Anda Melampaui Strivers' Hub",

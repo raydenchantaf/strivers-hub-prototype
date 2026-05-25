@@ -5,9 +5,7 @@ export interface AssessmentSubmission {
   language:         "en" | "bm";
   score:            number;
   category:         string;
-  answers:          Record<string, string | string[]>;
-  answersReadable?: Record<string, string>;
-  otherTexts?:      Record<string, string>;
+  answersReadable:  Record<string, string>;
 }
 
 function getUserIdFromCookie(req: NextRequest): number | null {
@@ -26,21 +24,19 @@ export async function POST(req: NextRequest) {
   try {
     const sql = getDb();
     const body: AssessmentSubmission = await req.json();
-    const { language, score, category, answers, answersReadable, otherTexts } = body;
+    const { language, score, category, answersReadable } = body;
 
     const userId = getUserIdFromCookie(req);
 
     await sql`
       INSERT INTO assessment_submissions
-        (user_id, language, score, category, answers, answers_readable, other_texts)
+        (user_id, language, score, category, answers_readable)
       VALUES (
         ${userId},
         ${language},
         ${score},
         ${category},
-        ${JSON.stringify(answers)},
-        ${answersReadable ? JSON.stringify(answersReadable) : null},
-        ${otherTexts ? JSON.stringify(otherTexts) : null}
+        ${answersReadable ? JSON.stringify(answersReadable) : null}
       )
     `;
 

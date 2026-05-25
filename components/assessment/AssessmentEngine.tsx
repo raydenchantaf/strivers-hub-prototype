@@ -98,6 +98,7 @@ function resolveNextId(q: Question, answer: string | string[]): string {
 function buildAnswersReadable(
   allAnswers: Record<string, string | string[]>,
   lang: "en" | "bm",
+  otherTexts: Record<string, string> = {},
 ): Record<string, string> {
   const readable: Record<string, string> = {};
 
@@ -122,14 +123,24 @@ function buildAnswersReadable(
       case "multi": {
         const ids = Array.isArray(answer) ? answer : [answer as string];
         readable[qId] = ids
-          .map((id) => q.options.find((o) => o.id === id)?.label[lang] ?? id)
+          .map((id) => {
+            const opt = q.options.find((o) => o.id === id);
+            // If this option has hasOther and user typed custom text, prefix with "Other: "
+            if (opt?.hasOther && otherTexts[qId]) return `Other: ${otherTexts[qId]}`;
+            return opt?.label[lang] ?? id;
+          })
           .join(", ");
         break;
       }
       default: {
         // single, dropdown
         const opt = q.options.find((o) => o.id === answer);
-        readable[qId] = opt?.label[lang] ?? (typeof answer === "string" ? answer : "");
+        // If this option has hasOther and user typed custom text, prefix with "Other: "
+        if (opt?.hasOther && otherTexts[qId]) {
+          readable[qId] = `Other: ${otherTexts[qId]}`;
+        } else {
+          readable[qId] = opt?.label[lang] ?? (typeof answer === "string" ? answer : "");
+        }
       }
     }
   }
@@ -373,9 +384,7 @@ export default function AssessmentEngine() {
             language,
             score: catScore,
             category: tier.category[language],
-            answers: updatedAnswers,
-            answersReadable: buildAnswersReadable(updatedAnswers, language),
-            otherTexts: updatedOthers,
+            answersReadable: buildAnswersReadable(updatedAnswers, language, updatedOthers),
           }),
         });
       } catch {
@@ -526,7 +535,7 @@ export default function AssessmentEngine() {
 
         <div className="container-max section-padding pt-10 pb-10">
           <div className="rounded-3xl overflow-hidden max-h-[420px]">
-            <img src="/assessment.image.png" alt="Assessment" className="w-full h-full object-cover object-top" />
+            <img src="/assessment.image.webp" alt="Assessment" className="w-full h-full object-cover object-top" />
           </div>
         </div>
       </div>

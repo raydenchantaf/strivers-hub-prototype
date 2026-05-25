@@ -73,7 +73,7 @@ export default function AboutPage() {
           {/* Image side */}
           <div className="relative flex-1 min-h-[260px] md:min-h-0">
             <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
+              src="/about_us.webp"
               alt="Women entrepreneurs"
               className="w-full h-full object-cover"
             />
