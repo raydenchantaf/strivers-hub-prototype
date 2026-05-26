@@ -1,4 +1,4 @@
-# Strivers' Hub — Prototype
+# Strivers' Hub — Prototype 
 
 A Next.js 15 prototype for the Strivers' Hub platform, built for The Asia Foundation / Mastercard Inclusive for Growth program.
 
