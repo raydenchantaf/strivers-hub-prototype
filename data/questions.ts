@@ -320,10 +320,12 @@ export const questions: Question[] = [
     text: { en: "How did you hear about Strivers' Hub?", bm: "Bagaimana anda mendapat tahu tentang Strivers' Hub?" },
     options: [
       { id: "q5k_1", label: { en: "Universiti Malaysia Kelantan/GERIK",                       bm: "Universiti Malaysia Kelantan/GERIK" }, points: 0 },
+      /*
       { id: "q5k_2", label: { en: "National Council of Women's Organizations Malaysia (NCWO)", bm: "National Council of Women's Organizations Malaysia (NCWO)" }, points: 0 },
       { id: "q5k_3", label: { en: "KANITA/Universiti Sains Malaysia",                         bm: "KANITA/Universiti Sains Malaysia" }, points: 0 },
       { id: "q5k_4", label: { en: "Penang Women Development Corporation (PWDC)",               bm: "Penang Women Development Corporation (PWDC)" }, points: 0 },
       { id: "q5k_5", label: { en: "WomenBizSense", bm: "WomenBizSense" }, points: 0 },
+       */
       { id: "q5k_6", label: { en: "FutureLab",     bm: "FutureLab" },     points: 0 },
       { id: "q5k_7", label: { en: "Facebook",      bm: "Facebook" },      points: 0 },
       { id: "q5k_8", label: { en: "WhatsApp",      bm: "WhatsApp" },      points: 0 },
