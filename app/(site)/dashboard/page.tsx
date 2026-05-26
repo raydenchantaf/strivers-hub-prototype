@@ -45,7 +45,6 @@ export default function DashboardPage() {
       return;
     }
 
-    // Fetch latest assessment result from DB (works across devices)
     fetch("/api/get-assessment")
       .then((r) => r.json())
       .then((data) => {
@@ -55,7 +54,6 @@ export default function DashboardPage() {
           const tier = getScoreTier(score);
           setResult({ score, category: tier.category[lang], label: tier.label[lang], color: tier.color });
         } else {
-          // Fall back to client-side cookie / sessionStorage (same-device submit)
           const resultRaw = getCookie("sh_result");
           if (resultRaw) {
             try { setResult(JSON.parse(resultRaw)); } catch {}
@@ -98,8 +96,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
-      {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary-dark">
         <div className="container-max section-padding py-10 flex items-center justify-between gap-4 flex-wrap">
           <div>
@@ -124,13 +120,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="container-max section-padding py-10 flex flex-col gap-10">
-
-        {/* Assessment result */}
         <section>
           <h2 className="text-lg font-extrabold text-gray-900 mb-4">
             {t("dashboard.assessment.title")}
           </h2>
-
           {loadingResult ? (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex items-center justify-center">
               <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
@@ -162,7 +155,6 @@ export default function DashboardPage() {
           )}
         </section>
 
-        {/* Recommended resources */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-extrabold text-gray-900">
@@ -188,7 +180,6 @@ export default function DashboardPage() {
             ))}
           </div>
         </section>
-
       </div>
     </div>
   );
