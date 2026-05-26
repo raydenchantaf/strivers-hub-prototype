@@ -476,8 +476,8 @@ export default function AssessmentEngine() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
           </svg>
         ),
-        title: t("how2.step1.title"),
-        desc: <span>{t("how2.step1.pre")} <strong>{t("how2.step1.bold")}</strong> {t("how2.step1.post")}</span>,
+        title: t("how.step1.title"),
+        desc: t("how.step1.desc"),
       },
       {
         icon: (
@@ -485,8 +485,8 @@ export default function AssessmentEngine() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
           </svg>
         ),
-        title: t("how2.step2.title"),
-        desc: <span>{t("how2.step2.desc")}</span>,
+        title: t("how.step2.title"),
+        desc: t("how.step2.desc"),
       },
       {
         icon: (
@@ -494,8 +494,8 @@ export default function AssessmentEngine() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         ),
-        title: t("how2.step3.title"),
-        desc: <span>{t("how2.step3.desc")}</span>,
+        title: t("how.step3.title"),
+        desc: t("how.step3.desc"),
       },
     ];
 
@@ -536,7 +536,7 @@ export default function AssessmentEngine() {
                     <div className="bg-white rounded-2xl p-8 flex flex-col gap-4 flex-1 shadow-sm">
                       {step.icon}
                       <h3 className="text-base font-extrabold text-gray-900">{step.title}</h3>
-                      <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                      <p className="text-gray-500 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: step.desc }} />
                     </div>
                     {i < steps.length - 1 && (
                       <div className="hidden md:flex items-center px-2 flex-shrink-0">

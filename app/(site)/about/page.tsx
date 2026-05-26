@@ -99,7 +99,7 @@ export default function AboutPage() {
                 onClick={bumpReset}
                 className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-full hover:bg-primary-dark transition-colors text-sm"
               >
-                {t("how2.card.cta")} &rarr;
+                {t("about.hero.cta")} &rarr;
               </Link>
             </div>
           </div>
