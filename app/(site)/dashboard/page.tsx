@@ -30,10 +30,9 @@ function getCookie(name: string): string | null {
 export default function DashboardPage() {
   const { t, language } = useLanguage();
   const router = useRouter();
-  const [session, setSession]             = useState<Session | null>(null);
-  const [result, setResult]               = useState<AssessmentResult | null>(null);
-  const [loggingOut, setLoggingOut]       = useState(false);
-  const [loadingResult, setLoadingResult] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+  const [result, setResult]   = useState<AssessmentResult | null>(null);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     const raw = getCookie("sh_user");
