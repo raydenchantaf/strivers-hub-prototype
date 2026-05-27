@@ -1,4 +1,22 @@
+import type { Metadata } from "next";
 import { getResourcesPage, getResourcesCount } from "@/lib/sanity";
+
+export const metadata: Metadata = {
+  title: "Financing & Grants",
+  description:
+    "Discover grants, funds, and loans available to Malaysian women entrepreneurs. Find the right financing to grow your business.",
+  openGraph: {
+    title: "Financing & Grants | Strivers' Hub",
+    description:
+      "Discover grants, funds, and loans available to Malaysian women entrepreneurs. Find the right financing to grow your business.",
+    images: [{ url: "/og-default.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    title: "Financing & Grants | Strivers' Hub",
+    description:
+      "Discover grants, funds, and loans available to Malaysian women entrepreneurs. Find the right financing to grow your business.",
+  },
+};
 import FinancingPageHeader from "@/components/financing/FinancingPageHeader";
 import FinancingGrid from "@/components/financing/FinancingGrid";
 import Pagination from "@/components/ui/Pagination";

@@ -1,4 +1,22 @@
+import type { Metadata } from "next";
 import { getResourcesPage, getResourcesCount } from "@/lib/sanity";
+
+export const metadata: Metadata = {
+  title: "Events & Activities",
+  description:
+    "Stay updated on upcoming events, workshops, and community activities organised by Strivers' Hub for Malaysian women entrepreneurs.",
+  openGraph: {
+    title: "Events & Activities | Strivers' Hub",
+    description:
+      "Stay updated on upcoming events, workshops, and community activities organised by Strivers' Hub for Malaysian women entrepreneurs.",
+    images: [{ url: "/og-default.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    title: "Events & Activities | Strivers' Hub",
+    description:
+      "Stay updated on upcoming events, workshops, and community activities organised by Strivers' Hub for Malaysian women entrepreneurs.",
+  },
+};
 import EventsGrid from "@/components/events/EventsGrid";
 import EventsPageHeader from "@/components/events/EventsPageHeader";
 import Pagination from "@/components/ui/Pagination";

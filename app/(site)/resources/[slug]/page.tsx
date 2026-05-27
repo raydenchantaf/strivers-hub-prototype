@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getResource, getAllResourceSlugs } from "@/lib/sanity";
+import { getResource, getAllResourceSlugs, urlFor } from "@/lib/sanity";
 import ArticleBackLink from "@/components/resources/ArticleBackLink";
 import ArticleHeader from "@/components/resources/ArticleHeader";
 import ArticleBody from "@/components/resources/ArticleBody";
@@ -18,15 +18,39 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const url = `https://strivershub.com/resources/${slug}`;
+  const article = await getResource(slug);
+
+  // Fallback to site defaults if article not found
+  if (!article) return {};
+
+  const title       = article.title_en;
+  const description = article.excerpt_en || "";
+  const pageUrl     = `https://prototype1.strivershub.com/resources/${slug}`;
+
+  // Use the EN cover image for OG; fall back to the site default
+  const ogImage = article.image_en
+    ? urlFor(article.image_en).width(1200).height(630).fit("crop").auto("format").url()
+    : "/og-default.png";
+
   return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      type: "article",
+      publishedTime: article.publishedAt,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
     alternates: {
-      canonical: url,
-      languages: {
-        "ms": url,        // Bahasa Malaysia — default language
-        "en": url,        // English — same URL, content toggled client-side
-        "x-default": url, // Fallback for unmatched locales
-      },
+      canonical: pageUrl,
     },
   };
 }

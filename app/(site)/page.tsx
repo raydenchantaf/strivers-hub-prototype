@@ -1,3 +1,23 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
+  description:
+    "Strivers' Hub empowers Malaysian women MSMEs to start, grow, and scale — with free tools, training, mentorship, and a supportive community.",
+  openGraph: {
+    title: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
+    description:
+      "Strivers' Hub empowers Malaysian women MSMEs to start, grow, and scale — with free tools, training, mentorship, and a supportive community.",
+    url: "https://prototype1.strivershub.com",
+    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Strivers' Hub" }],
+  },
+  twitter: {
+    title: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
+    description:
+      "Strivers' Hub empowers Malaysian women MSMEs to start, grow, and scale — with free tools, training, mentorship, and a supportive community.",
+  },
+};
+
 import Hero from "@/components/landing/Hero";
 import HowItWorks from "@/components/landing/HowItWorks";
 import MyDigital from "@/components/landing/MyDigital";

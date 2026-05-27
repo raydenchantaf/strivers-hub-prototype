@@ -1,4 +1,22 @@
+import type { Metadata } from "next";
 import { getResourcesPage, getResourcesCount, getCategories } from "@/lib/sanity";
+
+export const metadata: Metadata = {
+  title: "Insights & Resources",
+  description:
+    "Explore curated articles, guides, and tools designed to help Malaysian women entrepreneurs start and grow their businesses.",
+  openGraph: {
+    title: "Insights & Resources | Strivers' Hub",
+    description:
+      "Explore curated articles, guides, and tools designed to help Malaysian women entrepreneurs start and grow their businesses.",
+    images: [{ url: "/og-default.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    title: "Insights & Resources | Strivers' Hub",
+    description:
+      "Explore curated articles, guides, and tools designed to help Malaysian women entrepreneurs start and grow their businesses.",
+  },
+};
 import ResourcesPageHeader from "@/components/resources/ResourcesPageHeader";
 import ResourcesGrid from "@/components/resources/ResourcesGrid";
 import Pagination from "@/components/ui/Pagination";
