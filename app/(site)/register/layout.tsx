@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Register",
-  description: "Create your free Strivers' Hub account and start your business growth journey today.",
+  title: "Daftar",
+  description:
+    "Cipta akaun Strivers' Hub percuma anda dan mulakan perjalanan pertumbuhan perniagaan anda hari ini.",
   robots: { index: false, follow: false },
 };
 

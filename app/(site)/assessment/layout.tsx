@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Assessment",
+  title: "Penilaian Kendiri",
   description:
-    "Take our free self assessment to understand your current stage and receive personalised resources to help your business grow.",
+    "Ambil ujian ringkas dan percuma ini untuk mengetahui di mana anda berada dalam perjalanan keusahawanan anda.",
   robots: { index: false, follow: false },
 };
 

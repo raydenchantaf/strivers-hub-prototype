@@ -23,13 +23,13 @@ export async function generateMetadata({
   // Fallback to site defaults if article not found
   if (!article) return {};
 
-  const title       = article.title_en;
-  const description = article.excerpt_en || "";
+  const title       = article.title_bm;
+  const description = article.excerpt_bm || "";
   const pageUrl     = `https://prototype1.strivershub.com/resources/${slug}`;
 
-  // Use the EN cover image for OG; fall back to the site default
-  const ogImage = article.image_en
-    ? urlFor(article.image_en).width(1200).height(630).fit("crop").auto("format").url()
+  // Use the BM cover image for OG if available, fall back to EN, then site default
+  const ogImage = (article.image_bm ?? article.image_en)
+    ? urlFor((article.image_bm ?? article.image_en)!).width(1200).height(630).fit("crop").auto("format").url()
     : "/og-default.png";
 
   return {
@@ -65,7 +65,7 @@ export default async function ResourceArticlePage({
   if (!article) notFound();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-rose">
       <div className="container-max section-padding max-w-3xl">
         {/* Back link */}
         <ArticleBackLink />

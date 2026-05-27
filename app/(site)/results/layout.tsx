@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Assessment Results",
-  description: "View your personalised business assessment results and recommended next steps.",
+  title: "Keputusan Penilaian",
+  description:
+    "Lihat keputusan penilaian perniagaan anda yang diperibadikan dan langkah seterusnya yang disyorkan.",
   robots: { index: false, follow: false },
 };
 

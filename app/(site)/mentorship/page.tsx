@@ -58,7 +58,7 @@ export default function MentorshipPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-rose">
 
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary-dark section-padding py-14">

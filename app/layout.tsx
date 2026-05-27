@@ -16,11 +16,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://prototype1.strivershub.com"),
 
   title: {
-    default: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
+    default: "Strivers' Hub — Meningkatkan Usahawan Wanita Malaysia",
     template: "%s | Strivers' Hub",
   },
   description:
-    "A platform designed to help Malaysian women MSMEs start, grow, and scale their businesses through tools, training, and community.",
+    "Platform yang direka untuk membantu wanita PKS Malaysia memulakan, mengembangkan, dan meluaskan perniagaan mereka melalui alat, latihan, dan komuniti.",
 
   icons: {
     icon: "/favicon.png",
@@ -32,13 +32,13 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "Strivers' Hub",
     type: "website",
-    locale: "en_MY",
+    locale: "ms_MY",
     images: [
       {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Strivers' Hub — Elevating Malaysian Women Entrepreneurs",
+        alt: "Strivers' Hub — Meningkatkan Usahawan Wanita Malaysia",
       },
     ],
   },

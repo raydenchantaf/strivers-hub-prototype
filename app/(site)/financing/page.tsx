@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { getResourcesPage, getResourcesCount } from "@/lib/sanity";
 
 export const metadata: Metadata = {
-  title: "Financing & Grants",
+  title: "Pembiayaan & Pendanaan",
   description:
-    "Discover grants, funds, and loans available to Malaysian women entrepreneurs. Find the right financing to grow your business.",
+    "Temui geran, dana, dan pinjaman yang tersedia untuk usahawan wanita Malaysia. Cari pembiayaan yang sesuai untuk mengembangkan perniagaan anda.",
   openGraph: {
-    title: "Financing & Grants | Strivers' Hub",
+    title: "Pembiayaan & Pendanaan | Strivers' Hub",
     description:
-      "Discover grants, funds, and loans available to Malaysian women entrepreneurs. Find the right financing to grow your business.",
+      "Temui geran, dana, dan pinjaman yang tersedia untuk usahawan wanita Malaysia. Cari pembiayaan yang sesuai untuk mengembangkan perniagaan anda.",
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
   twitter: {
-    title: "Financing & Grants | Strivers' Hub",
+    title: "Pembiayaan & Pendanaan | Strivers' Hub",
     description:
-      "Discover grants, funds, and loans available to Malaysian women entrepreneurs. Find the right financing to grow your business.",
+      "Temui geran, dana, dan pinjaman yang tersedia untuk usahawan wanita Malaysia. Cari pembiayaan yang sesuai untuk mengembangkan perniagaan anda.",
   },
 };
 import FinancingPageHeader from "@/components/financing/FinancingPageHeader";
@@ -43,7 +43,7 @@ export default async function FinancingPage({ searchParams }: Props) {
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-rose">
       <FinancingPageHeader />
       <div className="container-max section-padding">
         <Suspense>

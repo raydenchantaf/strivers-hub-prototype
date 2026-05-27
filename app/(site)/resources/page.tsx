@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { getResourcesPage, getResourcesCount, getCategories } from "@/lib/sanity";
 
 export const metadata: Metadata = {
-  title: "Insights & Resources",
+  title: "Panduan & Sumber",
   description:
-    "Explore curated articles, guides, and tools designed to help Malaysian women entrepreneurs start and grow their businesses.",
+    "Terokai artikel, panduan, dan alat yang dipilih khas untuk membantu usahawan wanita Malaysia memulakan dan mengembangkan perniagaan mereka.",
   openGraph: {
-    title: "Insights & Resources | Strivers' Hub",
+    title: "Panduan & Sumber | Strivers' Hub",
     description:
-      "Explore curated articles, guides, and tools designed to help Malaysian women entrepreneurs start and grow their businesses.",
+      "Terokai artikel, panduan, dan alat yang dipilih khas untuk membantu usahawan wanita Malaysia memulakan dan mengembangkan perniagaan mereka.",
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
   twitter: {
-    title: "Insights & Resources | Strivers' Hub",
+    title: "Panduan & Sumber | Strivers' Hub",
     description:
-      "Explore curated articles, guides, and tools designed to help Malaysian women entrepreneurs start and grow their businesses.",
+      "Terokai artikel, panduan, dan alat yang dipilih khas untuk membantu usahawan wanita Malaysia memulakan dan mengembangkan perniagaan mereka.",
   },
 };
 import ResourcesPageHeader from "@/components/resources/ResourcesPageHeader";
@@ -48,7 +48,7 @@ export default async function ResourcesPage({ searchParams }: Props) {
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-rose">
       <ResourcesPageHeader />
       <div className="container-max section-padding">
         <Suspense>

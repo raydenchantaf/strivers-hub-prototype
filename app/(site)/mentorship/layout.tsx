@@ -3,17 +3,17 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Mentorship",
   description:
-    "Connect with experienced mentors who can guide your business journey. Explore mentorship opportunities available through Strivers' Hub.",
+    "Tingkatkan perniagaan anda bersama usahawanita yang berfikiran sama",
   openGraph: {
     title: "Mentorship | Strivers' Hub",
     description:
-      "Connect with experienced mentors who can guide your business journey. Explore mentorship opportunities available through Strivers' Hub.",
+      "Tingkatkan perniagaan anda bersama usahawanita yang berfikiran sama",
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
   twitter: {
     title: "Mentorship | Strivers' Hub",
     description:
-      "Connect with experienced mentors who can guide your business journey. Explore mentorship opportunities available through Strivers' Hub.",
+      "Tingkatkan perniagaan anda bersama usahawanita yang berfikiran sama",
   },
 };
 

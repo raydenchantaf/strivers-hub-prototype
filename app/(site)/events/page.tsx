@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import { getResourcesPage, getResourcesCount } from "@/lib/sanity";
 
 export const metadata: Metadata = {
-  title: "Events & Activities",
+  title: "Aktiviti & Komuniti",
   description:
-    "Stay updated on upcoming events, workshops, and community activities organised by Strivers' Hub for Malaysian women entrepreneurs.",
+    "Ikuti perkembangan bengkel, forum, dan perhimpunan komuniti untuk usahawanita.",
   openGraph: {
-    title: "Events & Activities | Strivers' Hub",
+    title: "Aktiviti & Komuniti | Strivers' Hub",
     description:
-      "Stay updated on upcoming events, workshops, and community activities organised by Strivers' Hub for Malaysian women entrepreneurs.",
+      "Ikuti perkembangan bengkel, forum, dan perhimpunan komuniti untuk usahawanita.",
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
   twitter: {
-    title: "Events & Activities | Strivers' Hub",
+    title: "Aktiviti & Komuniti | Strivers' Hub",
     description:
-      "Stay updated on upcoming events, workshops, and community activities organised by Strivers' Hub for Malaysian women entrepreneurs.",
+      "Ikuti perkembangan bengkel, forum, dan perhimpunan komuniti untuk usahawanita.",
   },
 };
 import EventsGrid from "@/components/events/EventsGrid";
@@ -43,7 +43,7 @@ export default async function EventsPage({ searchParams }: Props) {
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-rose">
       <EventsPageHeader />
       <div className="container-max section-padding">
         <Suspense>

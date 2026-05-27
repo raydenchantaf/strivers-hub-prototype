@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "Tentang Kami",
   description:
-    "Learn about Strivers' Hub — a Mastercard Inclusive for Growth initiative by The Asia Foundation empowering Malaysian women MSMEs to grow and thrive.",
+    "Mastercard Strive Malaysia: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
   openGraph: {
-    title: "About Us | Strivers' Hub",
+    title: "Tentang Kami | Strivers' Hub",
     description:
-      "Learn about Strivers' Hub — a Mastercard Inclusive for Growth initiative by The Asia Foundation empowering Malaysian women MSMEs to grow and thrive.",
+      "Mastercard Strive Malaysia: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
   twitter: {
-    title: "About Us | Strivers' Hub",
+    title: "Tentang Kami | Strivers' Hub",
     description:
-      "Learn about Strivers' Hub — a Mastercard Inclusive for Growth initiative by The Asia Foundation empowering Malaysian women MSMEs to grow and thrive.",
+      "Mastercard Strive Malaysia: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
   },
 };
 
