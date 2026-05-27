@@ -35,8 +35,9 @@ export default function EventsGrid({ events }: Props) {
       {events.map((event) => {
         const title   = language === "bm" ? event.title_bm   : event.title_en;
         const excerpt = language === "bm" ? event.excerpt_bm : event.excerpt_en;
-        const imgSrc  = event.image_en
-          ? urlFor(event.image_en).width(600).height(338).fit("crop").auto("format").url()
+        const imageSource = (language === "bm" && event.image_bm) ? event.image_bm : event.image_en;
+        const imgSrc  = imageSource
+          ? urlFor(imageSource).width(600).height(338).fit("crop").auto("format").url()
           : "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80";
 
         return (
@@ -44,7 +45,7 @@ export default function EventsGrid({ events }: Props) {
             <div className="aspect-video overflow-hidden">
               <img
                 src={imgSrc}
-                alt={event.image_en?.alt || title}
+                alt={imageSource?.alt || title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>

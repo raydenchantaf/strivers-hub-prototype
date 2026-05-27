@@ -80,8 +80,9 @@ export default function ResourcesGrid({ resources, categories }: Props) {
             const title   = language === "bm" ? article.title_bm   : article.title_en;
             const excerpt = language === "bm" ? article.excerpt_bm : article.excerpt_en;
             const cats: SanityCategory[] = Array.isArray(article.category) ? article.category : [];
-            const imgSrc  = article.image_en
-              ? urlFor(article.image_en).width(600).height(338).fit("crop").auto("format").url()
+            const imageSource = (language === "bm" && article.image_bm) ? article.image_bm : article.image_en;
+            const imgSrc  = imageSource
+              ? urlFor(imageSource).width(600).height(338).fit("crop").auto("format").url()
               : "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80";
 
             return (
@@ -89,7 +90,7 @@ export default function ResourcesGrid({ resources, categories }: Props) {
                 <div className="aspect-video overflow-hidden">
                   <img
                     src={imgSrc}
-                    alt={article.image_en?.alt || title}
+                    alt={imageSource?.alt || title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
