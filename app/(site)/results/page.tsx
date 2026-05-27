@@ -5,23 +5,30 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { getScoreTier, getMaxScore, ScoreTier } from "@/data/questions";
 import { useAssessmentReset } from "@/context/AssessmentResetContext";
-import { resources } from "@/data/resources";
+import { getResourcesByGrade, urlFor, SanityResource } from "@/lib/sanity";
 import AssessmentResultCard from "@/components/assessment/AssessmentResultCard";
 
 export default function ResultsPage() {
   const { t, language, setLanguage } = useLanguage();
   const { bumpReset } = useAssessmentReset();
-  const [tier, setTier]   = useState<ScoreTier | null>(null);
-  const [score, setScore] = useState<number>(0);
+  const [tier, setTier]               = useState<ScoreTier | null>(null);
+  const [score, setScore]             = useState<number>(0);
+  const [recommended, setRecommended] = useState<SanityResource[]>([]);
   const maxScore = getMaxScore();
-  const recommended = resources.slice(0, 3);
 
   useEffect(() => {
     const savedScore = Number(sessionStorage.getItem("sh_score") ?? 0);
     const savedLang  = sessionStorage.getItem("sh_language") as "en" | "bm" | null;
     if (savedLang) setLanguage(savedLang);
     setScore(savedScore);
-    setTier(getScoreTier(savedScore));
+    const t = getScoreTier(savedScore);
+    setTier(t);
+
+    // Fetch grade-matched resources from Sanity
+    const grade = t.category.en.toLowerCase();
+    getResourcesByGrade(grade)
+      .then((data: SanityResource[]) => setRecommended(data))
+      .catch(() => setRecommended([]));
   }, [setLanguage]);
 
   if (!tier) {
@@ -49,7 +56,7 @@ export default function ResultsPage() {
 
       <div className="container-max section-padding py-10 flex flex-col gap-10">
 
-        {/* Score card — identical to Dashboard */}
+        {/* Score card */}
         <section>
           <AssessmentResultCard
             score={score}
@@ -74,32 +81,68 @@ export default function ResultsPage() {
           </div>
         </section>
 
-        {/* Recommended resources — same as Dashboard */}
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-extrabold text-gray-900">
-              {t("dashboard.resources.title")}
-            </h2>
-            <Link href="/resources" className="text-sm font-semibold text-primary hover:underline">
-              {t("dashboard.resources.viewAll")}
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {recommended.map((r) => (
-              <div key={r.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                <img src={r.imageUrl} alt={r.title[language]} className="w-full h-40 object-cover" />
-                <div className="p-5 flex flex-col gap-3">
-                  <span className="text-xs font-semibold text-primary uppercase tracking-wide">{r.category}</span>
-                  <h3 className="text-sm font-extrabold text-gray-900 leading-snug">{r.title[language]}</h3>
-                  <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{r.excerpt[language]}</p>
-                  <Link href="/resources" className="text-xs font-semibold text-primary hover:underline mt-auto">
-                    {t("dashboard.resources.readMore")} →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Recommended resources */}
+        {recommended.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-extrabold text-gray-900">
+                {t("dashboard.resources.title")}
+              </h2>
+              <Link href="/resources" className="text-sm font-semibold text-primary hover:underline">
+                {t("dashboard.resources.viewAll")}
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              {recommended.map((r) => {
+                const title   = language === "bm" ? r.title_bm   : r.title_en;
+                const excerpt = language === "bm" ? r.excerpt_bm : r.excerpt_en;
+                const imgSrc  = r.image_en
+                  ? urlFor(r.image_en).width(600).height(338).fit("crop").auto("format").url()
+                  : "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80";
+                return (
+                  <div key={r._id} className="card group hover:shadow-lg transition-shadow">
+                    <div className="aspect-video overflow-hidden">
+                      <img
+                        src={imgSrc}
+                        alt={r.image_en?.alt || title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {r.category?.map((cat) => (
+                          <span key={cat._id} className="text-xs font-semibold px-2.5 py-1 rounded-full bg-brand-orange/20 text-brand-orange">
+                            {language === "bm" ? cat.title_bm : cat.title_en}
+                          </span>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-400 mb-1.5">
+                        {new Date(r.publishedAt).toLocaleDateString(
+                          language === "bm" ? "ms-MY" : "en-MY",
+                          { day: "numeric", month: "long", year: "numeric" }
+                        )}
+                      </p>
+                      <Link href={`/resources/${r.slug.current}`}>
+                        <h3 className="font-bold text-gray-900 text-sm mb-2 leading-snug group-hover:text-primary transition-colors">
+                          {title}
+                        </h3>
+                      </Link>
+                      <p className="text-gray-500 text-xs leading-relaxed mb-4">
+                        {excerpt}
+                      </p>
+                      <Link
+                        href={`/resources/${r.slug.current}`}
+                        className="text-primary font-semibold text-xs hover:underline"
+                      >
+                        {t("dashboard.resources.readMore")} →
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
       </div>
     </div>

@@ -360,6 +360,21 @@ export const resourceSchema = defineType({
       },
     }),
 
+    // ── Ordering & featuring ─────────────────────────────────
+    defineField({
+      name: "featured",
+      title: "Featured",
+      type: "boolean",
+      description: "Pin this article to the top of the listing, above all other posts.",
+      initialValue: false,
+    }),
+    defineField({
+      name: "order",
+      title: "Sort Order",
+      type: "number",
+      description: "Lower numbers appear first (e.g. 1 before 2). Leave blank to sort by date.",
+    }),
+
     // ── Cover images (bilingual) ──────────────────────────────
     defineField({
       name: "image_en",

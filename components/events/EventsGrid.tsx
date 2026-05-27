@@ -4,7 +4,11 @@ import { useLanguage } from "@/context/LanguageContext";
 import { urlFor, type SanityResource } from "@/lib/sanity";
 import Link from "next/link";
 
-const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange uppercase";
+const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange";
+
+function toTitleCase(str: string): string {
+  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 interface Props {
   events: SanityResource[];
@@ -53,7 +57,7 @@ export default function EventsGrid({ events }: Props) {
                       key={cat._id}
                       className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
                     >
-                      {language === "bm" ? cat.title_bm : cat.title_en}
+                      {toTitleCase(language === "bm" ? cat.title_bm : cat.title_en)}
                     </span>
                   ))}
                 </div>

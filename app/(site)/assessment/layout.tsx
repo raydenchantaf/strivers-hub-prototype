@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Business Assessment",
+  title: "Assessment",
   description:
-    "Take our free business assessment to understand your current stage and receive personalised resources to help your business grow.",
+    "Take our free self assessment to understand your current stage and receive personalised resources to help your business grow.",
   robots: { index: false, follow: false },
 };
 

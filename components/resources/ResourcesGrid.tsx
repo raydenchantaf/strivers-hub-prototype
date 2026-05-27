@@ -5,7 +5,12 @@ import { useLanguage } from "@/context/LanguageContext";
 import { urlFor, type SanityResource, type SanityCategory } from "@/lib/sanity";
 import Link from "next/link";
 
-const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange uppercase";
+const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange";
+
+/** Converts any casing to Title Case — e.g. "CUSTOMER RETENTION" → "Customer Retention" */
+function toTitleCase(str: string): string {
+  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 interface Props {
   resources:  SanityResource[];
@@ -96,7 +101,7 @@ export default function ResourcesGrid({ resources, categories }: Props) {
                         key={cat._id}
                         className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
                       >
-                        {language === "bm" ? cat.title_bm : cat.title_en}
+                        {toTitleCase(language === "bm" ? cat.title_bm : cat.title_en)}
                       </span>
                     ))}
                   </div>

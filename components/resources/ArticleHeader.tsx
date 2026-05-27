@@ -3,7 +3,12 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { urlFor, type SanityCategory, type SanityResource } from "@/lib/sanity";
 
-const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange uppercase";
+const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange";
+
+/** Converts any casing to Title Case — e.g. "CUSTOMER RETENTION" → "Customer Retention" */
+function toTitleCase(str: string): string {
+  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 interface Props {
   title_en: string;
@@ -53,15 +58,19 @@ export default function ArticleHeader({
       )}
 
       {/* Meta row */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        {cats.map((cat) => (
-          <span
-            key={cat._id}
-            className={`text-sm font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
-          >
-            {isBm ? cat.title_bm : cat.title_en}
-          </span>
-        ))}
+      <div className="mb-4">
+        {/* Category badges */}
+        <div className="flex flex-wrap gap-2 mb-2">
+          {cats.map((cat) => (
+            <span
+              key={cat._id}
+              className={`text-sm font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
+            >
+              {toTitleCase(isBm ? cat.title_bm : cat.title_en)}
+            </span>
+          ))}
+        </div>
+        {/* Date — on its own line below badges */}
         <span className="text-xs text-gray-400">{formattedDate}</span>
       </div>
 
