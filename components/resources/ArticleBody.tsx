@@ -164,7 +164,7 @@ export default function ArticleBody({ body_en, body_bm }: Props) {
           if (!fileUrl) return null;
 
           return (
-            <div className="my-6 flex items-center gap-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+            <div className="my-6 flex items-center gap-4 rounded-xl border border-primary bg-gray-50 px-4 py-3">
               <span className="text-2xl shrink-0">📎</span>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm text-gray-900 truncate">{label}</p>
@@ -251,7 +251,7 @@ export default function ArticleBody({ body_en, body_bm }: Props) {
   );
 
   return (
-    <article className="prose-sm max-w-none">
+    <article className="article-body max-w-none">
       {hasBody ? (
         <PortableText value={body} components={components} />
       ) : (

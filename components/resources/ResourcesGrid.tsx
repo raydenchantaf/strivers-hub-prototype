@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams, usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { urlFor, type SanityResource, type SanityCategory } from "@/lib/sanity";
 import Link from "next/link";
@@ -13,10 +13,24 @@ interface Props {
 }
 
 export default function ResourcesGrid({ resources, categories }: Props) {
-  const { language } = useLanguage();
-  const [activeFilter, setActiveFilter] = useState<string>("all");
+  const { language }   = useLanguage();
+  const pathname       = usePathname();
+  const searchParams   = useSearchParams();
+  const activeFilter   = searchParams.get("category") ?? "all";
 
-  // Only surface categories that have at least one article
+  function filterHref(value: string) {
+    const next = new URLSearchParams(searchParams.toString());
+    if (value === "all") {
+      next.delete("category");
+    } else {
+      next.set("category", value);
+    }
+    next.delete("page"); // reset to page 1 when filter changes
+    const qs = next.toString();
+    return qs ? `${pathname}?${qs}` : pathname;
+  }
+
+  // Only surface categories that have at least one article in this result set
   const usedValues = new Set(
     resources.flatMap((r) =>
       Array.isArray(r.category) ? r.category.map((c) => c.value) : []
@@ -24,21 +38,12 @@ export default function ResourcesGrid({ resources, categories }: Props) {
   );
   const visibleCategories = categories.filter((c) => usedValues.has(c.value));
 
-  const filtered =
-    activeFilter === "all"
-      ? resources
-      : resources.filter((r) =>
-          Array.isArray(r.category) &&
-          r.category.some((c) => c.value === activeFilter)
-        );
-
   return (
     <>
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2 mb-8">
-        {/* "All" tab */}
-        <button
-          onClick={() => setActiveFilter("all")}
+        <Link
+          href={filterHref("all")}
           className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
             activeFilter === "all"
               ? "bg-primary text-white shadow-md"
@@ -46,12 +51,12 @@ export default function ResourcesGrid({ resources, categories }: Props) {
           }`}
         >
           {language === "bm" ? "Semua" : "All"}
-        </button>
+        </Link>
 
         {visibleCategories.map((cat) => (
-          <button
+          <Link
             key={cat._id}
-            onClick={() => setActiveFilter(cat.value)}
+            href={filterHref(cat.value)}
             className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
               activeFilter === cat.value
                 ? "bg-primary text-white shadow-md"
@@ -59,22 +64,19 @@ export default function ResourcesGrid({ resources, categories }: Props) {
             }`}
           >
             {language === "bm" ? cat.title_bm : cat.title_en}
-          </button>
+          </Link>
         ))}
       </div>
 
       {/* Grid */}
-      {filtered.length > 0 ? (
+      {resources.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {filtered.map((article) => {
+          {resources.map((article) => {
             const title   = language === "bm" ? article.title_bm   : article.title_en;
             const excerpt = language === "bm" ? article.excerpt_bm : article.excerpt_en;
             const cats: SanityCategory[] = Array.isArray(article.category) ? article.category : [];
-            const activeImage = language === "bm"
-              ? (article.image_bm ?? article.image_en)
-              : (article.image_en ?? article.image_bm);
-            const imgSrc = activeImage
-              ? urlFor(activeImage).width(600).height(338).fit("crop").auto("format").url()
+            const imgSrc  = article.image_en
+              ? urlFor(article.image_en).width(600).height(338).fit("crop").auto("format").url()
               : "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80";
 
             return (
@@ -82,7 +84,7 @@ export default function ResourcesGrid({ resources, categories }: Props) {
                 <div className="aspect-video overflow-hidden">
                   <img
                     src={imgSrc}
-                    alt={activeImage?.alt || title}
+                    alt={article.image_en?.alt || title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>

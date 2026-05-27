@@ -90,6 +90,65 @@ export async function getResources(): Promise<SanityResource[]> {
   );
 }
 
+interface ResourceQueryOptions {
+  /** Include only resources that have at least one of these category slugs */
+  include?: string | string[];
+  /** Exclude resources that have any of these category slugs */
+  exclude?: string | string[];
+}
+
+function buildCategoryFilter(opts: ResourceQueryOptions): { filter: string; params: Record<string, string[] | null> } {
+  const include = opts.include ? (Array.isArray(opts.include) ? opts.include : [opts.include]) : null;
+  const exclude = opts.exclude ? (Array.isArray(opts.exclude) ? opts.exclude : [opts.exclude]) : null;
+
+  const clauses: string[] = ["_type == \"resource\""];
+  if (include) clauses.push(`count(category[@->value.current in $includeValues]) > 0`);
+  if (exclude) clauses.push(`count(category[@->value.current in $excludeValues]) == 0`);
+
+  return {
+    filter: clauses.join(" && "),
+    params: {
+      includeValues: include,
+      excludeValues: exclude,
+    },
+  };
+}
+
+/** Fetch a page of resources with optional include/exclude category filters */
+export async function getResourcesPage(
+  page: number,
+  pageSize: number,
+  categoryValue?: string | string[],
+  opts?: ResourceQueryOptions
+): Promise<SanityResource[]> {
+  const offset = (page - 1) * pageSize;
+  const { filter, params } = buildCategoryFilter({
+    include: opts?.include ?? categoryValue,
+    exclude: opts?.exclude,
+  });
+  return sanityClient.fetch(
+    `*[${filter}] | order(publishedAt desc) [${offset}...${offset + pageSize}] { ${RESOURCE_PROJECTION} }`,
+    params,
+    { next: { revalidate: 60 } }
+  );
+}
+
+/** Count total resources with optional include/exclude category filters */
+export async function getResourcesCount(
+  categoryValue?: string | string[],
+  opts?: ResourceQueryOptions
+): Promise<number> {
+  const { filter, params } = buildCategoryFilter({
+    include: opts?.include ?? categoryValue,
+    exclude: opts?.exclude,
+  });
+  return sanityClient.fetch(
+    `count(*[${filter}])`,
+    params,
+    { next: { revalidate: 60 } }
+  );
+}
+
 /** Fetch a single resource by slug (includes rich text body) */
 export async function getResource(slug: string): Promise<SanityResourceFull | null> {
   return sanityClient.fetch(

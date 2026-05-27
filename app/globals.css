@@ -25,6 +25,56 @@
   }
 }
 
+/* ─── Article body — table styles ──────────────────────────────────────────── */
+/* Applied to any <table> rendered inside ArticleBody                           */
+@layer base {
+  .article-body table {
+    @apply w-full text-sm my-6;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  /* Scrollable on small screens */
+  .article-body .table-scroll {
+    @apply overflow-x-auto rounded-xl shadow-sm mb-6;
+  }
+
+  /* Header — targets <th> anywhere (thead or tbody, CKEditor puts th inside tbody) */
+  .article-body table th {
+    background-color: var(--color-primary);
+    @apply text-white font-semibold text-left px-4 py-3 text-sm;
+  }
+  .article-body table tr:first-child th:first-child {
+    @apply rounded-tl-xl;
+  }
+  .article-body table tr:first-child th:last-child {
+    @apply rounded-tr-xl;
+  }
+
+  /* Body cells */
+  .article-body table tbody tr td {
+    @apply px-4 py-3 text-gray-700 border-b border-gray-100;
+  }
+
+  /* Zebra rows */
+  .article-body table tbody tr:nth-child(even) {
+    background-color: #FCE4EC33; /* brand-rose at ~20% */
+  }
+
+  /* Row hover */
+  .article-body table tbody tr:hover {
+    background-color: #822B6210; /* primary at ~6% */
+  }
+
+  /* Round bottom corners on last row */
+  .article-body table tbody tr:last-child td:first-child {
+    @apply rounded-bl-xl;
+  }
+  .article-body table tbody tr:last-child td:last-child {
+    @apply rounded-br-xl;
+  }
+}
+
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary-dark transition-colors duration-200 shadow-md;

@@ -3,7 +3,7 @@
 import { useLanguage } from "@/context/LanguageContext";
 import { urlFor, type SanityCategory, type SanityResource } from "@/lib/sanity";
 
-const BADGE_CLASS = "bg-primary/10 text-primary";
+const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange uppercase";
 
 interface Props {
   title_en: string;
@@ -24,9 +24,8 @@ export default function ArticleHeader({
 }: Props) {
   const { language } = useLanguage();
 
-  const isBm     = language === "bm";
-  const title    = isBm ? title_bm : title_en;
-  const subtitle = isBm ? title_en : title_bm;
+  const isBm  = language === "bm";
+  const title = isBm ? title_bm : title_en;
   const cats: SanityCategory[] = Array.isArray(category) ? category : [];
 
   // Pick the language-appropriate image, fall back to the other if unavailable
@@ -58,7 +57,7 @@ export default function ArticleHeader({
         {cats.map((cat) => (
           <span
             key={cat._id}
-            className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
+            className={`text-sm font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
           >
             {isBm ? cat.title_bm : cat.title_en}
           </span>
@@ -70,9 +69,6 @@ export default function ArticleHeader({
       <h1 className="text-2xl md:text-4xl font-extrabold text-gray-900 leading-tight mb-2">
         {title}
       </h1>
-
-      {/* Subtitle — the other language */}
-      <p className="text-base text-gray-400 italic mb-6">{subtitle}</p>
 
       <hr className="border-gray-200 mb-8" />
     </>
