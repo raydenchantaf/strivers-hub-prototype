@@ -5,11 +5,6 @@ import { urlFor, type SanityCategory, type SanityResource } from "@/lib/sanity";
 
 const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange";
 
-/** Converts any casing to Title Case — e.g. "CUSTOMER RETENTION" → "Customer Retention" */
-function toTitleCase(str: string): string {
-  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
 interface Props {
   title_en: string;
   title_bm: string;
@@ -66,7 +61,7 @@ export default function ArticleHeader({
               key={cat._id}
               className={`text-sm font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
             >
-              {toTitleCase(isBm ? cat.title_bm : cat.title_en)}
+              {isBm ? cat.title_bm : cat.title_en}
             </span>
           ))}
         </div>

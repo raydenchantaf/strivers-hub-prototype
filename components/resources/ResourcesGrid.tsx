@@ -1,16 +1,11 @@
 "use client";
 
-import { useSearchParams, usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { urlFor, type SanityResource, type SanityCategory } from "@/lib/sanity";
 import Link from "next/link";
+import CategoryDropdown from "@/components/resources/CategoryDropdown";
 
 const BADGE_CLASS = "bg-brand-orange/20 text-brand-orange";
-
-/** Converts any casing to Title Case — e.g. "CUSTOMER RETENTION" → "Customer Retention" */
-function toTitleCase(str: string): string {
-  return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-}
 
 interface Props {
   resources:  SanityResource[];
@@ -18,60 +13,12 @@ interface Props {
 }
 
 export default function ResourcesGrid({ resources, categories }: Props) {
-  const { language }   = useLanguage();
-  const pathname       = usePathname();
-  const searchParams   = useSearchParams();
-  const activeFilter   = searchParams.get("category") ?? "all";
-
-  function filterHref(value: string) {
-    const next = new URLSearchParams(searchParams.toString());
-    if (value === "all") {
-      next.delete("category");
-    } else {
-      next.set("category", value);
-    }
-    next.delete("page"); // reset to page 1 when filter changes
-    const qs = next.toString();
-    return qs ? `${pathname}?${qs}` : pathname;
-  }
-
-  // Only surface categories that have at least one article in this result set
-  const usedValues = new Set(
-    resources.flatMap((r) =>
-      Array.isArray(r.category) ? r.category.map((c) => c.value) : []
-    )
-  );
-  const visibleCategories = categories.filter((c) => usedValues.has(c.value));
+  const { language } = useLanguage();
 
   return (
     <>
-      {/* Filter tabs */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        <Link
-          href={filterHref("all")}
-          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-            activeFilter === "all"
-              ? "bg-primary text-white shadow-md"
-              : "bg-white border border-gray-200 text-gray-600 hover:border-primary hover:text-primary"
-          }`}
-        >
-          {language === "bm" ? "Semua" : "All"}
-        </Link>
-
-        {visibleCategories.map((cat) => (
-          <Link
-            key={cat._id}
-            href={filterHref(cat.value)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-              activeFilter === cat.value
-                ? "bg-primary text-white shadow-md"
-                : "bg-white border border-gray-200 text-gray-600 hover:border-primary hover:text-primary"
-            }`}
-          >
-            {language === "bm" ? cat.title_bm : cat.title_en}
-          </Link>
-        ))}
-      </div>
+      {/* Category dropdown */}
+      <CategoryDropdown categories={categories} />
 
       {/* Grid */}
       {resources.length > 0 ? (
@@ -102,7 +49,7 @@ export default function ResourcesGrid({ resources, categories }: Props) {
                         key={cat._id}
                         className={`text-xs font-semibold px-2.5 py-1 rounded-full ${BADGE_CLASS}`}
                       >
-                        {toTitleCase(language === "bm" ? cat.title_bm : cat.title_en)}
+                        {language === "bm" ? cat.title_bm : cat.title_en}
                       </span>
                     ))}
                   </div>
