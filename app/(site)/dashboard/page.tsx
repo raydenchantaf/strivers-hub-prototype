@@ -148,17 +148,20 @@ export default function DashboardPage() {
               <div className="w-6 h-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
           ) : result && tier ? (
-            <>
-              <AssessmentResultCard score={result.score} maxScore={maxScore} tier={tier} language={language} />
-              <div className="mt-4">
+            <AssessmentResultCard
+              score={result.score}
+              maxScore={maxScore}
+              tier={tier}
+              language={language}
+              retakeSlot={
                 <Link
                   href="/assessment"
                   className="text-sm font-semibold px-5 py-2.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-colors"
                 >
                   {t("dashboard.assessment.retake")}
                 </Link>
-              </div>
-            </>
+              }
+            />
           ) : (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center text-center gap-5">
               <div className="w-16 h-16 rounded-full bg-pink-50 flex items-center justify-center">

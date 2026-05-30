@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { type ReactNode } from "react";
 import { ScoreTier } from "@/data/questions";
 
 // ── Animated score ring ──────────────────────────────────────────────────────
@@ -61,23 +62,25 @@ function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface Props {
-  score:    number;
-  maxScore: number;
-  tier:     ScoreTier;
-  language: "en" | "bm";
+  score:       number;
+  maxScore:    number;
+  tier:        ScoreTier;
+  language:    "en" | "bm";
+  retakeSlot?: ReactNode;
 }
 
-export default function AssessmentResultCard({ score, maxScore, tier, language }: Props) {
+export default function AssessmentResultCard({ score, maxScore, tier, language, retakeSlot }: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
       <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
 
-        {/* Score ring + category badge */}
+        {/* Score ring + category badge + optional retake button */}
         <div className="flex-shrink-0 flex flex-col items-center gap-3">
           <ScoreRing score={score} maxScore={maxScore} />
           <span className="text-sm font-bold px-3 py-1 rounded-full text-white bg-brand-orange">
             {tier.category[language]}
           </span>
+          {retakeSlot}
         </div>
 
         {/* Label + description + next steps */}

@@ -165,6 +165,11 @@ export default function AssessmentEngine() {
   const [currentId,  setCurrentId]  = useState("q1");
   const [history,    setHistory]    = useState<string[]>([]);
 
+  // Scroll to top on every question change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentId]);
+
   // Answers (keyed by question ID)
   const [answers,    setAnswers]    = useState<Record<string, string | string[]>>({});
   const [otherTexts, setOtherTexts] = useState<Record<string, string>>({});

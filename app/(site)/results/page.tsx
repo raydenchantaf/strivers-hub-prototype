@@ -63,15 +63,17 @@ export default function ResultsPage() {
             maxScore={maxScore}
             tier={tier}
             language={language}
+            retakeSlot={
+              <Link
+                href="/assessment"
+                onClick={bumpReset}
+                className="text-sm font-semibold px-5 py-2.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-colors"
+              >
+                {t("results.retake")}
+              </Link>
+            }
           />
-          <div className="mt-4 flex gap-3">
-            <Link
-              href="/assessment"
-              onClick={bumpReset}
-              className="text-sm font-semibold px-5 py-2.5 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-colors"
-            >
-              {t("results.retake")}
-            </Link>
+          <div className="mt-4">
             <Link
               href="/"
               className="text-sm font-medium px-5 py-2.5 rounded-full text-gray-500 hover:text-primary transition-colors"
