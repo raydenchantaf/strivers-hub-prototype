@@ -127,6 +127,7 @@ export default function ArticleBody({ body_en, body_bm }: Props) {
         rawHtml: ({ value }) => {
           if (!value.code) return null;
           const isIframe = value.code.trimStart().startsWith("<iframe");
+          const hasTable = value.code.includes("<table");
           return isIframe ? (
             // Responsive iframe wrapper — preserves 16:9 by default
             <div
@@ -138,6 +139,12 @@ export default function ArticleBody({ body_en, body_bm }: Props) {
                   '<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"'
                 ),
               }}
+            />
+          ) : hasTable ? (
+            // Table — wrapped in horizontal scroll container for mobile
+            <div
+              className="table-scroll"
+              dangerouslySetInnerHTML={{ __html: value.code }}
             />
           ) : (
             // Plain HTML — renders as-is

@@ -369,7 +369,7 @@ export const resourceSchema = defineType({
       initialValue: false,
     }),
     defineField({
-      name: "order",
+      name: "sortOrder",
       title: "Sort Order",
       type: "number",
       description: "Lower numbers appear first (e.g. 1 before 2). Leave blank to sort by date.",
@@ -412,6 +412,7 @@ export const resourceSchema = defineType({
       name: "publishedAt",
       title: "Published Date",
       type: "date",
+      initialValue: () => new Date().toISOString().slice(0, 10),
       validation: (Rule) => Rule.required(),
     }),
 

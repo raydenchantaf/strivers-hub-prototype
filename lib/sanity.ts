@@ -37,7 +37,7 @@ export interface SanityResource {
   category: SanityCategory[];
   publishedAt: string;
   featured?: boolean;
-  order?: number;
+  sortOrder?: number;
   slug: { current: string };
   image_en?: SanityImageSource & { alt?: string };
   image_bm?: SanityImageSource & { alt?: string };
@@ -68,7 +68,7 @@ const RESOURCE_PROJECTION = `
   "category": category[]-> { ${CATEGORY_PROJECTION} },
   publishedAt,
   featured,
-  order,
+  sortOrder,
   slug,
   image_en,
   image_bm
@@ -88,7 +88,7 @@ export async function getCategories(): Promise<SanityCategory[]> {
 /** Fetch all resources for the listing page (no body — keeps payload small) */
 export async function getResources(): Promise<SanityResource[]> {
   return sanityClient.fetch(
-    `*[_type == "resource"] | order(featured desc, order asc, publishedAt desc) { ${RESOURCE_PROJECTION} }`,
+    `*[_type == "resource"] | order(coalesce(featured, false) desc, coalesce(sortOrder, 9999) asc, publishedAt desc) { ${RESOURCE_PROJECTION} }`,
     {},
     { next: { revalidate: 60 } }
   );
@@ -106,7 +106,7 @@ export async function getResourcesByGrade(grade: string): Promise<SanityResource
 
   // Step 1 — grade-matched articles
   const graded: SanityResource[] = await sanityClient.fetch(
-    `*[_type == "resource" && assessmentGrade == $grade] | order(featured desc, order asc, publishedAt desc)[0...${LIMIT}] { ${RESOURCE_PROJECTION} }`,
+    `*[_type == "resource" && assessmentGrade == $grade] | order(coalesce(featured, false) desc, coalesce(sortOrder, 9999) asc, publishedAt desc)[0...${LIMIT}] { ${RESOURCE_PROJECTION} }`,
     { grade: grade.toLowerCase() },
     { next: { revalidate: 300 } }
   );
@@ -117,7 +117,7 @@ export async function getResourcesByGrade(grade: string): Promise<SanityResource
   // Step 2 — top up with recent general articles, skipping already-fetched IDs
   const seenIds: string[] = graded.map((r) => r._id);
   const topUp: SanityResource[] = await sanityClient.fetch(
-    `*[_type == "resource" && !(_id in $seenIds) && count(category[@->value.current in $excluded]) == 0] | order(publishedAt desc)[0...${needed}] { ${RESOURCE_PROJECTION} }`,
+    `*[_type == "resource" && !(_id in $seenIds) && count(category[@->value.current in $excluded]) == 0] | order(coalesce(featured, false) desc, coalesce(sortOrder, 9999) asc, publishedAt desc)[0...${needed}] { ${RESOURCE_PROJECTION} }`,
     { seenIds, excluded: EXCLUDED_CATS },
     { next: { revalidate: 300 } }
   );
@@ -162,7 +162,7 @@ export async function getResourcesPage(
     exclude: opts?.exclude,
   });
   return sanityClient.fetch(
-    `*[${filter}] | order(featured desc, order asc, publishedAt desc) [${offset}...${offset + pageSize}] { ${RESOURCE_PROJECTION} }`,
+    `*[${filter}] | order(coalesce(featured, false) desc, coalesce(sortOrder, 9999) asc, publishedAt desc) [${offset}...${offset + pageSize}] { ${RESOURCE_PROJECTION} }`,
     params,
     { next: { revalidate: 60 } }
   );
