@@ -222,8 +222,116 @@ export const questions: Question[] = [
       { id: "q4i_3", label: { en: "Seldom",    bm: "Jarang" },        points: 0 },
       { id: "q4i_4", label: { en: "Never",     bm: "Tidak pernah" },  points: 0 },
     ],
+    nextId: "q6a",
+  },
+
+  // Section: Care Responsibilities
+  {
+    id: "q6a", section: "Care Responsibilities", type: "multi",
+    text: {
+      en: "Do you currently provide care for any of the following people? (Select all that apply)",
+      bm: "Adakah anda kini menjaga mana-mana individu berikut? (Pilih semua yang berkenaan)",
+    },
+    options: [
+      { id: "q6a_1", label: { en: "None",                                              bm: "Tiada" },                                                                    points: 0 },
+      { id: "q6a_2", label: { en: "Children aged 0–4",                                 bm: "Kanak-kanak berumur 0–4 tahun" },                                            points: 0 },
+      { id: "q6a_3", label: { en: "Children aged 5–17",                                bm: "Kanak-kanak berumur 5–17 tahun" },                                           points: 0 },
+      { id: "q6a_4", label: { en: "Elderly (aged 60 and above)",                       bm: "Warga emas (berumur 60 tahun ke atas)" },                                    points: 0 },
+      { id: "q6a_5", label: { en: "Person with Disabilities (PwD)",                    bm: "Orang Kurang Upaya (OKU)" },                                                 points: 0 },
+      { id: "q6a_6", label: { en: "Sick or chronically ill family member/friend",      bm: "Ahli keluarga/rakan yang sakit atau menghidap penyakit kronik" },            points: 0 },
+    ],
+    nextId: "q6b",
+  },
+  {
+    id: "q6b", section: "Care Responsibilities", type: "single",
+    text: {
+      en: "Is the care you provide paid or unpaid?",
+      bm: "Adakah penjagaan yang anda berikan berbayar atau tidak berbayar?",
+    },
+    options: [
+      { id: "q6b_1", label: { en: "Not applicable",   bm: "Tidak berkenaan" },              points: 0 },
+      { id: "q6b_2", label: { en: "Fully unpaid",     bm: "Sepenuhnya tidak berbayar" },    points: 0 },
+      { id: "q6b_3", label: { en: "Partially paid",   bm: "Sebahagiannya berbayar" },       points: 0 },
+      { id: "q6b_4", label: { en: "Fully paid",       bm: "Sepenuhnya berbayar" },          points: 0 },
+    ],
+    nextId: "q6c",
+  },
+  {
+    id: "q6c", section: "Care Responsibilities", type: "text", inputType: "number",
+    text: {
+      en: "If fully or partially paid, how much do you receive per month for your care work? (If unpaid or not applicable, enter 0)",
+      bm: "Jika sepenuhnya atau sebahagiannya berbayar, berapakah jumlah yang anda terima setiap bulan untuk kerja penjagaan yang anda lakukan? (Jika tidak berbayar atau tidak berkenaan, masukkan 0)",
+    },
+    options: [],
+    placeholder: { en: "e.g. 500", bm: "cth. 500" },
+    nextId: "q6d",
+  },
+  {
+    id: "q6d", section: "Care Responsibilities", type: "single",
+    text: {
+      en: "Approximately how many hours per week do you spend on caregiving activities?",
+      bm: "Secara anggaran, berapa jam seminggu yang anda luangkan untuk aktiviti penjagaan?",
+    },
+    options: [
+      { id: "q6d_1", label: { en: "Not applicable",      bm: "Tidak berkenaan" },              points: 0 },
+      { id: "q6d_2", label: { en: "Less than 5 hours",   bm: "Kurang daripada 5 jam" },        points: 0 },
+      { id: "q6d_3", label: { en: "5–10 hours",          bm: "5–10 jam" },                     points: 0 },
+      { id: "q6d_4", label: { en: "11–20 hours",         bm: "11–20 jam" },                    points: 0 },
+      { id: "q6d_5", label: { en: "21–40 hours",         bm: "21–40 jam" },                    points: 0 },
+      { id: "q6d_6", label: { en: "More than 40 hours",  bm: "Lebih daripada 40 jam" },        points: 0 },
+    ],
+    nextId: "q6e",
+  },
+  {
+    id: "q6e", section: "Care Responsibilities", type: "single",
+    text: {
+      en: "Who else in your household shares caregiving responsibilities with you?",
+      bm: "Siapakah lagi dalam isi rumah anda yang berkongsi tanggungjawab penjagaan bersama anda?",
+    },
+    options: [
+      { id: "q6e_1", label: { en: "Not applicable",                              bm: "Tidak berkenaan" },                                                     points: 0 },
+      { id: "q6e_2", label: { en: "Spouse or partner",                           bm: "Pasangan (suami/isteri)" },                                             points: 0 },
+      { id: "q6e_3", label: { en: "Other family member (parent, sibling, etc.)", bm: "Ahli keluarga lain (ibu bapa, adik-beradik, dan sebagainya)" },         points: 0 },
+      { id: "q6e_4", label: { en: "Hired caregiver or domestic helper",          bm: "Penjaga yang diupah atau pembantu rumah" },                             points: 0 },
+      { id: "q6e_5", label: { en: "Community or volunteer support",              bm: "Sokongan komuniti atau sukarelawan" },                                  points: 0 },
+      { id: "q6e_6", label: { en: "Nobody — I am the sole caregiver",            bm: "Tiada siapa — saya adalah satu-satunya penjaga" },                      points: 0 },
+    ],
+    nextId: "q6f",
+  },
+  {
+    id: "q6f", section: "Care Responsibilities", type: "single",
+    text: {
+      en: "How does your caregiving responsibility affect your work or livelihood?",
+      bm: "Bagaimanakah tanggungjawab penjagaan anda mempengaruhi pekerjaan atau sumber pendapatan anda?",
+    },
+    options: [
+      { id: "q6f_1", label: { en: "Not applicable",                                               bm: "Tidak berkenaan" },                                                                   points: 0 },
+      { id: "q6f_2", label: { en: "Little to no effect",                                          bm: "Sedikit atau tiada kesan" },                                                          points: 0 },
+      { id: "q6f_3", label: { en: "I have reduced my working hours",                              bm: "Saya telah mengurangkan waktu bekerja" },                                             points: 0 },
+      { id: "q6f_4", label: { en: "I have turned down job opportunities or business growth",      bm: "Saya terpaksa menolak peluang pekerjaan atau perkembangan perniagaan" },             points: 0 },
+      { id: "q6f_5", label: { en: "I have had to leave employment or close my business entirely", bm: "Saya terpaksa berhenti bekerja atau menutup perniagaan sepenuhnya" },               points: 0 },
+    ],
+    nextId: "q6g",
+  },
+  {
+    id: "q6g", section: "Care Responsibilities", type: "multi", maxSelections: 3,
+    text: {
+      en: "What support would most help you manage your caregiving responsibilities? (Choose up to 3)",
+      bm: "Apakah bentuk sokongan yang paling membantu anda menguruskan tanggungjawab penjagaan? (Pilih sehingga 3)",
+    },
+    options: [
+      { id: "q6g_1", label: { en: "Financial assistance or allowance",                          bm: "Bantuan kewangan atau elaun" },                                                                        points: 0 },
+      { id: "q6g_2", label: { en: "Access to affordable care centres or respite care",          bm: "Akses kepada pusat penjagaan mampu milik atau perkhidmatan penjagaan sementara (respite care)" },    points: 0 },
+      { id: "q6g_3", label: { en: "Flexible work arrangements from employer",                   bm: "Pengaturan kerja yang fleksibel daripada majikan" },                                                   points: 0 },
+      { id: "q6g_4", label: { en: "Training on caregiving skills",                              bm: "Latihan kemahiran penjagaan" },                                                                        points: 0 },
+      { id: "q6g_5", label: { en: "Community or peer support group",                            bm: "Kumpulan sokongan komuniti atau rakan sebaya" },                                                       points: 0 },
+      { id: "q6g_6", label: { en: "Government policy or legal protection for caregivers",       bm: "Dasar kerajaan atau perlindungan undang-undang untuk penjaga" },                                      points: 0 },
+      { id: "q6g_7", label: { en: "Tools, assistive devices, or facility support",              bm: "Alat bantuan, peranti sokongan atau kemudahan yang berkaitan" },                                      points: 0 },
+      { id: "q6g_8", label: { en: "Information on available care services",                     bm: "Maklumat mengenai perkhidmatan penjagaan yang tersedia" },                                            points: 0 },
+    ],
     nextId: "q5a",
   },
+
   // Section 5: Demographic
   {
     id: "q5a", section: "Demographic", type: "single",

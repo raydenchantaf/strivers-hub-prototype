@@ -80,7 +80,7 @@ function CustomDropdown({
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /** Total questions in the longest path (Yes path = 25 steps after grouping q5g–q5j) */
-const TOTAL_QUESTIONS = 25;
+const TOTAL_QUESTIONS = 32;
 
 /** Resolve the next question ID given the current question and the answer given */
 function resolveNextId(q: Question, answer: string | string[]): string {
@@ -183,7 +183,11 @@ export default function AssessmentEngine() {
   const [multiTextInputs, setMultiTextInputs] = useState<Record<string, string>>({});
 
   const [submitting, setSubmitting] = useState(false);
+  const [submitted,  setSubmitted]  = useState(false);
   const [showGate,   setShowGate]   = useState(false);
+  const [gatePrefill, setGatePrefill] = useState<{ firstName: string; lastName: string; email: string; phone: string }>({
+    firstName: "", lastName: "", email: "", phone: "",
+  });
 
   const currentQuestion = questionsById[currentId];
   const qType           = currentQuestion.type;
@@ -399,6 +403,16 @@ export default function AssessmentEngine() {
       : resolveNextId(currentQuestion, currentAnswer);
 
     if (nextId === "[END]") {
+      setSubmitted(true); // lock the button immediately — prevents double submission
+
+      // Pre-fill registration gate with demographic answers
+      setGatePrefill({
+        firstName: String(updatedAnswers["q5g"] ?? ""),
+        lastName:  String(updatedAnswers["q5h"] ?? ""),
+        email:     String(updatedAnswers["q5i"] ?? ""),
+        phone:     String(updatedAnswers["q5j"] ?? ""),
+      });
+
       // ── Categorisation scoring ───────────────────────────────────────────
       const catScore = getCategorizationScore(updatedAnswers);
       const tier = getScoreTier(catScore);
@@ -878,7 +892,7 @@ export default function AssessmentEngine() {
             </button>
             <button
               onClick={handleNext}
-              disabled={!hasAnswer || submitting}
+              disabled={!hasAnswer || submitting || submitted}
               className="btn-primary py-3 px-6 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {submitting ? (
@@ -902,6 +916,7 @@ export default function AssessmentEngine() {
 
       {showGate && (
         <RegistrationGate
+          prefill={gatePrefill}
           onSkip={() => { setShowGate(false); router.push("/results"); }}
         />
       )}

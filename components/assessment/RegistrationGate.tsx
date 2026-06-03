@@ -8,16 +8,29 @@ function validatePassword(pw: string) {
   return pw.length >= 8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw);
 }
 
-interface Props {
-  onSkip: () => void; // user dismissed — caller navigates to /results
+interface Prefill {
+  firstName: string;
+  lastName:  string;
+  email:     string;
+  phone:     string;
 }
 
-export default function RegistrationGate({ onSkip }: Props) {
+interface Props {
+  onSkip:   () => void; // user dismissed — caller navigates to /results
+  prefill?: Prefill;
+}
+
+export default function RegistrationGate({ onSkip, prefill }: Props) {
   const { t } = useLanguage();
   const router = useRouter();
 
   const [form, setForm] = useState({
-    firstName: "", lastName: "", email: "", phone: "", password: "", confirmPassword: "",
+    firstName:       prefill?.firstName       ?? "",
+    lastName:        prefill?.lastName        ?? "",
+    email:           prefill?.email           ?? "",
+    phone:           prefill?.phone           ?? "",
+    password:        "",
+    confirmPassword: "",
   });
   const [status, setStatus]       = useState<"idle" | "submitting">("idle");
   const [fieldError, setFieldError] = useState<string | null>(null);
