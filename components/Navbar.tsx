@@ -363,7 +363,7 @@ export default function Navbar() {
                     {t("nav.login")}
                   </Link>
                   <Link href="/register" onClick={close} className="btn-primary w-full text-center text-sm py-3.5">
-                    {t("nav.joinNow")}
+                    {t("nav.joinUs")}
                   </Link>
                 </>
               )}
