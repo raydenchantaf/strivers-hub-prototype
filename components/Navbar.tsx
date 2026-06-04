@@ -36,13 +36,15 @@ export default function Navbar() {
   const pathname                      = usePathname();
   const router                        = useRouter();
 
-  // Read sh_user cookie on mount
+  // Read sh_user cookie on mount and on every route change (picks up login + logout)
   useEffect(() => {
     const raw = getCookie("sh_user");
     if (raw) {
-      try { setUser(JSON.parse(raw)); } catch {}
+      try { setUser(JSON.parse(raw)); } catch { setUser(null); }
+    } else {
+      setUser(null);
     }
-  }, [pathname]); // re-check on route change so logout reflects immediately
+  }, [pathname]);
 
   // Close avatar dropdown on outside click
   useEffect(() => {

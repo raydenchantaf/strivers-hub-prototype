@@ -23,9 +23,7 @@ import HowItWorks from "@/components/landing/HowItWorks";
 import MyDigital from "@/components/landing/MyDigital";
 import PartnerStrip from "@/components/landing/PartnerStrip";
 import Stats from "@/components/landing/Stats";
-import CommunitySection from "@/components/landing/CommunitySection";
 import CTABanner from "@/components/landing/CTABanner";
-import InsightsGrid from "@/components/landing/InsightsGrid";
 
 export default function HomePage() {
   return (

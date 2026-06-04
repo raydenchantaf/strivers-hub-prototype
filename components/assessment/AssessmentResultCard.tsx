@@ -5,8 +5,8 @@ import { type ReactNode } from "react";
 import { ScoreTier } from "@/data/questions";
 
 // ── Animated score ring ──────────────────────────────────────────────────────
-const SIZE         = 180;
-const STROKE       = 10;
+const SIZE         = 225;
+const STROKE       = 16;
 const RADIUS       = (SIZE - STROKE) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
@@ -33,7 +33,7 @@ function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
   }, [score, maxScore]);
 
   return (
-    <div className="relative w-[180px] h-[180px] flex items-center justify-center">
+    <div className="relative w-[225px] h-[225px] flex items-center justify-center">
       <svg
         width={SIZE}
         height={SIZE}
@@ -53,8 +53,8 @@ function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
         />
       </svg>
       <div className="relative flex flex-col items-center leading-none">
-        <span className="text-3xl font-extrabold text-gray-900">{displayed}</span>
-        <span className="text-xs text-gray-400 mt-1">/ {maxScore}</span>
+        <span className="text-5xl font-extrabold text-gray-900">{displayed}</span>
+        <span className="text-sm text-gray-400 mt-1">/ {maxScore}</span>
       </div>
     </div>
   );
@@ -72,7 +72,7 @@ interface Props {
 export default function AssessmentResultCard({ score, maxScore, tier, language, retakeSlot }: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-      <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+      <div className="flex flex-col md:flex-row gap-14 items-center md:items-start">
 
         {/* Score ring + category badge + optional retake button */}
         <div className="flex-shrink-0 flex flex-col items-center gap-3">
@@ -88,19 +88,9 @@ export default function AssessmentResultCard({ score, maxScore, tier, language, 
           <h3 className="text-xl font-extrabold text-gray-900 mb-2">
             {tier.label[language]}
           </h3>
-          <p className="text-gray-500 text-sm leading-relaxed mb-5">
+          <p className="text-gray-500 text-sm leading-relaxed">
             {tier.description[language]}
           </p>
-          <ul className="flex flex-col gap-2">
-            {tier.nextSteps[language].map((step, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                <span className="mt-0.5 w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-white text-xs font-bold bg-primary">
-                  {i + 1}
-                </span>
-                {step}
-              </li>
-            ))}
-          </ul>
         </div>
 
       </div>

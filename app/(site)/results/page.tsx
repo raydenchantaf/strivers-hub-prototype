@@ -40,7 +40,7 @@ export default function ResultsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-brand-rose">
 
       {/* Page header */}
       <div className="bg-gradient-to-r from-primary to-primary-dark section-padding py-10">
