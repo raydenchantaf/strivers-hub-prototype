@@ -74,6 +74,12 @@
   .article-body table tbody tr:last-child td:last-child {
     @apply rounded-br-xl;
   }
+
+  /* Links inside tables */
+  .article-body table a {
+    color: var(--color-primary);
+    @apply underline underline-offset-2 hover:opacity-75 transition-opacity;
+  }
 }
 
 @layer components {
