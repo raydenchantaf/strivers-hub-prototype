@@ -21,7 +21,6 @@ export const metadata: Metadata = {
 import Hero from "@/components/landing/Hero";
 import HowItWorks from "@/components/landing/HowItWorks";
 import MyDigital from "@/components/landing/MyDigital";
-import PartnerStrip from "@/components/landing/PartnerStrip";
 import Stats from "@/components/landing/Stats";
 import CTABanner from "@/components/landing/CTABanner";
 
