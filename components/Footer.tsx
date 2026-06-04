@@ -20,7 +20,7 @@ export default function Footer() {
       <div className="container-max px-4 md:px-8 pt-10 pb-8">
 
         {/* Top logo row — flex so each logo keeps natural width, gap is consistent */}
-        <div className="flex flex-wrap items-end gap-x-20 gap-y-6 pb-8">
+        <div className="flex flex-wrap items-end gap-x-10 gap-y-6 pb-8">
 
           {/* Strivers Hub */}
           <div>
@@ -29,12 +29,25 @@ export default function Footer() {
               alt="Strivers Hub"
               width={160}
               height={48}
-              className="h-[50px] w-auto object-contain"
+              className="h-[55px] w-auto object-contain"
             />
           </div>
 
+
+          {/* Strategic Partner: MyDigital */}
+          <div className="mr-16">
+            <Image
+              src="/MyDigital.white.png"
+              alt="MyDIGITAL"
+              width={120}
+              height={48}
+              className="h-[55px] w-auto object-contain"
+            />
+          </div>
+
+
           {/* Implementing Partner: TAF */}
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-col items-start gap-2 mr-10">
             <p className="text-xs font-bold text-white tracking-wide">
               {t("footer.implementing_partner")}
             </p>
@@ -49,19 +62,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Strategic Partner: MyDigital */}
-          <div className="flex flex-col items-start gap-2">
-            <p className="text-xs font-bold text-white tracking-wide">
-              {t("footer.partnership_with")}
-            </p>
-            <Image
-              src="/MyDigital.white.png"
-              alt="MyDIGITAL"
-              width={120}
-              height={48}
-              className="h-[50px] w-auto object-contain"
-            />
-          </div>
+          
 
           {/* Supported by: CFIG */}
           <div className="flex flex-col items-start gap-2">
