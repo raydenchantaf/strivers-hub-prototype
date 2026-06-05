@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
     const userValue    = JSON.stringify({ firstName: session.firstName, lastName: session.lastName, email: session.email });
 
     const res = NextResponse.json({ success: true, firstName: session.firstName });
-    const cookieOpts = { sameSite: "lax" as const, path: "/", maxAge: 60 * 60 * 24 * 7 };
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieOpts = { sameSite: "lax" as const, path: "/", maxAge: 60 * 60 * 24 * 7, secure: isProduction };
     res.cookies.set("sh_session", sessionValue, { ...cookieOpts, httpOnly: true });
     res.cookies.set("sh_user",    userValue,    { ...cookieOpts, httpOnly: false });
 

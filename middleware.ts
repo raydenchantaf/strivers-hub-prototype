@@ -3,8 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 export function middleware(request: NextRequest) {
   const session = request.cookies.get("sh_session");
 
-  // Protect /dashboard — redirect to login if no session
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  // Protect /dashboard and /profile — redirect to login if no session
+  if (
+    request.nextUrl.pathname.startsWith("/dashboard") ||
+    request.nextUrl.pathname.startsWith("/profile")
+  ) {
     if (!session?.value) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
@@ -22,5 +25,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register"],
+  matcher: ["/dashboard/:path*", "/profile/:path*", "/login", "/register"],
 };
