@@ -27,10 +27,13 @@ export async function POST(req: NextRequest) {
         ${firstName.trim()},
         ${lastName.trim()},
         ${email.toLowerCase().trim()},
-        ${phone?.trim() ?? null},
+        ${phone ? phone.replace(/[^\d+]/g, "") || null : null},
         ${passwordHash}
       )
     `;
+
+    // Log anonymised signup event (no PII)
+    await sql`INSERT INTO account_events (event_type) VALUES ('registered')`;
 
     console.log("[submit-register] registered:", email);
     return NextResponse.json({ success: true });

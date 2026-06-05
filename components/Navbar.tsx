@@ -115,6 +115,13 @@ export default function Navbar() {
             >
               {t("nav.dashboard")}
             </Link>
+            <Link
+              href="/profile"
+              onClick={() => setAvatarOpen(false)}
+              className="block px-4 py-2.5 text-sm text-gray-700 hover:text-primary hover:bg-pink-50 transition-colors"
+            >
+              {t("nav.profile")}
+            </Link>
             <button
               onClick={handleLogout}
               className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:text-red-500 hover:bg-red-50 transition-colors"

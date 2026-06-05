@@ -73,6 +73,8 @@ export default function LoginPage() {
               </label>
               <input
                 type="email"
+                name="email"
+                autoComplete="email"
                 required
                 value={form.email}
                 onChange={(e) => set("email", e.target.value)}
@@ -88,6 +90,8 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="password"
+                  autoComplete="current-password"
                   required
                   value={form.password}
                   onChange={(e) => set("password", e.target.value)}

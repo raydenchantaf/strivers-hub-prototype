@@ -9,7 +9,7 @@ export const register = {
     "register.email":                   "Email address",
     "register.email.placeholder":       "e.g. siti@example.com",
     "register.phone":                   "Contact number",
-    "register.phone.placeholder":       "e.g. 012-345 6789",
+    "register.phone.placeholder":       "e.g. 0123456789",
     "register.password":                "Create password",
     "register.password.hint":           "Minimum of 8 characters.",
     "register.password.placeholder":    "Create a password",

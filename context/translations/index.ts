@@ -12,12 +12,13 @@ import { privacy }    from "./privacy";
 import { footer }     from "./footer";
 import { dashboard }      from "./dashboard";
 import { forgotPassword } from "./forgotPassword";
+import { profile }        from "./profile";
 
 import type { Language } from "../LanguageContext";
 
 const modules = [
   nav, home, assessment, resources, financing,
-  events, mentorship, about, register, login, privacy, footer, dashboard, forgotPassword,
+  events, mentorship, about, register, login, privacy, footer, dashboard, forgotPassword, profile,
 ];
 
 export const translations: Record<Language, Record<string, string>> = {
