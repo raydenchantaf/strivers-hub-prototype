@@ -88,7 +88,7 @@ export async function PUT(req: NextRequest) {
       RETURNING id, first_name, last_name, email, phone
     `;
 
-    const updated = rows[0];
+    const updated = rows[0] as { id: number; first_name: string; last_name: string; email: string };
     const res = NextResponse.json({ success: true });
     buildCookies(updated, res);
     return res;
