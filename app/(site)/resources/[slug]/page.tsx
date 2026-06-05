@@ -4,6 +4,7 @@ import { getResource, getAllResourceSlugs, urlFor } from "@/lib/sanity";
 import ArticleBackLink from "@/components/resources/ArticleBackLink";
 import ArticleHeader from "@/components/resources/ArticleHeader";
 import ArticleBody from "@/components/resources/ArticleBody";
+import FeedbackWidget from "@/components/resources/FeedbackWidget";
 
 export const revalidate = 60;
 
@@ -82,6 +83,12 @@ export default async function ResourceArticlePage({
 
         {/* Body */}
         <ArticleBody body_en={article.body_en} body_bm={article.body_bm} />
+
+        {/* Feedback */}
+        <FeedbackWidget
+          articleSlug={article.slug.current}
+          articleTitle={article.title_bm}
+        />
       </div>
     </div>
   );
