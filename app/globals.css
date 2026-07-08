@@ -75,6 +75,15 @@
     @apply rounded-br-xl;
   }
 
+  /* Scrollable tag row — hides scrollbar, keeps scroll */
+  .tags-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .tags-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Links inside tables */
   .article-body table a {
     color: var(--color-primary);

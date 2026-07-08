@@ -21,6 +21,9 @@
 # vercel
 .vercel
 
+# exports — sensitive submission data, never commit
+/exports/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
