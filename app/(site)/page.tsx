@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Strivers' Hub — Meningkatkan Usahawan Wanita Malaysia",
+  title: "Strivers' Hub - Meningkatkan Usahawan Wanita Malaysia",
   description:
     "Strivers' Hub memperkasakan wanita PKS Malaysia untuk memulakan, mengembangkan, dan meluaskan perniagaan — dengan alat percuma, latihan, bimbingan, dan komuniti yang menyokong.",
   openGraph: {
-    title: "Strivers' Hub — Meningkatkan Usahawan Wanita Malaysia",
+    title: "Strivers' Hub - Meningkatkan Usahawan Wanita Malaysia",
     description:
       "Strivers' Hub memperkasakan wanita PKS Malaysia untuk memulakan, mengembangkan, dan meluaskan perniagaan — dengan alat percuma, latihan, bimbingan, dan komuniti yang menyokong.",
     url: "https://www.strivershub.com",
     images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "Strivers' Hub" }],
   },
   twitter: {
-    title: "Strivers' Hub — Meningkatkan Usahawan Wanita Malaysia",
+    title: "Strivers' Hub - Meningkatkan Usahawan Wanita Malaysia",
     description:
       "Strivers' Hub memperkasakan wanita PKS Malaysia untuk memulakan, mengembangkan, dan meluaskan perniagaan — dengan alat percuma, latihan, bimbingan, dan komuniti yang menyokong.",
   },
@@ -26,7 +26,7 @@ import CTABanner from "@/components/landing/CTABanner";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col the-asia-foundation">
       <div className="order-2 md:order-1"><Hero /></div>
       <div className="order-1 md:order-2"><HowItWorks /></div>
       <MyDigital />
