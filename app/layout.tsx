@@ -59,10 +59,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {/* ── Google Analytics 4 ── */}
-        {process.env.GOOGLE_ANALYTIC_ID && (
+        {/* Primary: vendor (Lizard Global)-owned property, kept live while access lasts.
+            Backup: Asia Foundation-owned property, added as a continuity safeguard
+            in case the vendor deletes their GA account. Both fire in parallel. */}
+        {(process.env.GOOGLE_ANALYTIC_ID || process.env.GOOGLE_ANALYTIC_ID_BACKUP) && (
           <>
             <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTIC_ID}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${
+                process.env.GOOGLE_ANALYTIC_ID || process.env.GOOGLE_ANALYTIC_ID_BACKUP
+              }`}
               strategy="afterInteractive"
             />
             <Script id="ga4-init" strategy="afterInteractive">
@@ -70,7 +75,8 @@ export default function RootLayout({
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', '${process.env.GOOGLE_ANALYTIC_ID}');
+                ${process.env.GOOGLE_ANALYTIC_ID ? `gtag('config', '${process.env.GOOGLE_ANALYTIC_ID}');` : ""}
+                ${process.env.GOOGLE_ANALYTIC_ID_BACKUP ? `gtag('config', '${process.env.GOOGLE_ANALYTIC_ID_BACKUP}');` : ""}
               `}
             </Script>
           </>
