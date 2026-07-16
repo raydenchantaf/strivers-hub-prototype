@@ -37,8 +37,8 @@ export default function Footer() {
           {/* Strategic Partner: MyDigital */}
           <div className="mr-16">
             <Image
-              src="/MyDigital.white.png"
-              alt="MyDIGITAL"
+              src="/MyDigitalCorp.white.png"
+              alt="MyDIGITAL Corporation"
               width={120}
               height={48}
               className="h-[55px] w-auto object-contain"
