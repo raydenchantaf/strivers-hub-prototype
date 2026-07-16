@@ -27,8 +27,8 @@ import CTABanner from "@/components/landing/CTABanner";
 export default function HomePage() {
   return (
     <div className="flex flex-col the-asia-foundation">
-      <div className="order-2 md:order-1"><Hero /></div>
-      <div className="order-1 md:order-2"><HowItWorks /></div>
+      <Hero />
+      <HowItWorks />
       <MyDigital />
     </div>
   );
