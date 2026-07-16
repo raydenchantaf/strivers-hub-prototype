@@ -13,10 +13,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   // ── Site-wide baseline ────────────────────────────────────────────────────
   // Page files override `title` and `description`; everything else is inherited.
-  metadataBase: new URL("https://prototype1.strivershub.com"),
+  metadataBase: new URL("https://www.strivershub.com"),
 
   title: {
-    default: "Strivers' Hub — Meningkatkan Usahawan Wanita Malaysia",
+    default: "Strivers' Hub - Meningkatkan Usahawan Wanita Malaysia",
     template: "%s | Strivers' Hub",
   },
   description:
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         url: "/og-default.png",
         width: 1200,
         height: 630,
-        alt: "Strivers' Hub — Meningkatkan Usahawan Wanita Malaysia",
+        alt: "Strivers' Hub - Meningkatkan Usahawan Wanita Malaysia",
       },
     ],
   },
@@ -47,12 +47,6 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     images: ["/og-default.png"],
-  },
-
-  // ── Indexing (prototype — keep noindex until go-live) ─────────────────────
-  robots: {
-    index: false,
-    follow: false,
   },
 };
 
