@@ -6,6 +6,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { questions, questionsById, getCategorizationScore, getScoreTier, Question } from "@/data/questions";
 import ProgressBar from "./ProgressBar";
 import RegistrationGate from "./RegistrationGate";
+import { trackEvent } from "@/lib/gtag";
 
 // ─── Custom Dropdown ──────────────────────────────────────────────────────────
 
@@ -153,6 +154,12 @@ function buildAnswersReadable(
 export default function AssessmentEngine() {
   const { t, language } = useLanguage();
   const router = useRouter();
+
+  // Track assessment tool visits (fires once per mount, e.g. on /assessment load)
+  useEffect(() => {
+    trackEvent("assessment_view", { language });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── State ──────────────────────────────────────────────────────────────────
   const [hydrated,          setHydrated]          = useState(false);
@@ -417,6 +424,12 @@ export default function AssessmentEngine() {
       const catScore = getCategorizationScore(updatedAnswers);
       const tier = getScoreTier(catScore);
 
+      trackEvent("assessment_submit", {
+        language,
+        score: catScore,
+        category: tier.category[language],
+      });
+
       sessionStorage.removeItem("sh_progress");
       sessionStorage.setItem("sh_score", String(catScore));
       sessionStorage.setItem("sh_language", language);
@@ -533,7 +546,10 @@ export default function AssessmentEngine() {
             <div className="flex flex-col items-start gap-6">
               <p className="text-gray-500 text-base leading-relaxed">{t("assess.subtitle")}</p>
               <button
-                onClick={() => setStarted(true)}
+                onClick={() => {
+                  trackEvent("assessment_start", { language });
+                  setStarted(true);
+                }}
                 className="btn-primary text-sm py-3 px-7 flex items-center gap-2"
               >
                 {t("assess.start")}
