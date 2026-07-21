@@ -79,8 +79,8 @@ function CustomDropdown({
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Total questions in the longest path (Yes path = 25 steps after grouping q5g–q5j) */
-const TOTAL_QUESTIONS = 31;
+/** Total questions in the longest path (Yes path, after grouping q5g–q5j into one step) */
+const TOTAL_QUESTIONS = 24;
 
 /** Resolve the next question ID given the current question and the answer given */
 function resolveNextId(q: Question, answer: string | string[]): string {
