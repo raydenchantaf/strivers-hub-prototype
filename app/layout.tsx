@@ -56,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         {/* ── Google Analytics 4 ── */}
         {/* Primary: vendor (Lizard Global)-owned property, kept live while access lasts.

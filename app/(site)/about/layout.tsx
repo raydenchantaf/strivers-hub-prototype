@@ -3,17 +3,17 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Tentang Kami",
   description:
-    "Mastercard Strive Malaysia: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
+    "Strivers' Hub: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
   openGraph: {
     title: "Tentang Kami | Strivers' Hub",
     description:
-      "Mastercard Strive Malaysia: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
+      "Strivers' Hub: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
     images: [{ url: "/og-default.png", width: 1200, height: 630 }],
   },
   twitter: {
     title: "Tentang Kami | Strivers' Hub",
     description:
-      "Mastercard Strive Malaysia: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
+      "Strivers' Hub: Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
   },
 };
 

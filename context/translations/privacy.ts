@@ -1,7 +1,7 @@
 export const privacy = {
   en: {
     "privacy.label":         "Legal",
-    "privacy.title":         "STRIVE Malaysia Data Privacy Policy",
+    "privacy.title":         "Strivers' Hub Data Privacy Policy",
     "privacy.effectiveDate": "Version V1.0 | March 2024",
     "privacy.body": `
 <h2>Overview</h2>
@@ -93,7 +93,7 @@ export const privacy = {
   },
   bm: {
     "privacy.label":         "Undang-undang",
-    "privacy.title":         "Dasar Privasi Data STRIVE Malaysia",
+    "privacy.title":         "Dasar Privasi Data Strivers' Hub",
     "privacy.effectiveDate": "Versi V1.0 | Mac 2024",
     "privacy.body": `
 <h2>Gambaran Keseluruhan</h2>
