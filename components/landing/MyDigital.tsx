@@ -7,7 +7,7 @@ export default function MyDigital() {
   const { t } = useLanguage();
 
   return (
-    <section className="landing-mydigital-padding bg-white">
+    <section className="landing-mydigital-padding">
       <div className="container-max">
         <div className="rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-sm border border-primary min-h-[480px]">
 
@@ -22,7 +22,7 @@ export default function MyDigital() {
               {t("mydigital.body")}
             </p>
 
-            <div className="flex flex-wrap items-center gap-6">
+            <div className="mydigital-cta flex flex-wrap items-center gap-6">
               {/* CTA Button */}
               <a
                 href="https://rakyatdigital.gov.my"

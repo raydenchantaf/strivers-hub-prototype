@@ -21,12 +21,10 @@ export const metadata: Metadata = {
 import Hero from "@/components/landing/Hero";
 import HowItWorks from "@/components/landing/HowItWorks";
 import MyDigital from "@/components/landing/MyDigital";
-import Stats from "@/components/landing/Stats";
-import CTABanner from "@/components/landing/CTABanner";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col the-asia-foundation">
+    <div className="flex flex-col landing-page">
       <Hero />
       <HowItWorks />
       <MyDigital />

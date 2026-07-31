@@ -11,6 +11,8 @@
   /* Headings, hero text, top-level brand colour */
   --color-primary:       #822B62;
   --color-primary-light: #FF6090;
+  --color-primary-orange: #FF7000;
+  --color-primary-rose: #F64444;
   --color-primary-dark:  #8C0032;
 
   /* Buttons, borders, links, form focus states */
@@ -20,6 +22,7 @@
   /* Page/card background tints */
   --color-brand-rose:       #FCE4EC;
   --color-brand-rose-light: #FFF5F8;
+  --color-brand-light-orange: #FEF7F3;
 
   /* Secondary highlight colour (badges, progress rings, avatars) */
   --color-brand-orange:       #FF7000;
@@ -115,6 +118,14 @@
 }
 
 @layer components {
+
+  .landing-page {
+    background-color: var(--color-brand-light-orange);
+  }
+
+  .hero-container {
+    h1 { color: var(--color-primary-orange); }
+  }
   .btn-primary {
     @apply inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-semibold rounded-full hover:bg-primary-dark transition-colors duration-200 shadow-md;
   }
@@ -131,8 +142,22 @@
     @apply px-4 pt-8 pb-4 md:px-8 md:pt-14  md:pb-4;
   }
 
+  .how-it-works-cta, .mydigital-cta  {
+    a {
+      background-color:var(--color-primary-orange);
+    }
+  }
+  .how-it-works-bg {
+    background-color:var(--color-primary);
+  }
+
   .how-it-works-padding {
     @apply px-4 pt-12 pb-6 md:px-8 md:pt-4  md:pb-12;
+    .steps-wrap {
+      .step-1 { background-color: var(--color-primary); }
+      .step-2 { background-color: var(--color-primary-orange); }
+      .step-3 { background-color: var(--color-primary-rose); }
+    }
   }
 
   .landing-mydigital-padding {
