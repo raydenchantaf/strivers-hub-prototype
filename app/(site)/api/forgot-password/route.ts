@@ -42,6 +42,9 @@ export async function POST(req: NextRequest) {
         from:    "Strivers' Hub <no-reply@strivershub.com>",
         to:      normalised,
         subject: "Reset your Strivers' Hub password",
+        // NOTE: email clients don't support CSS custom properties, so the accent
+        // colour (#B12069) below is hardcoded and must be updated by hand to stay
+        // in sync with --color-accent in app/globals.css whenever the theme changes.
         html: `
           <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;background:#fff;border-radius:12px;">
             <h2 style="color:#B12069;margin-bottom:8px;">Reset your password</h2>

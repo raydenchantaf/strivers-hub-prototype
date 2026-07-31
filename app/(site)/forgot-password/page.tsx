@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
   }
 
   const inputClass =
-    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition";
+    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition";
   const labelClass = "block text-sm font-semibold text-gray-700 mb-1.5";
 
   return (
@@ -48,8 +48,8 @@ export default function ForgotPasswordPage() {
           {status === "success" ? (
             <div className="flex flex-col items-center text-center gap-5 py-4">
               {/* Envelope icon */}
-              <div className="w-16 h-16 rounded-full bg-[#B12069]/10 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-[#B12069]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
               </div>
               <Link
                 href="/login"
-                className="mt-2 text-sm text-[#B12069] font-semibold hover:underline"
+                className="mt-2 text-sm text-accent font-semibold hover:underline"
               >
                 ← {t("forgot.backToLogin")}
               </Link>
@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
                 <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
                   {t("forgot.heading")}
                 </h1>
-                <div className="w-12 h-1 bg-[#B12069] rounded-full mt-3" />
+                <div className="w-12 h-1 bg-accent rounded-full mt-3" />
                 <p className="text-sm text-gray-500 mt-4 leading-relaxed">
                   {t("forgot.description")}
                 </p>
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div>
                   <label className={labelClass}>
-                    {t("forgot.email")} <span className="text-[#B12069]">*</span>
+                    {t("forgot.email")} <span className="text-accent">*</span>
                   </label>
                   <input
                     type="email"
@@ -104,13 +104,13 @@ export default function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="w-full bg-[#B12069] text-white font-semibold py-3.5 rounded-full hover:bg-[#8f1a54] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-accent text-white font-semibold py-3.5 rounded-full hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {status === "submitting" ? t("forgot.submitting") : t("forgot.submit")}
                 </button>
 
                 <p className="text-center text-sm text-gray-500">
-                  <Link href="/login" className="text-[#B12069] font-semibold hover:underline">
+                  <Link href="/login" className="text-accent font-semibold hover:underline">
                     ← {t("forgot.backToLogin")}
                   </Link>
                 </p>

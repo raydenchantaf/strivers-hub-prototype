@@ -111,14 +111,14 @@ export default function Navbar() {
             <Link
               href="/dashboard"
               onClick={() => setAvatarOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:text-primary hover:bg-pink-50 transition-colors"
+              className="block px-4 py-2.5 text-sm text-gray-700 hover:text-primary hover:bg-brand-rose transition-colors"
             >
               {t("nav.dashboard")}
             </Link>
             <Link
               href="/profile"
               onClick={() => setAvatarOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:text-primary hover:bg-pink-50 transition-colors"
+              className="block px-4 py-2.5 text-sm text-gray-700 hover:text-primary hover:bg-brand-rose transition-colors"
             >
               {t("nav.profile")}
             </Link>
@@ -155,7 +155,7 @@ export default function Navbar() {
                   href="/assessment"
                   onClick={bumpReset}
                   className={["text-sm font-medium transition-colors",
-                    isActive("/assessment") ? "text-primary" : "text-[#222222] hover:text-primary",
+                    isActive("/assessment") ? "text-primary" : "text-ink hover:text-primary",
                   ].join(" ")}
                 >
                   {t("nav.assessment")}
@@ -164,7 +164,7 @@ export default function Navbar() {
                 {/* Resources dropdown */}
                 <div className="relative group">
                   <button className={["flex items-center gap-1 text-sm font-medium transition-colors",
-                    isResourcesActive ? "text-primary" : "text-[#222222] hover:text-primary",
+                    isResourcesActive ? "text-primary" : "text-ink hover:text-primary",
                   ].join(" ")}>
                     {t("nav.resources")}
                     <svg className="w-3.5 h-3.5 mt-0.5 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -176,7 +176,7 @@ export default function Navbar() {
                       {resourcesChildren.map((child) => (
                         <Link key={child.key} href={child.href}
                           className={["block px-4 py-2.5 text-sm font-medium transition-colors",
-                            isActive(child.href) ? "text-primary bg-pink-50" : "text-[#222222] hover:text-primary hover:bg-pink-50",
+                            isActive(child.href) ? "text-primary bg-brand-rose" : "text-ink hover:text-primary hover:bg-brand-rose",
                           ].join(" ")}
                         >
                           {t(child.key)}
@@ -188,7 +188,7 @@ export default function Navbar() {
 
                 <Link href="/mentorship"
                   className={["text-sm font-medium transition-colors",
-                    isActive("/mentorship") ? "text-primary" : "text-[#222222] hover:text-primary",
+                    isActive("/mentorship") ? "text-primary" : "text-ink hover:text-primary",
                   ].join(" ")}
                 >
                   {t("nav.mentorship")}
@@ -196,7 +196,7 @@ export default function Navbar() {
 
                 <Link href="/about"
                   className={["text-sm font-medium transition-colors",
-                    isActive("/about") ? "text-primary" : "text-[#222222] hover:text-primary",
+                    isActive("/about") ? "text-primary" : "text-ink hover:text-primary",
                   ].join(" ")}
                 >
                   {t("nav.about")}
@@ -206,11 +206,11 @@ export default function Navbar() {
               {/* Language Toggle */}
               <button
                 onClick={() => setLanguage(language === "en" ? "bm" : "en")}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-400 text-xs font-semibold text-[#222222] hover:border-primary hover:text-primary transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-400 text-xs font-semibold text-ink hover:border-primary hover:text-primary transition-colors"
               >
-                <span className={language === "en" ? "text-primary" : "text-[#222222]"}>EN</span>
+                <span className={language === "en" ? "text-primary" : "text-ink"}>EN</span>
                 <span className="text-gray-300">|</span>
-                <span className={language === "bm" ? "text-primary" : "text-[#222222]"}>BM</span>
+                <span className={language === "bm" ? "text-primary" : "text-ink"}>BM</span>
               </button>
 
               {/* CTA area — desktop */}
@@ -265,7 +265,7 @@ export default function Navbar() {
 
             <Link href="/assessment" onClick={() => { bumpReset(); close(); }}
               className={["flex items-center px-4 py-4 text-base font-semibold rounded-xl transition-colors",
-                isActive("/assessment") ? "text-primary bg-pink-50 border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-pink-50",
+                isActive("/assessment") ? "text-primary bg-brand-rose border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-brand-rose",
               ].join(" ")}
             >
               {t("nav.assessment")}
@@ -276,7 +276,7 @@ export default function Navbar() {
               <button
                 onClick={() => setResourcesOpen(!resourcesOpen)}
                 className={["w-full flex items-center justify-between px-4 py-4 text-base font-semibold rounded-xl transition-colors",
-                  isResourcesActive ? "text-primary bg-pink-50 border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-pink-50",
+                  isResourcesActive ? "text-primary bg-brand-rose border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-brand-rose",
                 ].join(" ")}
               >
                 <span>{t("nav.resources")}</span>
@@ -301,7 +301,7 @@ export default function Navbar() {
 
             <Link href="/mentorship" onClick={close}
               className={["flex items-center px-4 py-4 text-base font-semibold rounded-xl transition-colors",
-                isActive("/mentorship") ? "text-primary bg-pink-50 border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-pink-50",
+                isActive("/mentorship") ? "text-primary bg-brand-rose border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-brand-rose",
               ].join(" ")}
             >
               {t("nav.mentorship")}
@@ -309,7 +309,7 @@ export default function Navbar() {
 
             <Link href="/about" onClick={close}
               className={["flex items-center px-4 py-4 text-base font-semibold rounded-xl transition-colors",
-                isActive("/about") ? "text-primary bg-pink-50 border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-pink-50",
+                isActive("/about") ? "text-primary bg-brand-rose border-l-4 border-primary" : "text-gray-800 hover:text-primary hover:bg-brand-rose",
               ].join(" ")}
             >
               {t("nav.about")}
@@ -340,7 +340,7 @@ export default function Navbar() {
                     </div>
                   </div>
                   <Link href="/dashboard" onClick={close}
-                    className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-gray-700 hover:text-primary hover:bg-pink-50 transition-colors"
+                    className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-gray-700 hover:text-primary hover:bg-brand-rose transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -348,7 +348,7 @@ export default function Navbar() {
                     {t("nav.dashboard")}
                   </Link>
                   <Link href="/profile" onClick={close}
-                    className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-gray-700 hover:text-primary hover:bg-pink-50 transition-colors"
+                    className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-gray-700 hover:text-primary hover:bg-brand-rose transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

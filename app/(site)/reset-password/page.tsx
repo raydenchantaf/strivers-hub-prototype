@@ -55,7 +55,7 @@ function ResetPasswordForm() {
   }
 
   const inputClass =
-    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition";
+    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition";
   const labelClass = "block text-sm font-semibold text-gray-700 mb-1.5";
 
   const EyeIcon = () => (
@@ -75,7 +75,7 @@ function ResetPasswordForm() {
     return (
       <div className="flex flex-col items-center text-center gap-4 py-4">
         <p className="text-red-500 text-sm">{t("reset.error.invalid")}</p>
-        <Link href="/forgot-password" className="text-[#B12069] font-semibold text-sm hover:underline">
+        <Link href="/forgot-password" className="text-accent font-semibold text-sm hover:underline">
           Request a new link
         </Link>
       </div>
@@ -86,8 +86,8 @@ function ResetPasswordForm() {
     <>
       {status === "success" ? (
         <div className="flex flex-col items-center text-center gap-5 py-4">
-          <div className="w-16 h-16 rounded-full bg-[#B12069]/10 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-[#B12069]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
@@ -101,7 +101,7 @@ function ResetPasswordForm() {
           </div>
           <Link
             href="/login"
-            className="mt-2 inline-block bg-[#B12069] text-white font-semibold px-8 py-3 rounded-full hover:bg-[#8f1a54] transition-colors text-sm"
+            className="mt-2 inline-block bg-accent text-white font-semibold px-8 py-3 rounded-full hover:bg-accent-hover transition-colors text-sm"
           >
             {t("reset.loginLink")}
           </Link>
@@ -112,14 +112,14 @@ function ResetPasswordForm() {
             <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
               {t("reset.heading")}
             </h1>
-            <div className="w-12 h-1 bg-[#B12069] rounded-full mt-3" />
+            <div className="w-12 h-1 bg-accent rounded-full mt-3" />
             <p className="text-sm text-gray-500 mt-4">{t("reset.description")}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div>
               <label className={labelClass}>
-                {t("reset.password")} <span className="text-[#B12069]">*</span>
+                {t("reset.password")} <span className="text-accent">*</span>
               </label>
               <div className="relative">
                 <input
@@ -139,7 +139,7 @@ function ResetPasswordForm() {
 
             <div>
               <label className={labelClass}>
-                {t("reset.confirmPassword")} <span className="text-[#B12069]">*</span>
+                {t("reset.confirmPassword")} <span className="text-accent">*</span>
               </label>
               <div className="relative">
                 <input
@@ -165,7 +165,7 @@ function ResetPasswordForm() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="w-full bg-[#B12069] text-white font-semibold py-3.5 rounded-full hover:bg-[#8f1a54] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-accent text-white font-semibold py-3.5 rounded-full hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === "submitting" ? t("reset.submitting") : t("reset.submit")}
             </button>

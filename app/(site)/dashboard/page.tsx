@@ -164,7 +164,7 @@ export default function DashboardPage() {
             />
           ) : (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col items-center text-center gap-5">
-              <div className="w-16 h-16 rounded-full bg-pink-50 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-brand-rose flex items-center justify-center">
                 <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>

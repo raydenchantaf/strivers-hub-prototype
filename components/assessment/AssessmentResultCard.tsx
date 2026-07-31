@@ -40,11 +40,11 @@ function ScoreRing({ score, maxScore }: { score: number; maxScore: number }) {
         className="absolute inset-0"
         style={{ transform: "rotate(-90deg)" }}
       >
-        <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="#FFE0CC" strokeWidth={STROKE} />
+        <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="var(--color-brand-orange-light)" strokeWidth={STROKE} />
         <circle
           cx={SIZE / 2} cy={SIZE / 2} r={RADIUS}
           fill="none"
-          stroke="#FF7000"
+          stroke="var(--color-brand-orange)"
           strokeWidth={STROKE}
           strokeLinecap="round"
           strokeDasharray={CIRCUMFERENCE}

@@ -9,12 +9,12 @@ export default function MyDigital() {
   return (
     <section className="landing-mydigital-padding bg-white">
       <div className="container-max">
-        <div className="rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-sm border border-[#822B62] min-h-[480px]">
+        <div className="rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-sm border border-primary min-h-[480px]">
 
           {/* Left: content — below image on mobile, left on desktop */}
           <div className="order-2 md:order-1 flex-1 bg-white flex flex-col justify-center gap-6 px-8 py-10 md:px-14 md:py-14">
 
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#822B62] leading-tight">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-primary leading-tight">
               {t("mydigital.headline")}
             </h2>
 
@@ -28,7 +28,7 @@ export default function MyDigital() {
                 href="https://rakyatdigital.gov.my"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#B12069] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#822B62] transition-colors duration-200 whitespace-nowrap"
+                className="inline-flex items-center gap-2 bg-accent text-white font-semibold px-6 py-3 rounded-full hover:bg-primary transition-colors duration-200 whitespace-nowrap"
               >
                 {t("mydigital.cta")} &rarr;
               </a>

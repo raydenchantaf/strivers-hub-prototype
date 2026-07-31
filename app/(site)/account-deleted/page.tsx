@@ -30,7 +30,7 @@ export default function AccountDeletedPage() {
 
             <Link
               href="/"
-              className="mt-2 inline-block bg-[#B12069] text-white font-semibold px-8 py-3.5 rounded-full hover:bg-[#8f1a54] transition-colors text-sm"
+              className="mt-2 inline-block bg-accent text-white font-semibold px-8 py-3.5 rounded-full hover:bg-accent-hover transition-colors text-sm"
             >
               {t("account.deleted.cta")}
             </Link>

@@ -66,7 +66,7 @@ function CustomDropdown({
               } ${idx === options.length - 1 ? "rounded-b-xl" : ""} ${
                 value === option.id
                   ? "bg-primary text-white"
-                  : "text-gray-800 hover:bg-pink-50 hover:text-primary"
+                  : "text-gray-800 hover:bg-brand-rose hover:text-primary"
               }`}
             >
               {option.label[language]}
@@ -561,7 +561,7 @@ export default function AssessmentEngine() {
           </div>
         </div>
 
-        <div className="bg-[#FFF5F8]">
+        <div className="bg-brand-rose-light">
           <div className="container-max section-padding py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-0 relative">
               {steps.map((step, i) => (

@@ -112,7 +112,7 @@ export default function RegistrationGate({ onSkip, prefill }: Props) {
         {/* ── Left panel ── */}
         <div
           className="md:w-[42%] flex-shrink-0 rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none p-8 md:p-10 flex flex-col justify-between gap-8"
-          style={{ background: "linear-gradient(145deg, #6B1040 0%, #A0244F 60%, #C45A3A 100%)" }}
+          style={{ background: "linear-gradient(145deg, var(--color-gradient-start) 0%, var(--color-gradient-mid) 60%, var(--color-gradient-end) 100%)" }}
         >
           <div className="flex flex-col gap-6">
             <h2 className="text-2xl font-extrabold text-white leading-snug">

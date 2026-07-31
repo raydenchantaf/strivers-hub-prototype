@@ -87,7 +87,7 @@ export default function RegisterPage() {
   }
 
   const inputClass =
-    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition";
+    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition";
   const labelClass = "block text-sm font-semibold text-gray-700 mb-1.5";
 
   return (
@@ -99,34 +99,34 @@ export default function RegisterPage() {
             <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
               {t("register.heading")}
             </h1>
-            <div className="w-12 h-1 bg-[#B12069] rounded-full mt-3" />
+            <div className="w-12 h-1 bg-accent rounded-full mt-3" />
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>{t("register.firstName")} <span className="text-[#B12069]">*</span></label>
+                <label className={labelClass}>{t("register.firstName")} <span className="text-accent">*</span></label>
                 <input type="text" name="firstName" autoComplete="given-name" required value={form.firstName} onChange={(e) => set("firstName", e.target.value)} placeholder={t("register.firstName.placeholder")} className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>{t("register.lastName")} <span className="text-[#B12069]">*</span></label>
+                <label className={labelClass}>{t("register.lastName")} <span className="text-accent">*</span></label>
                 <input type="text" name="lastName" autoComplete="family-name" required value={form.lastName} onChange={(e) => set("lastName", e.target.value)} placeholder={t("register.lastName.placeholder")} className={inputClass} />
               </div>
             </div>
 
             <div>
-              <label className={labelClass}>{t("register.email")} <span className="text-[#B12069]">*</span></label>
+              <label className={labelClass}>{t("register.email")} <span className="text-accent">*</span></label>
               <input type="email" name="email" autoComplete="email" required value={form.email} onChange={(e) => set("email", e.target.value)} placeholder={t("register.email.placeholder")} className={inputClass} />
             </div>
 
             <div>
-              <label className={labelClass}>{t("register.phone")} <span className="text-[#B12069]">*</span></label>
+              <label className={labelClass}>{t("register.phone")} <span className="text-accent">*</span></label>
               <input type="tel" name="phone" autoComplete="tel" required value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder={t("register.phone.placeholder")} className={inputClass} />
             </div>
 
             <div>
-              <label className={labelClass}>{t("register.password")} <span className="text-[#B12069]">*</span></label>
+              <label className={labelClass}>{t("register.password")} <span className="text-accent">*</span></label>
               <div className="relative">
                 <input type={showPassword ? "text" : "password"} name="password" autoComplete="new-password" required value={form.password} onChange={(e) => set("password", e.target.value)} placeholder={t("register.password.placeholder")} className={inputClass + " pr-11"} />
                 <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors" aria-label={showPassword ? "Hide password" : "Show password"}>
@@ -141,7 +141,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className={labelClass}>{t("register.confirmPassword")} <span className="text-[#B12069]">*</span></label>
+              <label className={labelClass}>{t("register.confirmPassword")} <span className="text-accent">*</span></label>
               <div className="relative">
                 <input type={showConfirmPassword ? "text" : "password"} name="confirmPassword" autoComplete="new-password" required value={form.confirmPassword} onChange={(e) => set("confirmPassword", e.target.value)} placeholder={t("register.confirmPassword.placeholder")} className={inputClass + " pr-11"} />
                 <button type="button" onClick={() => setShowConfirmPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors" aria-label={showConfirmPassword ? "Hide password" : "Show password"}>
@@ -161,14 +161,14 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="w-full bg-[#B12069] text-white font-semibold py-3.5 rounded-full hover:bg-[#8f1a54] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+              className="w-full bg-accent text-white font-semibold py-3.5 rounded-full hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-1"
             >
               {status === "submitting" ? t("register.submitting") : t("register.submit")}
             </button>
 
             <p className="text-center text-sm text-gray-500">
               {t("register.hasAccount")}{" "}
-              <Link href="/login" className="text-[#B12069] font-semibold hover:underline">
+              <Link href="/login" className="text-accent font-semibold hover:underline">
                 {t("register.loginLink")}
               </Link>
             </p>

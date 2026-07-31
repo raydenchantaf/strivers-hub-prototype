@@ -80,7 +80,7 @@ export default function MentorshipPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {benefits.map((b, i) => (
             <div key={i} className="bg-white rounded-2xl shadow-sm p-8 flex flex-col gap-4 hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 rounded-xl bg-pink-50 text-[#B12069] flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-brand-rose text-accent flex items-center justify-center flex-shrink-0">
                 {b.icon}
               </div>
               <h3 className="text-lg font-extrabold text-gray-900">{b.title}</h3>
@@ -110,7 +110,7 @@ export default function MentorshipPage() {
                 <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">
                   {t("mentorship.form.title")}
                 </h2>
-                <div className="w-12 h-1 bg-[#B12069] rounded-full mt-3" />
+                <div className="w-12 h-1 bg-accent rounded-full mt-3" />
                 <p className="text-gray-500 text-sm leading-relaxed mt-4">
                   {t("mentorship.form.subtitle")}
                 </p>
@@ -132,7 +132,7 @@ export default function MentorshipPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                      {t("mentorship.form.firstName")} <span className="text-[#B12069]">*</span>
+                      {t("mentorship.form.firstName")} <span className="text-accent">*</span>
                     </label>
                     <input
                       type="text"
@@ -140,12 +140,12 @@ export default function MentorshipPage() {
                       value={form.firstName}
                       onChange={(e) => setForm({ ...form, firstName: e.target.value })}
                       placeholder={t("mentorship.form.firstName.placeholder")}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition"
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                      {t("mentorship.form.lastName")} <span className="text-[#B12069]">*</span>
+                      {t("mentorship.form.lastName")} <span className="text-accent">*</span>
                     </label>
                     <input
                       type="text"
@@ -153,7 +153,7 @@ export default function MentorshipPage() {
                       value={form.lastName}
                       onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                       placeholder={t("mentorship.form.lastName.placeholder")}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition"
                     />
                   </div>
                 </div>
@@ -161,7 +161,7 @@ export default function MentorshipPage() {
                 {/* Email */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    {t("mentorship.form.email")} <span className="text-[#B12069]">*</span>
+                    {t("mentorship.form.email")} <span className="text-accent">*</span>
                   </label>
                   <input
                     type="email"
@@ -169,14 +169,14 @@ export default function MentorshipPage() {
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder={t("mentorship.form.email.placeholder")}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition"
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                    {t("mentorship.form.phone")} <span className="text-[#B12069]">*</span>
+                    {t("mentorship.form.phone")} <span className="text-accent">*</span>
                   </label>
                   <input
                     type="tel"
@@ -184,7 +184,7 @@ export default function MentorshipPage() {
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     placeholder={t("mentorship.form.phone.placeholder")}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition"
                   />
                 </div>
 
@@ -195,7 +195,7 @@ export default function MentorshipPage() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="w-full bg-[#B12069] text-white font-semibold py-3.5 rounded-xl hover:bg-[#8f1a54] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+                  className="w-full bg-accent text-white font-semibold py-3.5 rounded-xl hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-1"
                 >
                   {status === "submitting"
                     ? t("mentorship.form.submitting")

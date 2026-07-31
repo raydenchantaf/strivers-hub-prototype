@@ -115,7 +115,7 @@ export default function AboutPage() {
           <div className="flex flex-col gap-4">
             {whyPoints.map((point, i) => (
               <div key={i} className="flex items-start gap-4 bg-gray-50 rounded-2xl px-6 py-5">
-                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#B12069] text-white text-sm font-extrabold flex items-center justify-center mt-0.5">
+                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-accent text-white text-sm font-extrabold flex items-center justify-center mt-0.5">
                   {i + 1}
                 </span>
                 <p className="text-gray-700 text-sm md:text-base leading-relaxed">{point}</p>
@@ -126,7 +126,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Mission banner ── */}
-      <section className="bg-[#B12069]">
+      <section className="bg-accent">
         <div className="container-max section-padding py-12 text-center">
           <p className="text-white text-base md:text-lg leading-relaxed max-w-3xl mx-auto font-medium">
             {t("about.mission")}
@@ -140,7 +140,7 @@ export default function AboutPage() {
           {pillars.map((p) => (
             <div key={p.number} className="bg-white rounded-2xl shadow-sm p-8 flex flex-col gap-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-pink-50 text-[#B12069] flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-brand-rose text-accent flex items-center justify-center flex-shrink-0">
                   {p.icon}
                 </div>
                 <span className="text-3xl font-extrabold text-gray-300 leading-none">{p.number}</span>

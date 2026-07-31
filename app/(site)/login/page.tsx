@@ -47,7 +47,7 @@ export default function LoginPage() {
   }
 
   const inputClass =
-    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition";
+    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition";
   const labelClass = "block text-sm font-semibold text-gray-700 mb-1.5";
 
   return (
@@ -56,20 +56,20 @@ export default function LoginPage() {
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-10">
 
           <div className="mb-8">
-            <p className="text-sm font-semibold text-[#B12069] uppercase tracking-widest mb-1">
+            <p className="text-sm font-semibold text-accent uppercase tracking-widest mb-1">
               {t("login.welcome")}
             </p>
             <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
               {t("login.heading")}
             </h1>
-            <div className="w-12 h-1 bg-[#B12069] rounded-full mt-3" />
+            <div className="w-12 h-1 bg-accent rounded-full mt-3" />
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
 
             <div>
               <label className={labelClass}>
-                {t("login.email")} <span className="text-[#B12069]">*</span>
+                {t("login.email")} <span className="text-accent">*</span>
               </label>
               <input
                 type="email"
@@ -85,7 +85,7 @@ export default function LoginPage() {
 
             <div>
               <label className={labelClass}>
-                {t("login.password")} <span className="text-[#B12069]">*</span>
+                {t("login.password")} <span className="text-accent">*</span>
               </label>
               <div className="relative">
                 <input
@@ -112,7 +112,7 @@ export default function LoginPage() {
             <div className="flex justify-end -mt-2">
               <Link
                 href="/forgot-password"
-                className="text-sm text-[#B12069] font-semibold hover:underline"
+                className="text-sm text-accent font-semibold hover:underline"
               >
                 {t("login.forgotPassword")}
               </Link>
@@ -127,14 +127,14 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="w-full bg-[#B12069] text-white font-semibold py-3.5 rounded-full hover:bg-[#8f1a54] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-accent text-white font-semibold py-3.5 rounded-full hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === "submitting" ? t("login.submitting") : t("login.submit")}
             </button>
 
             <p className="text-center text-sm text-gray-500">
               {t("login.noAccount")}{" "}
-              <Link href="/register" className="text-[#B12069] font-semibold hover:underline">
+              <Link href="/register" className="text-accent font-semibold hover:underline">
                 {t("login.registerLink")}
               </Link>
             </p>

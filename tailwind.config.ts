@@ -15,11 +15,18 @@ const config: Config = {
           light:   "var(--color-primary-light)",
           dark:    "var(--color-primary-dark)",
         },
+        accent: {
+          DEFAULT: "var(--color-accent)",
+          hover:   "var(--color-accent-hover)",
+        },
+        ink: "var(--color-text-dark)",
         brand: {
-          pink: "var(--color-brand-pink)",
-          rose: "var(--color-brand-rose)",
-          orange: "#FF7000",
-          dark: "var(--color-brand-dark)",
+          pink:          "var(--color-brand-pink)",
+          rose:          "var(--color-brand-rose)",
+          "rose-light":  "var(--color-brand-rose-light)",
+          orange:        "var(--color-brand-orange)",
+          "orange-light":"var(--color-brand-orange-light)",
+          dark:          "var(--color-brand-dark)",
         },
       },
       fontFamily: {

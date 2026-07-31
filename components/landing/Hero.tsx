@@ -10,7 +10,7 @@ export default function Hero2() {
     <section className="relative hero-padding overflow-hidden">
       <div className="container-max section-padding py-2 px-4 md:px-8 mx-auto flex flex-col items-start text-left gap-4">
 
-        <h1 className="font-extrabold text-[clamp(40px,6vw,58px)] text-[#822B62] leading-[1.05em] whitespace-pre-line">
+        <h1 className="font-extrabold text-[clamp(40px,6vw,58px)] text-primary leading-[1.05em] whitespace-pre-line">
           {t("hero.headline")}
         </h1>
 

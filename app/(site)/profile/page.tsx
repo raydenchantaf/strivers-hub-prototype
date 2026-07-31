@@ -99,7 +99,7 @@ export default function ProfilePage() {
   }
 
   const inputClass =
-    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#B12069] focus:ring-1 focus:ring-[#B12069] transition";
+    "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition";
   const labelClass = "block text-sm font-semibold text-gray-700 mb-1.5";
 
   if (loading) {
@@ -120,27 +120,27 @@ export default function ProfilePage() {
             <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
               {t("profile.heading")}
             </h1>
-            <div className="w-12 h-1 bg-[#B12069] rounded-full mt-3" />
+            <div className="w-12 h-1 bg-accent rounded-full mt-3" />
           </div>
 
           <form onSubmit={handleSave} className="flex flex-col gap-5">
-            <p className="text-xs font-bold text-[#822B62] uppercase tracking-widest">
+            <p className="text-xs font-bold text-primary uppercase tracking-widest">
               {t("profile.section.info")}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>{t("profile.firstName")} <span className="text-[#B12069]">*</span></label>
+                <label className={labelClass}>{t("profile.firstName")} <span className="text-accent">*</span></label>
                 <input type="text" required value={form.firstName} onChange={(e) => set("firstName", e.target.value)} placeholder={t("profile.firstName.placeholder")} className={inputClass} />
               </div>
               <div>
-                <label className={labelClass}>{t("profile.lastName")} <span className="text-[#B12069]">*</span></label>
+                <label className={labelClass}>{t("profile.lastName")} <span className="text-accent">*</span></label>
                 <input type="text" required value={form.lastName} onChange={(e) => set("lastName", e.target.value)} placeholder={t("profile.lastName.placeholder")} className={inputClass} />
               </div>
             </div>
 
             <div>
-              <label className={labelClass}>{t("profile.email")} <span className="text-[#B12069]">*</span></label>
+              <label className={labelClass}>{t("profile.email")} <span className="text-accent">*</span></label>
               <input type="email" required value={form.email} onChange={(e) => set("email", e.target.value)} placeholder={t("profile.email.placeholder")} className={inputClass} />
             </div>
 
@@ -163,7 +163,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={saveStatus === "saving"}
-              className="w-full bg-[#B12069] text-white font-semibold py-3.5 rounded-full hover:bg-[#8f1a54] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-accent text-white font-semibold py-3.5 rounded-full hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saveStatus === "saving" ? t("profile.saving") : t("profile.save")}
             </button>

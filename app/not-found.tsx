@@ -29,7 +29,7 @@ export default function NotFound() {
             <div className="flex flex-col sm:flex-row gap-3 w-full mt-2">
               <Link
                 href="/"
-                className="flex-1 bg-[#B12069] text-white font-semibold px-8 py-3.5 rounded-full hover:bg-[#8f1a54] transition-colors text-sm text-center"
+                className="flex-1 bg-accent text-white font-semibold px-8 py-3.5 rounded-full hover:bg-accent-hover transition-colors text-sm text-center"
               >
                 {t("notfound.home")}
               </Link>
