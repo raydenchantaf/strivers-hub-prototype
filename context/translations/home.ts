@@ -55,9 +55,9 @@ export const home = {
     // HowItWorks
     "how.card.headline": "Temui\nPotensi Perniagaan Anda",
     "how.card.body":     "Sertai sekarang untuk mengakses alat, rangkaian, dan sumber yang anda perlukan untuk berjaya dalam perjalanan keusahawanan anda. Bersama-sama, kita boleh memperkasakan wanita untuk berkembang dalam ekonomi digital dan mengubah impian perniagaan mereka menjadi kenyataan!",
-    "how.card.cta":      "Ambil Penilaian Hari Ini",
-    "how.step1.title":   "Lengkapkan Penilaian",
-    "how.step1.desc":    "Jawab penilaian kendiri 3 minit",
+    "how.card.cta":      "Ambil Quiz Hari Ini",
+    "how.step1.title":   "Lengkapkan Quiz",
+    "how.step1.desc":    "Jawab quiz kendiri 3 minit",
     "how.step2.title":   "Lihat Cadangan",
     "how.step2.desc":    "Terokai cadangan yang disesuaikan untuk perjalanan perniagaan anda",
     "how.step3.title":   "Kembangkan Potensi Perniagaan Anda!",

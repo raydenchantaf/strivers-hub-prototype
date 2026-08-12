@@ -35,17 +35,17 @@ export const assessment = {
   },
   bm: {
     // Consent
-    "consent.title":     "Selamat datang ke Penilaian Kendiri Strivers' Hub",
+    "consent.title":     "Selamat datang ke Quiz Kendiri Strivers' Hub",
     "consent.body":      "Dalam soalan berikut, kami akan meminta maklumat peribadi dan latar belakang anda untuk meningkatkan pemahaman kami tentang projek ini dan memperibadikan pengalaman pengguna anda. Respons anda akan diuruskan mengikut polisi privasi kami. Maklumat anda adalah sulit dan tidak akan didedahkan kepada mana-mana pihak luar melainkan staf yang diberi kuasa dalam The Asia Foundation Malaysia. Akses kepada data anda dijamin melalui repositori dalam talian yang dilindungi kata laluan. Hanya data tanpa maklumat peribadi yang dianonimkan, mungkin dikongsi dengan pihak luar, seperti kerajaan, untuk menyumbang pandangan bagi penggubalan dasar yang berinformasi.",
     "consent.checkbox":  "Saya telah membaca dan bersetuju dengan maklumat yang dinyatakan di atas.",
-    "consent.proceed":   "Teruskan ke Penilaian",
+    "consent.proceed":   "Teruskan ke Quiz",
     "consent.required":  "Sila terima pernyataan persetujuan sebelum meneruskan.",
 
     // Assessment
-    "assess.label":    "Penilaian",
+    "assess.label":    "Quiz",
     "assess.title":    "Perjalanan keusahawanan anda bermula disini",
-    "assess.subtitle": "Ambil ujian ringkas dan percuma ini untuk mengetahui di mana anda berada dalam perjalanan keusahawanan anda.",
-    "assess.start":    "Mulakan Penilaian",
+    "assess.subtitle": "Ambil quiz ringkas dan percuma ini untuk mengetahui di mana anda berada dalam perjalanan keusahawanan anda.",
+    "assess.start":    "Mulakan Quiz",
     "assess.next":     "Seterusnya",
     "assess.prev":     "Sebelumnya",
     "assess.submit":   "Lihat Keputusan Saya",
@@ -54,17 +54,17 @@ export const assessment = {
     "assess.progress": "Kemajuan Anda",
 
     // Results
-    "results.title":      "Keputusan Penilaian Anda",
+    "results.title":      "Keputusan Quiz Anda",
     "results.score":      "Skor Anda",
     "results.category":   "Kategori Anda",
     "results.next_steps": "Langkah Seterusnya Yang Disyorkan",
-    "results.retake":     "Ulang Penilaian",
+    "results.retake":     "Ulang Quiz",
     "results.explore":    "Jelajahi Sumber",
 
     // 404
     "notfound.title":  "Halaman Tidak Dijumpai",
     "notfound.body":   "Halaman yang anda cari tidak wujud atau telah dialihkan. Jom kembali ke landasan yang betul.",
     "notfound.home":   "Kembali ke Laman Utama",
-    "notfound.assess": "Ambil Penilaian",
+    "notfound.assess": "Ambil Quiz",
   },
 };

@@ -24,7 +24,7 @@ export const about = {
     "about.tagline":       "Memacu Kejayaan Keusahawanan Melalui Peluang Digital",
     "about.hero.headline": "Tingkatkan perniagaan anda bersama kami!",
     "about.hero.body":     "Inisiatif ini adalah usaha kerjasama antara Mastercard Center for Inclusive Growth dan The Asia Foundation, yang bertujuan untuk mendigitalkan dan menyokong pertumbuhan 100,000 perusahaan mikro, kecil dan sederhana (PKS) di Malaysia, dengan tumpuan khusus kepada perniagaan yang dimiliki dan dipimpin oleh wanita. Program ini bertujuan untuk menangani pelbagai cabaran yang dihadapi oleh perniagaan kecil di negara ini dan memperkasakan usahawanita untuk berkembang dalam ekonomi digital.",
-    "about.hero.cta":      "Ambil Penilaian Hari Ini",
+    "about.hero.cta":      "Ambil Quiz Hari Ini",
     "about.why.title":     "Mengapa Strivers' Hub?",
     "about.why.1":         "Pendigitalan adalah pemboleh utama pertumbuhan hasil dan penciptaan pekerjaan untuk PKS Malaysia.",
     "about.why.2":         "PKS di Malaysia tidak dapat memanfaatkan sepenuhnya semua sumber sokongan awam dan swasta kerana persekitaran sokongan yang mengelirukan, bertindih, dan bercanggah.",
