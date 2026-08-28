@@ -56,11 +56,11 @@ export const privacy = {
 <p>Installed cookies and pixels may mean that your data is tracked by Google and Hotjar on the STRIVE Malaysia's site and once you leave the site.</p>
 
 <h2>Data Retention</h2>
-<p>Personally identifiable data collected by our website will be retained for the duration of the STRIVE Malaysia project. It will be deleted alongside the termination of the website. You have the right to request that personal data you voluntarily submitted to participate in the STRIVE Malaysia Program be erased from our data storage repositories by contacting strivershub@asiafoundation.org.</p>
+<p>Personally identifiable data collected by our website will be retained for the duration of the STRIVE Malaysia project. It will be deleted alongside the termination of the website. You have the right to request that personal data you voluntarily submitted to participate in the STRIVE Malaysia Program be erased from our data storage repositories by contacting strivers.hub@asiafoundation.org.</p>
 <p>Please note, however, that some data due to the nature of the program and submission methodology cannot be erased without compromising utilization of courses and related tools of the program and in that instance the data while not erased will be stored in a manner that respects your privacy in accordance with industry standards.</p>
 
 <h2>Data Security</h2>
-<p>The security of Personal Information is important to us. We follow generally accepted industry standards, including the use of appropriate administrative, physical, and technical safeguards, to protect the Personal Information submitted to us. However, no method of transmission over the Internet, or method of electronic storage, is 100% secure. Therefore, while we strive to use reasonable acceptable means to protect your Personal Information, we cannot guarantee its absolute security or confidentiality. If you have any questions about security, please contact us at strivershub@asiafoundation.org.</p>
+<p>The security of Personal Information is important to us. We follow generally accepted industry standards, including the use of appropriate administrative, physical, and technical safeguards, to protect the Personal Information submitted to us. However, no method of transmission over the Internet, or method of electronic storage, is 100% secure. Therefore, while we strive to use reasonable acceptable means to protect your Personal Information, we cannot guarantee its absolute security or confidentiality. If you have any questions about security, please contact us at strivers.hub@asiafoundation.org.</p>
 
 <h2>Data Subject Rights</h2>
 <p>You have the right to:</p>
@@ -71,7 +71,7 @@ export const privacy = {
   <li>Restrict processing of your personal information</li>
   <li>Transfer your personal information to another party</li>
 </ul>
-<p>For questions, support, or to exercise any of your rights, please contact strivershub@asiafoundation.org.</p>
+<p>For questions, support, or to exercise any of your rights, please contact strivers.hub@asiafoundation.org.</p>
 
 <h2>Data Disclosure</h2>
 <p>If we should be contacted by authorities with a request to disclose your data, we will only do so if there is a fully binding request and legal obligation. While we may comply with electronically delivered notices, disclosed data can only be used in court if we have received an original copy of a court order by registered post or in person and provide a formal response. If permitted by law, we will always contact a user first before any data disclosure.</p>
@@ -87,7 +87,7 @@ export const privacy = {
 
 <h2>Contact</h2>
 <p>The Asia Foundation is domiciled at 465 California St., 9th Floor, San Francisco, CA 94104, USA. The STRIVE Program is managed by a regional hub reporting to the Foundation's Malaysia Office located in Suite 13.05 Level 13, The Gardens South Tower, Mid Valley City, Lingkaran Syed Putra, Kuala Lumpur, 59200, Malaysia.</p>
-<p>For feedback and other concerns about this policy, please contact <a href="mailto:strivershub@asiafoundation.org">strivershub@asiafoundation.org</a>.</p>
+<p>For feedback and other concerns about this policy, please contact <a href="mailto:strivers.hub@asiafoundation.org">strivers.hub@asiafoundation.org</a>.</p>
     `.trim(),
     "privacy.footer": "Version V1.0 | March 2024",
   },
@@ -147,11 +147,11 @@ export const privacy = {
 <p>Kuki dan piksel yang dipasang mungkin bermaksud bahawa data anda dikaji oleh Google dan Hotjar di laman web STRIVE Malaysia dan apabila anda meninggalkan laman web tersebut.</p>
 
 <h2>Penyimpanan Data</h2>
-<p>Data peribadi yang dapat dikenal pasti yang dikumpulkan oleh laman web kami akan disimpan selama projek STRIVE Malaysia berlangsung. Ia akan dipadam bersama dengan penamatan laman web. Anda berhak untuk meminta data peribadi yang anda sukarela hantar untuk mengambil bahagian dalam Program STRIVE Malaysia dihapuskan dari repositori penyimpanan data kami dengan menghubungi strivershub@asiafoundation.org.</p>
+<p>Data peribadi yang dapat dikenal pasti yang dikumpulkan oleh laman web kami akan disimpan selama projek STRIVE Malaysia berlangsung. Ia akan dipadam bersama dengan penamatan laman web. Anda berhak untuk meminta data peribadi yang anda sukarela hantar untuk mengambil bahagian dalam Program STRIVE Malaysia dihapuskan dari repositori penyimpanan data kami dengan menghubungi strivers.hub@asiafoundation.org.</p>
 <p>Sila ambil perhatian, bagaimanapun, bahawa sesetengah data kerana sifat program dan metodologi penyerahan tidak dapat dipadamkan tanpa menggugat penggunaan kursus dan alat yang berkaitan dengan program dan dalam kes itu data sementara tidak dipadamkan akan disimpan dengan cara yang menghormati privasi anda mengikut standard industri.</p>
 
 <h2>Keselamatan Data</h2>
-<p>Keselamatan Maklumat Peribadi adalah penting bagi kami. Kami mengikuti standard industri yang diterima secara umum, termasuk penggunaan pengawasan, fizikal, dan teknikal yang sesuai, untuk melindungi Maklumat Peribadi yang dikemukakan kepada kami. Walau bagaimanapun, tiada cara penghantaran melalui Internet, atau cara penyimpanan elektronik, adalah 100% selamat. Oleh itu, walaupun kami berusaha menggunakan cara yang dapat diterima secara munasabah untuk melindungi Maklumat Peribadi anda, kami tidak dapat menjamin keselamatan atau kerahsiaan mutlaknya. Jika anda mempunyai sebarang pertanyaan mengenai keselamatan, sila hubungi kami di strivershub@asiafoundation.org.</p>
+<p>Keselamatan Maklumat Peribadi adalah penting bagi kami. Kami mengikuti standard industri yang diterima secara umum, termasuk penggunaan pengawasan, fizikal, dan teknikal yang sesuai, untuk melindungi Maklumat Peribadi yang dikemukakan kepada kami. Walau bagaimanapun, tiada cara penghantaran melalui Internet, atau cara penyimpanan elektronik, adalah 100% selamat. Oleh itu, walaupun kami berusaha menggunakan cara yang dapat diterima secara munasabah untuk melindungi Maklumat Peribadi anda, kami tidak dapat menjamin keselamatan atau kerahsiaan mutlaknya. Jika anda mempunyai sebarang pertanyaan mengenai keselamatan, sila hubungi kami di strivers.hub@asiafoundation.org.</p>
 
 <h2>Hak Subjek Data</h2>
 <p>Anda berhak untuk:</p>
@@ -162,7 +162,7 @@ export const privacy = {
   <li>Membatasi pemprosesan maklumat peribadi anda</li>
   <li>Memindah maklumat peribadi anda kepada pihak lain</li>
 </ul>
-<p>Untuk soalan, sokongan, atau untuk menggunakan mana-mana hak anda, sila hubungi strivershub@asiafoundation.org.</p>
+<p>Untuk soalan, sokongan, atau untuk menggunakan mana-mana hak anda, sila hubungi strivers.hub@asiafoundation.org.</p>
 
 <h2>Pendedahan Data</h2>
 <p>Jika kami dihubungi oleh pihak berkuasa dengan permintaan untuk mendedahkan data anda, kami hanya akan melakukannya jika terdapat permintaan yang sah dan kewajipan undang-undang yang terikat sepenuhnya. Walaupun kami mungkin mematuhi notis yang disampaikan secara elektronik, data yang didedahkan hanya boleh digunakan di mahkamah jika kami telah menerima salinan asal surat perintah mahkamah melalui pos berdaftar atau secara langsung dan memberikan respons rasmi. Jika dibenarkan oleh undang-undang, kami akan sentiasa menghubungi pengguna terlebih dahulu sebelum sebarang pendedahan data.</p>
@@ -178,7 +178,7 @@ export const privacy = {
 
 <h2>Cara Hubungi Kami</h2>
 <p>The Asia Foundation berdaftar di 465 California St., Tingkat 9, San Francisco, CA 94104, USA. Program STRIVE dikendalikan oleh Pejabat Malaysia yang terletak di Suite 13.05, Tingkat 13, The Gardens South Tower, Mid Valley City, Lingkaran Syed Putra, Kuala Lumpur, 59200, Malaysia.</p>
-<p>Untuk maklum balas dan pertanyaan lain berkenaan dengan dasar ini, sila hubungi <a href="mailto:strivershub@asiafoundation.org">strivershub@asiafoundation.org</a>.</p>
+<p>Untuk maklum balas dan pertanyaan lain berkenaan dengan dasar ini, sila hubungi <a href="mailto:strivers.hub@asiafoundation.org">strivers.hub@asiafoundation.org</a>.</p>
     `.trim(),
     "privacy.footer": "Versi V1.0 | Mac 2024",
   },
